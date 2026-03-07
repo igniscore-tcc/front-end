@@ -22,28 +22,33 @@ export default function Sidebar() {
   const iconSize = 28;
 
   return (
-    <aside className="fixed left-0 top-0 h-screen w-20 bg-[#F2F2F2] border-r border-gray-200 flex flex-col items-center py-8 shadow-sm">
-      <div className="flex flex-col items-center gap-10 w-full mb-auto">
-        <Button
-          variant="ghost"
-          size={"icon"}
-          className="text-gray-800 hover:text-indigo-600"
-        >
-          <Menu size={32} />
-        </Button>
+    <aside className="fixed bottom-0 left-0 w-full h-16 bg-[#F2F2F2] border-t md:top-0 md:left-0 md:h-screen md:w-20 md:border-t-0 md:border-r border-gray-200 flex flex-row md:flex-col items-center shadow-sm z-50">
+      <div className="flex flex-row md:flex-col items-center w-full h-full">
+        <div className="hidden md:flex items-center justify-center pt-8 pb-4 w-full">
+          <Button
+            variant="ghost"
+            size={"icon"}
+            className="text-gray-800"
+          >
+            <Menu size={32} />
+          </Button>
+        </div>
 
-        <nav className="flex flex-col items-center gap-10">
+        <nav className="flex flex-row md:flex-col items-center justify-around md:justify-start w-full md:flex-1 md:gap-6 md:pb-8">
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
                 <Link
                   href="/base"
-                  className="text-sidebar-foreground hover:text-primary transition-colors"
+                  className="text-sidebar-foreground transition-all duration-200 p-2 rounded-xl flex items-center justify-center"
                 >
                   <Database size={iconSize} />
                 </Link>
               </TooltipTrigger>
-              <TooltipContent side="right">
+              <TooltipContent side="top" className="md:hidden">
+                <p>Base</p>
+              </TooltipContent>
+              <TooltipContent side="right" className="hidden md:block">
                 <p>Base</p>
               </TooltipContent>
             </Tooltip>
@@ -52,12 +57,15 @@ export default function Sidebar() {
               <TooltipTrigger asChild>
                 <Link
                   href="/clientes"
-                  className="text-sidebar-foreground hover:text-primary transition-colors"
+                  className="text-sidebar-foreground transition-all duration-200 p-2 rounded-xl flex items-center justify-center"
                 >
                   <Users size={iconSize} />
                 </Link>
               </TooltipTrigger>
-              <TooltipContent side="right">
+              <TooltipContent side="top" className="md:hidden">
+                <p>Clientes</p>
+              </TooltipContent>
+              <TooltipContent side="right" className="hidden md:block">
                 <p>Clientes</p>
               </TooltipContent>
             </Tooltip>
@@ -66,12 +74,15 @@ export default function Sidebar() {
               <TooltipTrigger asChild>
                 <Link
                   href="/produtos"
-                  className="text-sidebar-foreground hover:text-primary transition-colors"
+                  className="text-sidebar-foreground transition-all duration-200 p-2 rounded-xl flex items-center justify-center"
                 >
                   <Package size={iconSize} />
                 </Link>
               </TooltipTrigger>
-              <TooltipContent side="right">
+              <TooltipContent side="top" className="md:hidden">
+                <p>Produtos</p>
+              </TooltipContent>
+              <TooltipContent side="right" className="hidden md:block">
                 <p>Produtos</p>
               </TooltipContent>
             </Tooltip>
@@ -80,12 +91,15 @@ export default function Sidebar() {
               <TooltipTrigger asChild>
                 <Link
                   href="/vendas"
-                  className="text-sidebar-foreground hover:text-primary transition-colors"
+                  className="text-sidebar-foreground transition-all duration-200 p-2 rounded-xl flex items-center justify-center"
                 >
                   <ShoppingCart size={iconSize} />
                 </Link>
               </TooltipTrigger>
-              <TooltipContent side="right">
+              <TooltipContent side="top" className="md:hidden">
+                <p>Vendas</p>
+              </TooltipContent>
+              <TooltipContent side="right" className="hidden md:block">
                 <p>Vendas</p>
               </TooltipContent>
             </Tooltip>
@@ -94,35 +108,37 @@ export default function Sidebar() {
               <TooltipTrigger asChild>
                 <Link
                   href="/vencimentos"
-                  className="text-sidebar-foreground hover:text-primary transition-colors"
+                  className="text-sidebar-foreground transition-all duration-200 p-2 rounded-xl flex items-center justify-center"
                 >
                   <CalendarClock size={iconSize} />
                 </Link>
               </TooltipTrigger>
-              <TooltipContent side="right">
+              <TooltipContent side="top" className="md:hidden">
                 <p>Controle de Vencimentos</p>
+              </TooltipContent>
+              <TooltipContent side="right" className="hidden md:block">
+                <p>Controle de Vencimentos</p>
+              </TooltipContent>
+            </Tooltip>
+
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Link
+                  href="/settings"
+                  className="text-sidebar-foreground transition-all duration-200 p-2 rounded-xl md:mt-auto flex items-center justify-center"
+                >
+                  <Settings size={28} />
+                </Link>
+              </TooltipTrigger>
+              <TooltipContent side="top" className="md:hidden">
+                <p>Configurações</p>
+              </TooltipContent>
+              <TooltipContent side="right" className="hidden md:block">
+                <p>Configurações</p>
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>
         </nav>
-      </div>
-
-      <div className="mt-auto">
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Link
-                href="/settings"
-                className="text-sidebar-foreground hover:text-primary transition-colors"
-              >
-                <Settings size={32} />
-              </Link>
-            </TooltipTrigger>
-            <TooltipContent side="right">
-              <p>Configurações</p>
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
       </div>
     </aside>
   );
