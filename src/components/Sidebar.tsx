@@ -8,6 +8,7 @@ import {
   ShoppingCart,
   CalendarClock,
   Settings,
+  LayoutDashboard,
 } from "lucide-react";
 import Link from "next/link";
 import {
@@ -39,7 +40,24 @@ export default function Sidebar() {
             <Tooltip>
               <TooltipTrigger asChild>
                 <Link
-                  href="/base"
+                  href="/dashboard"
+                  className="text-sidebar-foreground transition-all duration-200 p-2 rounded-xl flex items-center justify-center"
+                >
+                  <LayoutDashboard size={iconSize} />
+                </Link>
+              </TooltipTrigger>
+              <TooltipContent side="top" className="md:hidden">
+                <p>Dashboard</p>
+              </TooltipContent>
+              <TooltipContent side="right" className="hidden md:block">
+                <p>Dashboard</p>
+              </TooltipContent>
+            </Tooltip>
+
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Link
+                  href="/dashboard/base"
                   className="text-sidebar-foreground transition-all duration-200 p-2 rounded-xl flex items-center justify-center"
                 >
                   <Database size={iconSize} />
@@ -56,7 +74,7 @@ export default function Sidebar() {
             <Tooltip>
               <TooltipTrigger asChild>
                 <Link
-                  href="/clientes"
+                  href="/dashboard/clientes"
                   className="text-sidebar-foreground transition-all duration-200 p-2 rounded-xl flex items-center justify-center"
                 >
                   <Users size={iconSize} />
@@ -73,7 +91,7 @@ export default function Sidebar() {
             <Tooltip>
               <TooltipTrigger asChild>
                 <Link
-                  href="/produtos"
+                  href="/dashboard/produtos"
                   className="text-sidebar-foreground transition-all duration-200 p-2 rounded-xl flex items-center justify-center"
                 >
                   <Package size={iconSize} />
@@ -90,7 +108,7 @@ export default function Sidebar() {
             <Tooltip>
               <TooltipTrigger asChild>
                 <Link
-                  href="/vendas"
+                  href="/dashboard/vendas"
                   className="text-sidebar-foreground transition-all duration-200 p-2 rounded-xl flex items-center justify-center"
                 >
                   <ShoppingCart size={iconSize} />
@@ -107,7 +125,7 @@ export default function Sidebar() {
             <Tooltip>
               <TooltipTrigger asChild>
                 <Link
-                  href="/vencimentos"
+                  href="/dashboard/vencimentos"
                   className="text-sidebar-foreground transition-all duration-200 p-2 rounded-xl flex items-center justify-center"
                 >
                   <CalendarClock size={iconSize} />
@@ -124,7 +142,7 @@ export default function Sidebar() {
             <Tooltip>
               <TooltipTrigger asChild>
                 <Link
-                  href="/settings"
+                  href="/dashboard/configuracoes"
                   className="text-sidebar-foreground transition-all duration-200 p-2 rounded-xl md:mt-auto flex items-center justify-center"
                 >
                   <Settings size={28} />
