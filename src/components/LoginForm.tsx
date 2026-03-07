@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { LoginFormData } from "@/types/auth";
 import { Input } from "@/components/ui/Input";
+import { Button } from "@/components/ui/button";
 
 export default function LoginForm() {
   const [formData, setFormData] = useState<LoginFormData>({
@@ -28,7 +29,7 @@ export default function LoginForm() {
           type="email"
           placeholder="Email"
           value={formData.email}
-          onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData({ ...formData, email: e.target.value })}
           required
         />
         
@@ -36,17 +37,17 @@ export default function LoginForm() {
           type="password"
           placeholder="Senha"
           value={formData.senha}
-          onChange={(e) => setFormData({ ...formData, senha: e.target.value })}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData({ ...formData, senha: e.target.value })}
           required
         />
         
-        <button
+        <Button
           type="submit"
-          className="w-full mt-4 py-3 px-4 bg-[#CC2A2A] text-white rounded-lg font-semibold hover:bg-[#B32424]
-          transition-all duration-200 active:scale-[0.98]"
+          className="w-full mt-4 h-12 bg-[#CC2A2A] text-white rounded-lg font-semibold hover:bg-[#8B1A1A]
+          transition-all duration-200 cursor-pointer"
         >
           Entrar
-        </button>
+        </Button>
 
         <div className="flex justify-center text-sm text-gray-400 mt-2">
           <p>

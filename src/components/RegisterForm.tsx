@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { RegisterFormData } from "@/types/auth";
 import { Input } from "@/components/ui/Input";
+import { Button } from "@/components/ui/button";
 
 export default function RegisterForm() {
   const [formData, setFormData] = useState<RegisterFormData>({
@@ -37,7 +38,7 @@ export default function RegisterForm() {
         <Input
           placeholder="Nome"
           value={formData.nome}
-          onChange={(e) => setFormData({ ...formData, nome: e.target.value })}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData({ ...formData, nome: e.target.value })}
           required
         />
         
@@ -45,7 +46,7 @@ export default function RegisterForm() {
           type="email"
           placeholder="Email"
           value={formData.email}
-          onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData({ ...formData, email: e.target.value })}
           required
         />
 
@@ -53,7 +54,7 @@ export default function RegisterForm() {
           type="password"
           placeholder="Senha"
           value={formData.senha}
-          onChange={(e) => setFormData({ ...formData, senha: e.target.value })}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData({ ...formData, senha: e.target.value })}
           required
         />
 
@@ -61,18 +62,18 @@ export default function RegisterForm() {
           type="password"
           placeholder="Confirmar senha"
           value={formData.confirmarSenha}
-          onChange={(e) => setFormData({ ...formData, confirmarSenha: e.target.value })}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData({ ...formData, confirmarSenha: e.target.value })}
           error={erroSenha}
           required
         />
 
-        <button
+        <Button
           type="submit"
-          className="w-full mt-4 py-3 px-4 bg-[#CC2A2A] text-white rounded-lg font-semibold hover:bg-[#B32424]
-          transition-all duration-200 active:scale-[0.98]"
+          className="w-full mt-4 h-12 bg-[#CC2A2A] text-white rounded-lg font-semibold hover:bg-[#8B1A1A]
+          transition-all duration-200 cursor-pointer"
         >
           Continuar
-        </button>
+        </Button>
 
         <div className="flex justify-center text-sm text-gray-400 mt-2">
           <p>
