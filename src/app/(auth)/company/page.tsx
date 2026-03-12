@@ -1,9 +1,9 @@
-import LoginForm from "@/components/LoginForm";
+import CompanyForm from "@/components/CompanyForm";
 
-export default function LoginPage() {
+export default function CompanyPage() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-[#F8FAFC] font-sans">
-      <LoginForm />
+      <CompanyForm />
     </div>
   );
 }
