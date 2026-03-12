@@ -21,6 +21,11 @@ export default function RegisterForm() {
     e.preventDefault();
     setErroSenha("");
 
+    if (formData.senha.length < 6) {
+      setErroSenha("A senha deve ter pelo menos 6 caracteres!");
+      return;
+    }
+
     if (formData.senha !== formData.confirmarSenha) {
       setErroSenha("As senhas não coincidem!");
       return;
