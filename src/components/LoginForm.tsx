@@ -13,10 +13,45 @@ export default function LoginForm() {
     senha: "",
   });
 
+  const [errors, setErrors] = useState({
+    email: "",
+    senha: "",
+  });
+
+  const emailRegex = /\S+@\S+\.\S+/;
+
+  const validate = () => {
+    const newErrors = {
+      email: "",
+      senha: "",
+    };
+
+    let isValid = true;
+
+    if (!formData.email.trim()) {
+      newErrors.email = "Email obrigatório";
+      isValid = false;
+    } else if (!emailRegex.test(formData.email)) {
+      newErrors.email = "Email inválido";
+      isValid = false;
+    }
+
+    if (!formData.senha.trim()) {
+      newErrors.senha = "Senha obrigatória";
+      isValid = false;
+    }
+
+    setErrors(newErrors);
+    return isValid;
+  };
+
+  const removeError = (field: keyof typeof errors) => {
+    setErrors((prev) => ({ ...prev, [field]: "" }));
+  };
+
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    
-    console.log("Enviando login para o back-end:", formData);
+    if (!validate()) return;
   }
 
   return (
@@ -35,21 +70,27 @@ export default function LoginForm() {
         </h2>
       </div>
       
-      <form className="w-full flex flex-col gap-4" onSubmit={handleSubmit}>
+      <form className="w-full flex flex-col gap-4" onSubmit={handleSubmit} noValidate>
         <Input
           type="email"
           placeholder="Email"
           value={formData.email}
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData({ ...formData, email: e.target.value })}
-          required
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+            setFormData({ ...formData, email: e.target.value });
+            removeError("email");
+          }}
+          error={errors.email}
         />
         
         <Input
           type="password"
           placeholder="Senha"
           value={formData.senha}
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData({ ...formData, senha: e.target.value })}
-          required
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+            setFormData({ ...formData, senha: e.target.value });
+            removeError("senha");
+          }}
+          error={errors.senha}
         />
         
         <Button
@@ -62,7 +103,7 @@ export default function LoginForm() {
         <div className="mt-4 text-center">
           <p className="text-xs font-medium text-[#4A4A4A]">
             Não possui uma conta?{" "}
-            <Link href="/register" className="hover:underline">
+            <Link href="/register" className="hover:text-[#FF5A1F] hover:underline transition-colors">
               Crie uma
             </Link>
           </p>
