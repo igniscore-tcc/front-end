@@ -84,6 +84,18 @@ export default function CompanyForm() {
     setErrors((prev) => ({ ...prev, [field]: "" }));
   };
 
+  const calculateProgress = () => {
+    let filledFields = 0;
+    
+    if (formData.nome.trim().length >= 3) filledFields++;
+    if (extractNumbers(formData.cnpj).length === 14 && validateCnpj(formData.cnpj)) filledFields++;
+    if (formData.email.includes("@") && formData.email.includes(".")) filledFields++;
+    if (extractNumbers(formData.telefone).length >= 10 && validatePhoneLength(formData.telefone)) filledFields++;
+    
+    return 50 + (filledFields * 12.5);
+  };
+  const progressPercentage = calculateProgress();
+
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!validate()) return;
@@ -113,7 +125,10 @@ export default function CompanyForm() {
           Cadastrar sua empresa
         </h2>
         <div className="flex w-full h-1.5 bg-[#F0F0F0] rounded-full overflow-hidden">
-          <div className="w-[85%] bg-[#FF5A1F] h-full rounded-full"></div>
+          <div 
+            className="bg-[#FF5A1F] h-full rounded-full transition-all duration-500 ease-out"
+            style={{ width: `${progressPercentage}%` }}
+          ></div>
         </div>
       </div>
 
