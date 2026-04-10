@@ -46,9 +46,6 @@ export default function Sidebar() {
                   <LayoutDashboard size={iconSize} />
                 </Link>
               </TooltipTrigger>
-              <TooltipContent side="top" className="md:hidden">
-                <p>Dashboard</p>
-              </TooltipContent>
               <TooltipContent side="right" className="hidden md:block">
                 <p>Dashboard</p>
               </TooltipContent>
@@ -80,9 +77,6 @@ export default function Sidebar() {
                   <Users size={iconSize} />
                 </Link>
               </TooltipTrigger>
-              <TooltipContent side="top" className="md:hidden">
-                <p>Clientes</p>
-              </TooltipContent>
               <TooltipContent side="right" className="hidden md:block">
                 <p>Clientes</p>
               </TooltipContent>
@@ -97,9 +91,6 @@ export default function Sidebar() {
                   <Package size={iconSize} />
                 </Link>
               </TooltipTrigger>
-              <TooltipContent side="top" className="md:hidden">
-                <p>Produtos</p>
-              </TooltipContent>
               <TooltipContent side="right" className="hidden md:block">
                 <p>Produtos</p>
               </TooltipContent>
@@ -114,9 +105,6 @@ export default function Sidebar() {
                   <ShoppingCart size={iconSize} />
                 </Link>
               </TooltipTrigger>
-              <TooltipContent side="top" className="md:hidden">
-                <p>Vendas</p>
-              </TooltipContent>
               <TooltipContent side="right" className="hidden md:block">
                 <p>Vendas</p>
               </TooltipContent>
@@ -131,9 +119,6 @@ export default function Sidebar() {
                   <CalendarClock size={iconSize} />
                 </Link>
               </TooltipTrigger>
-              <TooltipContent side="top" className="md:hidden">
-                <p>Controle de Vencimentos</p>
-              </TooltipContent>
               <TooltipContent side="right" className="hidden md:block">
                 <p>Controle de Vencimentos</p>
               </TooltipContent>
@@ -148,9 +133,6 @@ export default function Sidebar() {
                   <Settings size={28} />
                 </Link>
               </TooltipTrigger>
-              <TooltipContent side="top" className="md:hidden">
-                <p>Configurações</p>
-              </TooltipContent>
               <TooltipContent side="right" className="hidden md:block">
                 <p>Configurações</p>
               </TooltipContent>
