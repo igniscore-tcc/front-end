@@ -4,7 +4,7 @@ import {
   Menu,
   Package,
   Users,
-  Database,
+  NotebookText,
   ShoppingCart,
   CalendarClock,
   Settings,
@@ -57,17 +57,17 @@ export default function Sidebar() {
             <Tooltip>
               <TooltipTrigger asChild>
                 <Link
-                  href="/dashboard/base"
+                  href="/dashboard/order"
                   className="text-sidebar-foreground transition-all duration-200 p-2 rounded-xl flex items-center justify-center"
                 >
-                  <Database size={iconSize} />
+                  <NotebookText size={iconSize} />
                 </Link>
               </TooltipTrigger>
               <TooltipContent side="top" className="md:hidden">
-                <p>Base</p>
+                <p>Ordem de Serviços</p>
               </TooltipContent>
               <TooltipContent side="right" className="hidden md:block">
-                <p>Base</p>
+                <p>Ordem de Serviços</p>
               </TooltipContent>
             </Tooltip>
 
