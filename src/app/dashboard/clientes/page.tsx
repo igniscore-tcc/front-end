@@ -1,5 +1,9 @@
+import Clients from "@/components/Clients";
+
 export default function ClientesPage() {
   return (
-    <div></div>
+    <div>
+      <Clients />
+    </div>
   );
 }
