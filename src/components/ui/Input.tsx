@@ -1,11 +1,22 @@
 import { useId, useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
 
-export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement | HTMLTextAreaElement> {
   error?: string;
+  suffixIcon?: React.ReactNode;
+  isTextarea?: boolean;
 }
 
-export function Input({ error, className = "", placeholder, type, id: externalId, ...props }: InputProps) {
+export function Input({ 
+  error, 
+  className = "", 
+  placeholder, 
+  type, 
+  id: externalId, 
+  suffixIcon,
+  isTextarea,
+  ...props 
+}: InputProps) {
   const internalId = useId();
   const id = externalId || internalId;
   const [showPassword, setShowPassword] = useState(false);
@@ -13,23 +24,31 @@ export function Input({ error, className = "", placeholder, type, id: externalId
   const isPassword = type === "password";
   const currentType = isPassword ? (showPassword ? "text" : "password") : type;
 
+  const Component = isTextarea ? "textarea" : "input";
+
   return (
     <div className="w-full relative mb-1">
       <div className="relative">
-        <input
-          {...props}
-          type={currentType}
+        <Component
+          {...(props as any)}
+          type={isTextarea ? undefined : currentType}
           id={id}
           placeholder=" "
           aria-invalid={error ? "true" : "false"}
-          className={`peer w-full px-4 pt-[24px] pb-2 min-h-[54px] bg-[#E5E7EB] border-none rounded-lg text-gray-800 placeholder-transparent focus:outline-none focus:ring-2 transition-all duration-300 ${isPassword ? "pr-12" : ""} ${
+          className={`peer w-full px-4 pt-[24px] pb-2 min-h-[54px] bg-[#E5E7EB] border-none rounded-lg text-gray-800 placeholder-transparent focus:outline-none focus:ring-2 transition-all duration-300 ${isPassword || suffixIcon ? "pr-12" : ""} ${
+            isTextarea ? "resize-none h-32 pt-6" : ""
+          } ${
             error ? "focus:ring-red-500 ring-2 ring-red-500/50" : "focus:ring-[#FF5A1F]"
           } ${className}`}
         />
         {placeholder && (
           <label
             htmlFor={id}
-            className="absolute left-4 top-4 z-10 origin-[0] -translate-y-3 scale-75 transform text-gray-500 duration-200 peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:scale-100 peer-focus:top-4 peer-focus:-translate-y-3 peer-focus:scale-75 pointer-events-none"
+            className={`absolute left-4 z-10 origin-[0] -translate-y-3 scale-75 transform text-gray-500 duration-200 peer-placeholder-shown:scale-100 peer-focus:-translate-y-3 peer-focus:scale-75 pointer-events-none ${
+              isTextarea 
+                ? "top-4 peer-placeholder-shown:top-4" 
+                : "top-4 peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2"
+            } peer-focus:top-4`}
           >
             {placeholder}
           </label>
@@ -43,6 +62,12 @@ export function Input({ error, className = "", placeholder, type, id: externalId
           >
             {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
           </button>
+        )}
+
+        {!isPassword && suffixIcon && (
+          <div className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">
+            {suffixIcon}
+          </div>
         )}
       </div>
       <span

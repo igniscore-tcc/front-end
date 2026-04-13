@@ -13,6 +13,8 @@ import {
   ChevronRight,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { AddClientModal } from "./AddClientModal";
+import { formatCnpj, formatPhone, formatCpf } from "@/lib/validators";
 
 const mockClients = [
   { id: 1, nome: "Cliente", cnpj: "88.774.678/0001-49", inscricao: "989314321", email: "clientesupremo@gmail.com", numero: "00 00000-0000" },
@@ -63,15 +65,17 @@ export default function Clients() {
   });
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [clients, setClients] = useState(mockClients);
 
   const filteredData = useMemo(() => {
     const term = searchTerm.toLowerCase();
-    return mockClients.filter((client) => 
+    return clients.filter((client) => 
       client.nome.toLowerCase().includes(term) ||
       client.email.toLowerCase().includes(term) ||
       client.cnpj.toLowerCase().includes(term)
     );
-  }, [searchTerm]);
+  }, [searchTerm, clients]);
 
   const sortedData = useMemo(() => {
     return [...filteredData].sort((a, b) => {
@@ -99,6 +103,11 @@ export default function Clients() {
     setCurrentPage(1);
   };
 
+  const handleAddClient = (newClient: any) => {
+    const nextId = clients.length > 0 ? Math.max(...clients.map(c => c.id)) + 1 : 1;
+    setClients([...clients, { ...newClient, id: nextId, numero: newClient.telefone }]);
+  };
+
   const startRecord = totalItems === 0 ? 0 : (currentPage - 1) * rowsPerPage + 1;
   const endRecord = Math.min(currentPage * rowsPerPage, totalItems);
 
@@ -106,6 +115,10 @@ export default function Clients() {
     if (sortConfig.key !== key) return <ArrowUpDown size={14} />;
     return sortConfig.direction === "asc" ? <ArrowUp size={14} /> : <ArrowDown size={14} />;
   };
+
+  const handleDeleteClient = (id: number) => {
+    setClients(prev => prev.filter(client => client.id !== id));
+  }
 
   return (
     <div className="p-8 min-h-screen bg-white font-sans text-base">
@@ -127,6 +140,7 @@ export default function Clients() {
         </div>
 
         <Button 
+          onClick={() => setIsAddModalOpen(true)}
           className="bg-[#FF5A1F] hover:bg-[#E64D17] text-white rounded-full w-12 h-12 flex items-center justify-center transition-all shrink-0 p-0 cursor-pointer"
         >
           <Plus size={24} />
@@ -166,7 +180,7 @@ export default function Clients() {
               <tr className="bg-gray-50 border-b border-gray-100 font-sans">
                 <th className="px-6 py-4 text-sm font-bold text-gray-500 uppercase tracking-wider">ID</th>
                 <th className="px-6 py-4 text-sm font-bold text-gray-500 uppercase tracking-wider">Nome</th>
-                <th className="px-6 py-4 text-sm font-bold text-gray-500 uppercase tracking-wider">CNPJ</th>
+                <th className="px-6 py-4 text-sm font-bold text-gray-500 uppercase tracking-wider">CNPJ/CPF</th>
                 <th className="px-6 py-4 text-sm font-bold text-gray-500 uppercase tracking-wider">Inscrição estadual</th>
                 <th className="px-6 py-4 text-sm font-bold text-gray-500 uppercase tracking-wider">Email</th>
                 <th className="px-6 py-4 text-sm font-bold text-gray-500 uppercase tracking-wider">Numero</th>
@@ -179,16 +193,20 @@ export default function Clients() {
                   <tr key={client.id} className="group hover:bg-gray-50/80 transition-colors cursor-pointer">
                     <td className="px-6 py-5 text-sm font-medium text-gray-500">{client.id}</td>
                     <td className="px-6 py-5 text-sm font-bold text-gray-800">{client.nome}</td>
-                    <td className="px-6 py-5 text-sm text-gray-600">{client.cnpj}</td>
+                    <td className="px-6 py-5 text-sm text-gray-600">
+                      {client.cnpj.replace(/\D/g, "").length === 11 
+                        ? formatCpf(client.cnpj) 
+                        : formatCnpj(client.cnpj)}
+                    </td>
                     <td className="px-6 py-5 text-sm text-gray-600">{client.inscricao}</td>
                     <td className="px-6 py-5 text-sm text-gray-600">{client.email}</td>
-                    <td className="px-6 py-5 text-sm font-bold text-gray-800">{client.numero}</td>
+                    <td className="px-6 py-5 text-sm font-bold text-gray-800">{formatPhone(client.numero)}</td>
                     <td className="px-6 py-5 text-sm text-center">
                       <div className="flex items-center justify-center gap-4 opacity-70 group-hover:opacity-100 transition-opacity">
                         <button className="text-[#FF5A1F] hover:text-[#E64D17] transition-colors p-1.5 hover:bg-[#FF5A1F]/10 rounded-lg">
                           <Pencil size={18} />
                         </button>
-                        <button className="text-[#FF5A1F] hover:text-[#E64D17] transition-colors p-1.5 hover:bg-[#FF5A1F]/10 rounded-lg">
+                        <button onClick={() => handleDeleteClient(client.id)} className="text-[#FF5A1F] hover:text-[#E64D17] transition-colors p-1.5 hover:bg-[#FF5A1F]/10 rounded-lg">
                           <Trash2 size={18} />
                         </button>
                       </div>
@@ -245,6 +263,12 @@ export default function Clients() {
           </div>
         </div>
       </footer>
+
+      <AddClientModal 
+        isOpen={isAddModalOpen} 
+        onClose={() => setIsAddModalOpen(false)} 
+        onAdd={handleAddClient}
+      />
     </div>
   );
 }

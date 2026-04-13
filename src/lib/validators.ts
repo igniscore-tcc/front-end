@@ -112,3 +112,54 @@ export function validatePhoneLength(raw: string): boolean {
   }
   return false;
 }
+
+const CPF_MAX_LEN = 11;
+
+/** Máximo 11 dígitos */
+export function cleanCpf(value: string): string {
+  return extractNumbers(value).slice(0, CPF_MAX_LEN);
+}
+
+/* Aplica a formatação visual padrão do CPF: 000.000.000-00 */
+export function formatCpf(digits: string): string {
+  const d = extractNumbers(digits).slice(0, CPF_MAX_LEN);
+  if (d.length === 0) return "";
+  if (d.length <= 3) return d;
+  if (d.length <= 6) return `${d.slice(0, 3)}.${d.slice(3)}`;
+  if (d.length <= 9) {
+    return `${d.slice(0, 3)}.${d.slice(3, 6)}.${d.slice(6)}`;
+  }
+  return `${d.slice(0, 3)}.${d.slice(3, 6)}.${d.slice(6, 9)}-${d.slice(9, 11)}`;
+}
+
+/**
+ * Validação rigorosa de CPF usando o algoritmo oficial de dígitos verificadores.
+ */
+export function validateCpf(raw: string): boolean {
+  const cpf = extractNumbers(raw);
+  if (cpf.length !== 11) return false;
+
+  // Bloqueia combinações falsas clássicas (ex: 111.111.111-11)
+  if (/^(\d)\1{10}$/.test(cpf)) return false;
+
+  let sum = 0;
+  let remainder;
+
+  for (let i = 1; i <= 9; i++) {
+    sum += parseInt(cpf.substring(i - 1, i)) * (11 - i);
+  }
+  remainder = (sum * 10) % 11;
+  if (remainder === 10 || remainder === 11) remainder = 0;
+  if (remainder !== parseInt(cpf.substring(9, 10))) return false;
+
+  sum = 0;
+  for (let i = 1; i <= 10; i++) {
+    sum += parseInt(cpf.substring(i - 1, i)) * (12 - i);
+  }
+  remainder = (sum * 10) % 11;
+  if (remainder === 10 || remainder === 11) remainder = 0;
+  if (remainder !== parseInt(cpf.substring(10, 11))) return false;
+
+  return true;
+}
+
