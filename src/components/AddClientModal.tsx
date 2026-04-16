@@ -1,27 +1,18 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { X, CheckCircle2, MapPin, Mail, Phone } from "lucide-react";
 import { Button } from "./ui/button";
 import { Input } from "./ui/Input";
 import { Select } from "./ui/Select";
-import { 
-  formatCnpj, 
-  cleanCnpj, 
-  formatPhone, 
-  cleanPhone, 
-  validateCnpj, 
-  validatePhoneLength,
-  extractNumbers,
-  formatCpf,
-  cleanCpf,
-  validateCpf
-} from "@/lib/validators";
+import { formatCnpj, cleanCnpj, formatPhone, cleanPhone, formatCpf, cleanCpf } from "@/lib/validators";
+import { useClientForm } from "@/hooks/useClientForm";
+import type { Cliente, TipoCliente } from "@/types/cliente";
 
-interface AddClientModalProps {
+interface Props {
   isOpen: boolean;
   onClose: () => void;
-  onAdd: (client: any) => void;
+  onSave: (data: any) => void;
+  clientToEdit?: Cliente | null;
 }
 
 const UF_OPTIONS = [
@@ -36,193 +27,89 @@ const UF_OPTIONS = [
   { value: "SP", label: "SP" }, { value: "SE", label: "SE" }, { value: "TO", label: "TO" },
 ];
 
-const INITIAL_FORM_STATE = {
-  nome: "",
-  cnpj: "",
-  cpf: "",
-  inscricao: "",
-  uf: "SP",
-  email: "",
-  telefone: "",
-  observacao: "",
-};
-
-export function AddClientModal({ isOpen, onClose, onAdd }: AddClientModalProps) {
-  const [clientType, setClientType] = useState<"PJ" | "PF">("PJ");
-  const [formData, setFormData] = useState(INITIAL_FORM_STATE);
-  const [errors, setErrors] = useState<Record<string, string>>({});
-
-  const resetForm = () => {
-    setFormData(INITIAL_FORM_STATE);
-    setErrors({});
-    setClientType("PJ");
-  };
-
-  useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "unset";
-      resetForm();
-    }
-    return () => {
-      document.body.style.overflow = "unset";
-    };
-  }, [isOpen]);
+export function AddClientModal({ isOpen, onClose, onSave, clientToEdit }: Props) {
+  const { tipo, setTipo, form, setField, errors, isEditing, handleSubmit } = useClientForm({
+    isOpen,
+    clientToEdit,
+    onSave,
+    onClose,
+  });
 
   if (!isOpen) return null;
-
-  const validate = () => {
-    const newErrors: Record<string, string> = {};
-    const emailRegex = /\S+@\S+\.\S+/;
-
-    if (!formData.nome.trim()) newErrors.nome = "Nome é obrigatório";
-    
-    if (clientType === "PJ") {
-      const cnpjDigits = extractNumbers(formData.cnpj);
-      if (!cnpjDigits) {
-        newErrors.cnpj = "CNPJ é obrigatório";
-      } else if (cnpjDigits.length !== 14) {
-        newErrors.cnpj = "CNPJ deve ter 14 dígitos";
-      } else if (!validateCnpj(formData.cnpj)) {
-        newErrors.cnpj = "CNPJ inválido";
-      }
-    } else {
-      const cpfDigits = extractNumbers(formData.cpf);
-      if (!cpfDigits) {
-        newErrors.cpf = "CPF é obrigatório";
-      } else if (cpfDigits.length !== 11) {
-        newErrors.cpf = "CPF deve ter 11 dígitos";
-      } else if (!validateCpf(formData.cpf)) {
-        newErrors.cpf = "CPF inválido";
-      }
-    }
-
-    if (!formData.email.trim()) {
-      newErrors.email = "Email é obrigatório";
-    } else if (!emailRegex.test(formData.email)) {
-      newErrors.email = "Email inválido";
-    }
-
-    if (!extractNumbers(formData.telefone)) {
-      newErrors.telefone = "Telefone é obrigatório";
-    } else if (!validatePhoneLength(formData.telefone)) {
-      newErrors.telefone = "Telefone incompleto";
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (validate()) {
-      const payload = {
-        ...formData,
-        cnpj: clientType === "PJ" ? formData.cnpj : formData.cpf,
-        type: clientType
-      };
-      onAdd(payload);
-      onClose();
-    }
-  };
-
-  const handleClose = () => {
-    onClose();
-  };
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4 animate-in fade-in duration-200">
       <div className="bg-white rounded-xl shadow-lg w-full max-w-2xl flex flex-col overflow-hidden animate-in zoom-in-95 duration-200">
-        {/* Header */}
+
         <div className="flex items-center justify-between p-5 border-b border-gray-100">
           <h2 className="text-xl font-semibold text-gray-900">
-            Adicionar cliente
+            {isEditing ? "Editar cliente" : "Adicionar cliente"}
           </h2>
           <button
-            onClick={handleClose}
+            onClick={onClose}
             className="w-8 h-8 flex items-center justify-center rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-500 transition-colors"
           >
             <X className="w-5 h-5" strokeWidth={2.5} />
           </button>
         </div>
 
-        {/* Form Content */}
         <form onSubmit={handleSubmit} className="flex flex-col">
           <div className="p-8 space-y-6">
-            {/* PJ/PF Toggle */}
-            <div className="flex justify-center mb-2">
+
+            {/* escolha entre PJ | PF */}
+            <div className="flex justify-center">
               <div className="inline-flex p-1 bg-gray-100 rounded-xl">
-                <button
-                  type="button"
-                  onClick={() => setClientType("PJ")}
-                  className={`px-6 py-2 rounded-lg text-sm font-bold transition-all ${
-                    clientType === "PJ" 
-                      ? "bg-white text-[#FF5A1F] shadow-sm" 
-                      : "text-gray-500 hover:text-gray-700"
-                  }`}
-                >
-                  Pessoa Jurídica
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setClientType("PF")}
-                  className={`px-6 py-2 rounded-lg text-sm font-bold transition-all ${
-                    clientType === "PF" 
-                      ? "bg-white text-[#FF5A1F] shadow-sm" 
-                      : "text-gray-500 hover:text-gray-700"
-                  }`}
-                >
-                  Pessoa Física
-                </button>
+                {(["PJ", "PF"] as TipoCliente[]).map((t) => (
+                  <button
+                    key={t}
+                    type="button"
+                    onClick={() => setTipo(t)}
+                    className={`px-6 py-2 rounded-lg text-sm font-bold transition-all ${
+                      tipo === t ? "bg-white text-[#FF5A1F] shadow-sm" : "text-gray-500 hover:text-gray-700"
+                    }`}
+                  >
+                    {t === "PJ" ? "Pessoa Jurídica" : "Pessoa Física"}
+                  </button>
+                ))}
               </div>
             </div>
 
             <div className="grid grid-cols-1 gap-4">
               <Input
                 placeholder="Nome"
-                value={formData.nome}
-                onChange={(e) => {
-                  setFormData({ ...formData, nome: e.target.value });
-                  if (errors.nome) setErrors({ ...errors, nome: "" });
-                }}
+                value={form.nome}
+                onChange={(e) => setField("nome", e.target.value)}
                 error={errors.nome}
               />
             </div>
 
             <div className="grid grid-cols-12 gap-4">
-              <div className={`col-span-12 ${clientType === "PJ" ? "md:col-span-5" : "md:col-span-10"}`}>
-                {clientType === "PJ" ? (
+              <div className={`col-span-12 ${tipo === "PJ" ? "md:col-span-5" : "md:col-span-10"}`}>
+                {tipo === "PJ" ? (
                   <Input
                     placeholder="CNPJ"
-                    value={formatCnpj(formData.cnpj)}
-                    onChange={(e) => {
-                      setFormData({ ...formData, cnpj: cleanCnpj(e.target.value) });
-                      if (errors.cnpj) setErrors({ ...errors, cnpj: "" });
-                    }}
+                    value={formatCnpj(form.cnpj)}
+                    onChange={(e) => setField("cnpj", cleanCnpj(e.target.value))}
                     error={errors.cnpj}
                     suffixIcon={<CheckCircle2 size={18} className={errors.cnpj ? "text-red-400" : "text-gray-400"} />}
                   />
                 ) : (
                   <Input
                     placeholder="CPF"
-                    value={formatCpf(formData.cpf)}
-                    onChange={(e) => {
-                      setFormData({ ...formData, cpf: cleanCpf(e.target.value) });
-                      if (errors.cpf) setErrors({ ...errors, cpf: "" });
-                    }}
+                    value={formatCpf(form.cpf)}
+                    onChange={(e) => setField("cpf", cleanCpf(e.target.value))}
                     error={errors.cpf}
                     suffixIcon={<CheckCircle2 size={18} className={errors.cpf ? "text-red-400" : "text-gray-400"} />}
                   />
                 )}
               </div>
-              
-              {clientType === "PJ" && (
+
+              {tipo === "PJ" && (
                 <div className="col-span-12 md:col-span-5">
                   <Input
                     placeholder="Inscrição estadual"
-                    value={formData.inscricao}
-                    onChange={(e) => setFormData({ ...formData, inscricao: e.target.value })}
+                    value={form.inscricao}
+                    onChange={(e) => setField("inscricao", e.target.value)}
                     suffixIcon={<MapPin size={18} className="text-gray-400" />}
                   />
                 </div>
@@ -231,8 +118,8 @@ export function AddClientModal({ isOpen, onClose, onAdd }: AddClientModalProps) 
               <div className="col-span-12 md:col-span-2">
                 <Select
                   placeholder="UF"
-                  value={formData.uf}
-                  onChange={(e) => setFormData({ ...formData, uf: e.target.value })}
+                  value={form.uf}
+                  onChange={(e) => setField("uf", e.target.value)}
                   options={UF_OPTIONS}
                 />
               </div>
@@ -242,42 +129,33 @@ export function AddClientModal({ isOpen, onClose, onAdd }: AddClientModalProps) 
               <Input
                 placeholder="Email"
                 type="email"
-                value={formData.email}
-                onChange={(e) => {
-                  setFormData({ ...formData, email: e.target.value });
-                  if (errors.email) setErrors({ ...errors, email: "" });
-                }}
+                value={form.email}
+                onChange={(e) => setField("email", e.target.value)}
                 error={errors.email}
                 suffixIcon={<Mail size={18} className={errors.email ? "text-red-400" : "text-gray-400"} />}
               />
               <Input
                 placeholder="Telefone"
-                value={formatPhone(formData.telefone)}
-                onChange={(e) => {
-                  setFormData({ ...formData, telefone: cleanPhone(e.target.value) });
-                  if (errors.telefone) setErrors({ ...errors, telefone: "" });
-                }}
+                value={formatPhone(form.telefone)}
+                onChange={(e) => setField("telefone", cleanPhone(e.target.value))}
                 error={errors.telefone}
                 suffixIcon={<Phone size={18} className={errors.telefone ? "text-red-400" : "text-gray-400"} />}
               />
             </div>
 
-            <div className="grid grid-cols-1">
-              <Input
-                placeholder="Observação"
-                isTextarea
-                value={formData.observacao}
-                onChange={(e) => setFormData({ ...formData, observacao: e.target.value })}
-              />
-            </div>
+            <Input
+              placeholder="Observação"
+              isTextarea
+              value={form.observacao}
+              onChange={(e) => setField("observacao", e.target.value)}
+            />
           </div>
 
-          {/* Footer */}
           <div className="p-6 bg-gray-50/50 border-t border-dashed border-gray-200 flex items-center justify-end gap-4">
             <Button
               type="button"
               variant="outline"
-              onClick={handleClose}
+              onClick={onClose}
               className="px-8 py-2.5 h-auto text-sm font-bold rounded-lg bg-[#E5E7EB] text-gray-700 hover:bg-gray-300 border-none transition-colors"
             >
               Cancelar
@@ -286,7 +164,7 @@ export function AddClientModal({ isOpen, onClose, onAdd }: AddClientModalProps) 
               type="submit"
               className="px-8 py-2.5 h-auto text-sm font-bold rounded-lg bg-[#FF5A1F] text-white hover:bg-[#E64D17] transition-colors shadow-sm"
             >
-              Adicionar
+              {isEditing ? "Salvar alterações" : "Adicionar"}
             </Button>
           </div>
         </form>
@@ -294,4 +172,3 @@ export function AddClientModal({ isOpen, onClose, onAdd }: AddClientModalProps) 
     </div>
   );
 }
-
