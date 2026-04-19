@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { TermsModal } from "@/components/TermsModal";
 import { Check } from "lucide-react";
+import { API_URL } from "@/lib/api";
 
 export default function RegisterForm() {
   const [errors, setErrors] = useState({
@@ -28,16 +29,8 @@ export default function RegisterForm() {
   const [isTermsModalOpen, setIsTermsModalOpen] = useState(false);
 
   const validate = () => {
-    const newErrors = {
-      nome: "",
-      email: "",
-      senha: "",
-      confirmarSenha: "",
-      termos: "",
-    };
-
+    const newErrors = { nome: "", email: "", senha: "", confirmarSenha: "", termos: "" };
     let isValid = true;
-
     const emailRegex = /\S+@\S+\.\S+/;
 
     if (!formData.nome.trim()) {
@@ -78,44 +71,53 @@ export default function RegisterForm() {
   };
 
   const removeError = (field: string) => {
-    setErrors((prev) => ({
-      ...prev,
-      [field]: "",
-    }));
+    setErrors((prev) => ({ ...prev, [field]: "" }));
   };
 
   const calculateProgress = () => {
     let filledFields = 0;
-    
     if (formData.nome.trim().length >= 3) filledFields++;
     if (formData.email.includes("@") && formData.email.includes(".")) filledFields++;
     if (formData.senha.length >= 6) filledFields++;
     if (formData.confirmarSenha.length >= 6 && formData.confirmarSenha === formData.senha) filledFields++;
-    
     return filledFields * 12.5;
   };
+
   const progressPercentage = calculateProgress();
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!validate()) return;
+
+    try {
+      const response = await fetch("/api/auth/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: formData.nome,
+          email: formData.email,
+          password: formData.senha,
+          role: "ADMIN",
+        }),
+      });
+
+      if (!response.ok) {
+        setErrors((prev) => ({ ...prev, email: "Erro ao criar conta. Tente outro email." }));
+        return;
+      }
+
+      window.location.href = "/login";
+    } catch {
+      setErrors((prev) => ({ ...prev, email: "Erro ao conectar com o servidor" }));
+    }
   }
 
   return (
     <>
       <div className="w-full max-w-sm mx-auto flex flex-col min-h-[600px] px-4 sm:px-0">
         <div className="flex items-center justify-center gap-2 mb-8">
-          <Image
-            src="/igniscore.png"
-            alt="IgnisCore Logo"
-            width={47}
-            height={64}
-            className="object-contain"
-          />
-          <span
-            className="text-[35px] font-bold text-[#FF5A1F]"
-            style={{ fontFamily: "var(--font-space-grotesk)" }}
-          >
+          <Image src="/igniscore.png" alt="IgnisCore Logo" width={47} height={64} className="object-contain" />
+          <span className="text-[35px] font-bold text-[#FF5A1F]" style={{ fontFamily: "var(--font-space-grotesk)" }}>
             IgnisCore
           </span>
         </div>
@@ -123,11 +125,9 @@ export default function RegisterForm() {
         <div className="w-full border-t border-gray-100 mb-6"></div>
 
         <div className="mb-8">
-          <h2 className="text-[25px] font-semibold text-[#FF5A1F] mb-3">
-            Registro
-          </h2>
+          <h2 className="text-[25px] font-semibold text-[#FF5A1F] mb-3">Registro</h2>
           <div className="flex w-full h-1.5 bg-[#F0F0F0] rounded-full overflow-hidden">
-            <div 
+            <div
               className="bg-[#FF5A1F] h-full rounded-full transition-all duration-500 ease-out"
               style={{ width: `${progressPercentage}%` }}
             ></div>
@@ -138,43 +138,28 @@ export default function RegisterForm() {
           <Input
             placeholder="Nome"
             value={formData.nome}
-            onChange={(e) => {
-              setFormData({ ...formData, nome: e.target.value });
-              removeError("nome");
-            }}
+            onChange={(e) => { setFormData({ ...formData, nome: e.target.value }); removeError("nome"); }}
             error={errors.nome}
           />
-
           <Input
             type="email"
             placeholder="Email"
             value={formData.email}
-            onChange={(e) => {
-              setFormData({ ...formData, email: e.target.value });
-              removeError("email");
-            }}
+            onChange={(e) => { setFormData({ ...formData, email: e.target.value }); removeError("email"); }}
             error={errors.email}
           />
-
           <Input
             type="password"
             placeholder="Senha"
             value={formData.senha}
-            onChange={(e) => {
-              setFormData({ ...formData, senha: e.target.value })
-              removeError("senha")
-            }}
+            onChange={(e) => { setFormData({ ...formData, senha: e.target.value }); removeError("senha"); }}
             error={errors.senha}
           />
-
           <Input
             type="password"
             placeholder="Confirmar senha"
             value={formData.confirmarSenha}
-            onChange={(e) => {
-              setFormData({ ...formData, confirmarSenha: e.target.value })
-              removeError("confirmarSenha")
-            }}
+            onChange={(e) => { setFormData({ ...formData, confirmarSenha: e.target.value }); removeError("confirmarSenha"); }}
             error={errors.confirmarSenha}
           />
 
@@ -185,21 +170,15 @@ export default function RegisterForm() {
                   type="checkbox"
                   className="peer appearance-none w-[18px] h-[18px] border-2 border-gray-300 rounded-[4px] checked:bg-[#FF5A1F] checked:border-[#FF5A1F] transition-all cursor-pointer outline-none focus:ring-2 focus:ring-[#FF5A1F]/30"
                   checked={aceitouTermos}
-                  onChange={(e) => {
-                    setAceitouTermos(e.target.checked);
-                    removeError("termos");
-                  }}
+                  onChange={(e) => { setAceitouTermos(e.target.checked); removeError("termos"); }}
                 />
                 <Check className="absolute w-[12px] h-[12px] text-white pointer-events-none opacity-0 peer-checked:opacity-100 transition-opacity" strokeWidth={3.5} />
               </div>
-              <span className="text-[13px] font-medium text-gray-700 transition-colors">
+              <span className="text-[13px] font-medium text-gray-700">
                 Li e aceito os{" "}
                 <button
                   type="button"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    setIsTermsModalOpen(true);
-                  }}
+                  onClick={(e) => { e.preventDefault(); setIsTermsModalOpen(true); }}
                   className="text-gray-900 font-semibold hover:text-[#FF5A1F] transition-colors"
                 >
                   termos de serviços
@@ -238,10 +217,7 @@ export default function RegisterForm() {
         isOpen={isTermsModalOpen}
         onClose={() => setIsTermsModalOpen(false)}
         isChecked={aceitouTermos}
-        onCheckedChange={(val) => {
-          setAceitouTermos(val);
-          removeError("termos");
-        }}
+        onCheckedChange={(val) => { setAceitouTermos(val); removeError("termos"); }}
         onAcceptAndContinue={() => setIsTermsModalOpen(false)}
       />
     </>

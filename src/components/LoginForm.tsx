@@ -6,6 +6,7 @@ import { LoginFormData } from "@/types/auth";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
+import { API_URL } from "@/lib/api";
 
 export default function LoginForm() {
   const [formData, setFormData] = useState<LoginFormData>({
@@ -21,11 +22,7 @@ export default function LoginForm() {
   const emailRegex = /\S+@\S+\.\S+/;
 
   const validate = () => {
-    const newErrors = {
-      email: "",
-      senha: "",
-    };
-
+    const newErrors = { email: "", senha: "" };
     let isValid = true;
 
     if (!formData.email.trim()) {
@@ -45,31 +42,52 @@ export default function LoginForm() {
     return isValid;
   };
 
-  const removeError = (field: keyof typeof errors) => {
-    setErrors((prev) => ({ ...prev, [field]: "" }));
-  };
+    const removeError = (field: keyof typeof errors) => {
+      setErrors((prev) => ({ ...prev, [field]: "" }));
+    };
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!validate()) return;
+
+    try {
+      const response = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: formData.email,
+          password: formData.senha,
+        }),
+      });
+
+      if (!response.ok) {
+        setErrors((prev) => ({ ...prev, senha: "Email ou senha inválidos" }));
+        return;
+      }
+
+      const data = await response.json();
+      localStorage.setItem("token", data.token);
+      window.location.href = "/dashboard";
+    } catch {
+      setErrors((prev) => ({ ...prev, senha: "Erro ao conectar com o servidor" }));
+    }
   }
 
   return (
     <div className="w-full max-w-sm mx-auto flex flex-col min-h-[600px] px-4 sm:px-0">
-
       <div className="flex items-center justify-center gap-2 mb-8">
         <Image src="/igniscore.png" alt="IgnisCore Logo" width={47} height={64} className="object-contain" />
-        <span className="text-[35px] font-bold text-[#FF5A1F]" style={{ fontFamily: "var(--font-space-grotesk)" }}>IgnisCore</span>
+        <span className="text-[35px] font-bold text-[#FF5A1F]" style={{ fontFamily: "var(--font-space-grotesk)" }}>
+          IgnisCore
+        </span>
       </div>
 
       <div className="w-full border-t border-gray-100 mb-6"></div>
 
       <div className="mb-8">
-        <h2 className="text-[25px] font-semibold text-[#FF5A1F] mb-3">
-          Login
-        </h2>
+        <h2 className="text-[25px] font-semibold text-[#FF5A1F] mb-3">Login</h2>
       </div>
-      
+
       <form className="w-full flex flex-col gap-4" onSubmit={handleSubmit} noValidate>
         <Input
           type="email"
@@ -81,7 +99,7 @@ export default function LoginForm() {
           }}
           error={errors.email}
         />
-        
+
         <Input
           type="password"
           placeholder="Senha"
@@ -92,7 +110,7 @@ export default function LoginForm() {
           }}
           error={errors.senha}
         />
-        
+
         <Button
           type="submit"
           className="w-full mt-2 h-12 bg-[#FF5A1F] text-white rounded-lg font-semibold hover:bg-[#FF5A1F]/80 transition-all duration-200 cursor-pointer"

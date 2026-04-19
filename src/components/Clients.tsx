@@ -15,8 +15,10 @@ import { Button } from "@/components/ui/button";
 import { AddClientModal } from "./AddClientModal";
 import { formatCnpj, formatPhone, formatCpf } from "@/lib/validators";
 import { useClients } from "@/hooks/useClients";
+import { useRouter } from "next/navigation";
 
 export default function Clients() {
+  const router = useRouter();
   const {
     pageData,
     total,
@@ -140,6 +142,7 @@ export default function Clients() {
                   <tr
                     key={client.id}
                     className="group hover:bg-gray-50/80 transition-colors cursor-pointer"
+                    onClick={() => router.push(`/clientes/${client.id}`)}
                   >
                     <td className="px-6 py-5 text-sm font-medium text-gray-500">
                       {client.id}
@@ -164,13 +167,19 @@ export default function Clients() {
                     <td className="px-6 py-5 text-sm text-center">
                       <div className="flex items-center justify-center gap-4 opacity-70 group-hover:opacity-100 transition-opacity">
                         <button
-                          onClick={() => setEditing(client)}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setEditing(client);
+                          }}
                           className="text-[#FF5A1F] hover:text-[#E64D17] transition-colors p-1.5 hover:bg-[#FF5A1F]/10 rounded-lg"
                         >
                           <Pencil size={18} />
                         </button>
                         <button
-                          onClick={() => removeClient(client.id)}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            removeClient(client.id);
+                          }}
                           className="text-[#FF5A1F] hover:text-[#E64D17] transition-colors p-1.5 hover:bg-[#FF5A1F]/10 rounded-lg"
                         >
                           <Trash2 size={18} />
