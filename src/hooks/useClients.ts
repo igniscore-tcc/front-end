@@ -1,38 +1,41 @@
 import { useState, useMemo } from "react";
-import type { Cliente } from "@/types/cliente";
-
-type SortKey = "id" | "nome";
-
+import type { Cliente, SortKey, ClienteFormData } from "@/types/cliente";
 import { mockClients } from "@/mocks/clients";
 
-
 export function useClients() {
-  // Estado principal
   const [clients, setClients] = useState<Cliente[]>(mockClients);
   const [editing, setEditing] = useState<Cliente | null>(null);
+  const [deleting, setDeleting] = useState<Cliente | null>(null);
   const [showModal, setShowModal] = useState(false);
 
-  // Busca, ordenação e filtro
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState<{ key: SortKey; dir: "asc" | "desc" }>({
     key: "id",
     dir: "asc",
   });
+  
+  const [filterTipo, setFilterTipo] = useState<"ALL" | "PF" | "PJ">("ALL");
 
-  // Paginação
   const [page, setPage] = useState(1);
   const [perPage, setPerPage] = useState(10);
 
-  // Derivados
   const filtered = useMemo(() => {
     const term = search.toLowerCase();
-    return clients.filter(
-      (c) =>
-        c.nome.toLowerCase().includes(term) ||
-        c.email.toLowerCase().includes(term) ||
-        c.cnpj.toLowerCase().includes(term),
+    
+    let result = clients;
+    if (filterTipo !== "ALL") {
+      result = result.filter(c => c.tipo === filterTipo);
+    }
+    
+    return result.filter(
+      (c) => {
+        const doc = c.tipo === "PF" ? c.cpf : c.cnpj;
+        return c.nome.toLowerCase().includes(term) ||
+               c.email.toLowerCase().includes(term) ||
+               doc.toLowerCase().includes(term);
+      }
     );
-  }, [search, clients]);
+  }, [search, clients, filterTipo]);
 
   const sorted = useMemo(() => {
     return [...filtered].sort((a, b) => {
@@ -55,7 +58,6 @@ export function useClients() {
   const from = total === 0 ? 0 : (page - 1) * perPage + 1;
   const to = Math.min(page * perPage, total);
 
-  // Ações
   const handleSort = (key: SortKey) => {
     setSort((prev) => ({
       key,
@@ -64,21 +66,21 @@ export function useClients() {
     setPage(1);
   };
 
-  const addClient = (data: any) => {
-    const nextId =
-      clients.length > 0 ? Math.max(...clients.map((c) => c.id)) + 1 : 1;
+  const addClient = (data: ClienteFormData) => {
+    const nextId = clients.length > 0 ? Math.max(...clients.map((c) => c.id)) + 1 : 1;
     setClients((prev) => [
       ...prev,
-      { ...data, id: nextId, numero: data.telefone },
+      { ...data, id: nextId } as Cliente,
     ]);
     setShowModal(false);
   };
 
-  const saveEdit = (data: any) => {
+  const saveEdit = (data: ClienteFormData & { id?: number }) => {
+    if (!data.id) return;
     setClients((prev) =>
       prev.map((c) =>
         c.id === data.id
-          ? { ...c, ...data, numero: data.telefone || data.numero }
+          ? ({ ...c, ...data } as Cliente)
           : c,
       ),
     );
@@ -87,6 +89,7 @@ export function useClients() {
 
   const removeClient = (id: number) => {
     setClients((prev) => prev.filter((c) => c.id !== id));
+    setDeleting(null);
   };
 
   return {
@@ -110,5 +113,9 @@ export function useClients() {
     setEditing,
     saveEdit,
     removeClient,
+    deleting,
+    setDeleting,
+    filterTipo,
+    setFilterTipo,
   };
 }

@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { AddClientModal } from "./AddClientModal";
+import { DeleteConfirmModal } from "./DeleteConfirmModal";
 import { formatCnpj, formatPhone, formatCpf } from "@/lib/validators";
 import { useClients } from "@/hooks/useClients";
 import { useRouter } from "next/navigation";
@@ -40,6 +41,10 @@ export default function Clients() {
     setEditing,
     saveEdit,
     removeClient,
+    deleting,
+    setDeleting,
+    filterTipo,
+    setFilterTipo,
   } = useClients();
 
   const sortIcon = (key: "id" | "nome") => {
@@ -102,9 +107,21 @@ export default function Clients() {
           Nome {sortIcon("nome")}
         </button>
 
-        <button className="flex items-center gap-2 px-6 py-2 bg-gray-100/50 text-gray-500 border border-transparent rounded-full text-sm font-bold hover:bg-gray-100 hover:text-gray-700 transition-all cursor-pointer">
-          Outros filtros <Plus size={14} />
-        </button>
+        <div className="flex bg-gray-100/50 rounded-full p-1 border border-gray-100 ml-auto">
+          {(["ALL", "PF", "PJ"] as const).map((t) => (
+            <button
+              key={t}
+              onClick={() => setFilterTipo(t)}
+              className={`px-4 py-1.5 rounded-full text-sm font-bold transition-all cursor-pointer ${
+                filterTipo === t
+                  ? "bg-white text-[#FF5A1F] shadow-sm"
+                  : "text-gray-500 hover:text-gray-700"
+              }`}
+            >
+              {t === "ALL" ? "Todos" : t === "PF" ? "Pessoa Física" : "Pessoa Jurídica"}
+            </button>
+          ))}
+        </div>
       </div>
 
       {/* Tabelas */}
@@ -129,7 +146,7 @@ export default function Clients() {
                   Email
                 </th>
                 <th className="px-6 py-4 text-sm font-bold text-gray-500 uppercase tracking-wider">
-                  Número
+                  Telefone
                 </th>
                 <th className="px-6 py-4 text-sm font-bold text-gray-500 uppercase tracking-wider text-center">
                   Ações
@@ -151,18 +168,18 @@ export default function Clients() {
                       {client.nome}
                     </td>
                     <td className="px-6 py-5 text-sm text-gray-600">
-                      {client.cnpj.replace(/\D/g, "").length === 11
-                        ? formatCpf(client.cnpj)
+                      {client.tipo === "PF"
+                        ? formatCpf(client.cpf)
                         : formatCnpj(client.cnpj)}
                     </td>
                     <td className="px-6 py-5 text-sm text-gray-600">
-                      {client.inscricao}
+                      {client.tipo === "PJ" ? client.inscricao : "-"}
                     </td>
                     <td className="px-6 py-5 text-sm text-gray-600">
                       {client.email}
                     </td>
                     <td className="px-6 py-5 text-sm font-bold text-gray-800">
-                      {formatPhone(client.numero)}
+                      {formatPhone(client.telefone)}
                     </td>
                     <td className="px-6 py-5 text-sm text-center">
                       <div className="flex items-center justify-center gap-4 opacity-70 group-hover:opacity-100 transition-opacity">
@@ -178,7 +195,7 @@ export default function Clients() {
                         <button
                           onClick={(e) => {
                             e.stopPropagation();
-                            removeClient(client.id);
+                            setDeleting(client);
                           }}
                           className="text-[#FF5A1F] hover:text-[#E64D17] transition-colors p-1.5 hover:bg-[#FF5A1F]/10 rounded-lg"
                         >
@@ -258,6 +275,14 @@ export default function Clients() {
         onClose={() => setEditing(null)}
         onSave={saveEdit}
         clientToEdit={editing}
+      />
+
+      {/* Confirmar exclusão */}
+      <DeleteConfirmModal
+        isOpen={!!deleting}
+        onClose={() => setDeleting(null)}
+        onConfirm={() => deleting && removeClient(deleting.id)}
+        client={deleting}
       />
     </div>
   );

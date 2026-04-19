@@ -1,17 +1,18 @@
 "use client";
 
 import { X, CheckCircle2, MapPin, Mail, Phone } from "lucide-react";
+import { useEffect } from "react";
 import { Button } from "./ui/button";
 import { Input } from "./ui/Input";
 import { Select } from "./ui/Select";
 import { formatCnpj, cleanCnpj, formatPhone, cleanPhone, formatCpf, cleanCpf } from "@/lib/validators";
 import { useClientForm } from "@/hooks/useClientForm";
-import type { Cliente, TipoCliente } from "@/types/cliente";
+import type { Cliente, TipoCliente, ClienteFormData } from "@/types/cliente";
 
 interface Props {
   isOpen: boolean;
   onClose: () => void;
-  onSave: (data: any) => void;
+  onSave: (data: ClienteFormData & { id?: number }) => void;
   clientToEdit?: Cliente | null;
 }
 
@@ -34,6 +35,17 @@ export function AddClientModal({ isOpen, onClose, onSave, clientToEdit }: Props)
     onSave,
     onClose,
   });
+  
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "unset";
+    }
+    return () => {
+      document.body.style.overflow = "unset";
+    };
+  }, [isOpen]);
 
   if (!isOpen) return null;
 

@@ -5,9 +5,9 @@ import {
   extractNumbers,
   validateCpf,
 } from "@/lib/validators";
-import type { Cliente, TipoCliente } from "@/types/cliente";
+import type { Cliente, TipoCliente, ClienteFormData } from "@/types/cliente";
 
-interface FormState {
+type FormState = {
   nome: string;
   cnpj: string;
   cpf: string;
@@ -16,7 +16,7 @@ interface FormState {
   email: string;
   telefone: string;
   observacao: string;
-}
+};
 
 const EMPTY_FORM: FormState = {
   nome: "",
@@ -29,15 +29,10 @@ const EMPTY_FORM: FormState = {
   observacao: "",
 };
 
-function detectType(cnpj?: string): TipoCliente {
-  if (!cnpj) return "PJ";
-  return extractNumbers(cnpj).length === 11 ? "PF" : "PJ";
-}
-
 interface UseClientFormProps {
   isOpen: boolean;
   clientToEdit?: Cliente | null;
-  onSave: (data: any) => void;
+  onSave: (data: ClienteFormData & { id?: number }) => void;
   onClose: () => void;
 }
 
@@ -49,9 +44,7 @@ export function useClientForm({
 }: UseClientFormProps) {
   const isEditing = !!clientToEdit;
 
-  const [tipo, setTipo] = useState<TipoCliente>(() =>
-    detectType(clientToEdit?.cnpj),
-  );
+  const [tipo, setTipo] = useState<TipoCliente>("PJ");
   const [form, setForm] = useState<FormState>(EMPTY_FORM);
   const [errors, setErrors] = useState<Record<string, string>>({});
 
@@ -61,16 +54,15 @@ export function useClientForm({
       document.body.style.overflow = "hidden";
 
       if (clientToEdit) {
-        const t = detectType(clientToEdit.cnpj);
-        setTipo(t);
+        setTipo(clientToEdit.tipo);
         setForm({
           nome: clientToEdit.nome ?? "",
-          cnpj: t === "PJ" ? extractNumbers(clientToEdit.cnpj) : "",
-          cpf: t === "PF" ? extractNumbers(clientToEdit.cnpj) : "",
-          inscricao: clientToEdit.inscricao ?? "",
+          cnpj: clientToEdit.tipo === "PJ" ? extractNumbers(clientToEdit.cnpj) : "",
+          cpf: clientToEdit.tipo === "PF" ? extractNumbers(clientToEdit.cpf) : "",
+          inscricao: (clientToEdit.tipo === "PJ" ? clientToEdit.inscricao : "") ?? "",
           uf: clientToEdit.uf ?? "SP",
           email: clientToEdit.email ?? "",
-          telefone: extractNumbers(clientToEdit.numero ?? ""),
+          telefone: extractNumbers(clientToEdit.telefone ?? ""),
           observacao: clientToEdit.observacao ?? "",
         });
       } else {
@@ -84,7 +76,7 @@ export function useClientForm({
     return () => {
       document.body.style.overflow = "unset";
     };
-  }, [isOpen]);
+  }, [isOpen, clientToEdit]);
 
   const validate = () => {
     const next: Record<string, string> = {};
@@ -120,12 +112,36 @@ export function useClientForm({
     e.preventDefault();
     if (!validate()) return;
 
-    onSave({
-      ...form,
-      cnpj: tipo === "PJ" ? form.cnpj : form.cpf,
-      type: tipo,
-      ...(clientToEdit?.id !== undefined && { id: clientToEdit.id }),
-    });
+    let submitData: ClienteFormData & { id?: number };
+
+    if (tipo === "PF") {
+      submitData = {
+        tipo: "PF",
+        nome: form.nome,
+        cpf: form.cpf,
+        email: form.email,
+        telefone: form.telefone,
+        observacao: form.observacao,
+        uf: form.uf,
+      };
+    } else {
+      submitData = {
+        tipo: "PJ",
+        nome: form.nome,
+        cnpj: form.cnpj,
+        inscricao: form.inscricao,
+        email: form.email,
+        telefone: form.telefone,
+        observacao: form.observacao,
+        uf: form.uf,
+      };
+    }
+
+    if (clientToEdit?.id !== undefined) {
+      submitData.id = clientToEdit.id;
+    }
+
+    onSave(submitData);
     onClose();
   };
 

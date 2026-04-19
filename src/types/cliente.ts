@@ -1,32 +1,53 @@
-export interface Cliente {
-  id: number;
-  nome: string;
-  cnpj: string;
-  inscricao: string;
-  email: string;
-  numero: string;
-  observacao?: string;
-  uf?: string;
-  type?: "PJ" | "PF";
-}
-
 export type TipoCliente = "PJ" | "PF";
 
-export interface ClienteFormData {
-  nome: string;
-  cnpj: string;
-  cpf: string;
-  inscricao: string;
-  uf: string;
-  email: string;
-  telefone: string;
-  observacao: string;
-}
+export type Cliente =
+  | {
+      id: number;
+      tipo: "PF";
+      nome: string;
+      cpf: string;
+      email: string;
+      telefone: string;
+      observacao?: string;
+      uf?: string;
+    }
+  | {
+      id: number;
+      tipo: "PJ";
+      nome: string;
+      cnpj: string;
+      inscricao?: string;
+      email: string;
+      telefone: string;
+      observacao?: string;
+      uf?: string;
+    };
+
+export type ClienteFormData = 
+  | {
+      tipo: "PF";
+      nome: string;
+      cpf: string;
+      email: string;
+      telefone: string;
+      observacao?: string;
+      uf?: string;
+    }
+  | {
+      tipo: "PJ";
+      nome: string;
+      cnpj: string;
+      inscricao?: string;
+      email: string;
+      telefone: string;
+      observacao?: string;
+      uf?: string;
+    };
 
 export interface ClienteModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSave: (data: any) => void;
+  onSave: (data: ClienteFormData & { id?: number }) => void;
   clientToEdit?: Cliente | null;
 }
 
