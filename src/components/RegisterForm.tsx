@@ -116,7 +116,7 @@ export default function RegisterForm() {
     <>
       <div className="w-full max-w-sm mx-auto flex flex-col min-h-[600px] px-4 sm:px-0">
         <div className="flex items-center justify-center gap-2 mb-8">
-          <Image src="/igniscore.png" alt="IgnisCore Logo" width={47} height={64} className="object-contain" />
+          <Image src="/igniscore.png" alt="IgnisCore Logo" width={38} height={52} className="object-contain" />
           <span className="text-[35px] font-bold text-[#FF5A1F]" style={{ fontFamily: "var(--font-space-grotesk)" }}>
             IgnisCore
           </span>

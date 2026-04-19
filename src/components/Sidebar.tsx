@@ -8,8 +8,7 @@ import {
   CalendarClock,
   Settings,
   LayoutDashboard,
-  PanelLeftClose,
-  PanelLeftOpen,
+  ChevronLeft,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -20,7 +19,8 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { Button } from "@/components/ui/button";
-import { useState, useEffect } from "react";  
+import { useState, useEffect } from "react";
+import Image from "next/image";
 
 interface SidebarProps {
   isExpanded: boolean;
@@ -64,18 +64,28 @@ export default function Sidebar({ isExpanded, onToggle }: SidebarProps) {
       }`}
     >
       <div className="flex flex-row md:flex-col items-center w-full h-full">
-        <div className="hidden md:flex flex-col items-center py-6 w-full">
-          <div className="flex items-center w-full px-2">
-            <div className="w-16 flex flex-none items-center justify-center">
-              <Button
-                variant="ghost"
-                size={"icon"}
-                onClick={onToggle}
-                className="text-gray-400 hover:text-[#FF5A1F] hover:bg-[#FF5A1F]/10 transition-colors"
-              >
-                {isExpanded ? <PanelLeftClose size={26} /> : <PanelLeftOpen size={26} />}
-              </Button>
+        <div className="hidden md:flex flex-col items-center py-8 w-full relative">
+          {/* Novo Botão Toggle Flutuante */}
+          <button
+            onClick={onToggle}
+            className="absolute -right-3 top-9 w-6 h-6 bg-white border border-gray-100 rounded-full flex items-center justify-center shadow-sm text-gray-400 hover:text-[#FF5A1F] hover:border-[#FF5A1F]/20 transition-all duration-300 z-50 group hover:scale-110 active:scale-95"
+          >
+            <ChevronLeft 
+              size={14} 
+              className={`transition-transform duration-500 ${!isExpanded ? "rotate-180" : ""}`}
+              strokeWidth={3}
+            />
+          </button>
+
+          <div className="flex items-center w-full px-4 overflow-hidden">
+            <div className="w-12 flex flex-none items-center justify-center">
+              <Image src="/igniscore.png" alt="IgnisCore Logo" width={28} height={38} className="object-contain" />
             </div>
+            <span className={`ml-3 font-bold text-xl text-[#FF5A1F] whitespace-nowrap transition-all duration-300 ${
+              isExpanded ? "opacity-100 visible" : "opacity-0 invisible w-0"
+            }`} style={{ fontFamily: "var(--font-space-grotesk)" }}>
+              IgnisCore
+            </span>
           </div>
         </div>
 

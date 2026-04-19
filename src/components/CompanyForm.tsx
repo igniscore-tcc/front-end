@@ -107,8 +107,8 @@ export default function CompanyForm() {
         <Image
           src="/igniscore.png"
           alt="IgnisCore Logo"
-          width={47}
-          height={64}
+          width={38}
+          height={52}
           className="object-contain"
         />
         <span
