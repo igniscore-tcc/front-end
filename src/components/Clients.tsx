@@ -21,36 +21,46 @@ import { useRouter } from "next/navigation";
 export default function Clients() {
   const router = useRouter();
   const {
-    pageData,
-    total,
-    totalPages,
-    from,
-    to,
-    search,
-    setSearch,
-    sort,
-    handleSort,
-    page,
-    setPage,
-    perPage,
-    setPerPage,
-    showModal,
-    setShowModal,
-    addClient,
-    editing,
-    setEditing,
-    saveEdit,
-    removeClient,
-    deleting,
-    setDeleting,
-    filterTipo,
-    setFilterTipo,
-  } = useClients();
+  pageData,
+  loading,
+  total,
+  totalPages,
+  hasNextPage,
+  from,
+  to,
+  search,
+  setSearch,
+  sort,
+  handleSort,
+  page,
+  setPage,
+  perPage,
+  setPerPage,
+  showModal,
+  setShowModal,
+  addClient,
+  editing,
+  setEditing,
+  saveEdit,
+  removeClient,
+  deleting,
+  setDeleting,
+  filterTipo,
+  setFilterTipo,
+} = useClients();
 
   const sortIcon = (key: "id" | "nome") => {
     if (sort.key !== key) return <ArrowUpDown size={14} />;
     return sort.dir === "asc" ? <ArrowUp size={14} /> : <ArrowDown size={14} />;
   };
+
+  if (loading) {
+  return (
+    <div className="flex items-center justify-center min-h-screen">
+      <span className="text-gray-500">Carregando clientes...</span>
+    </div>
+  );
+}
 
   return (
     <div className="p-8 min-h-screen bg-white font-sans text-base">
@@ -253,7 +263,7 @@ export default function Clients() {
             </button>
             <button
               onClick={() => setPage((prev) => Math.min(prev + 1, totalPages))}
-              disabled={page === totalPages || totalPages === 0}
+              disabled={!hasNextPage}
               className="p-1.5 rounded-lg bg-[#FF5A1F] hover:bg-[#E64D17] text-white transition-colors disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer"
             >
               <ChevronRight size={18} />
