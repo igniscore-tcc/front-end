@@ -2,8 +2,8 @@
  * Extrai apenas os números de um texto.
  * Remove qualquer caractere que não seja número (útil para limpar máscaras antes de enviar para o backend).
  */
-export function extractNumbers(value: string): string {
-  return value.replace(/\D/g, "");
+export function extractNumbers(value?: string | null): string {
+  return (value ?? "").replace(/\D/g, "");
 }
 
 const CNPJ_MAX_LEN = 14;
@@ -72,7 +72,7 @@ export function formatPhone(digits: string): string {
 export function validateCnpj(raw: string): boolean {
   const cnpj = extractNumbers(raw);
   if (cnpj.length !== 14) return false;
-  
+
   // Bloqueia combinações falsas clássicas que passam no módulo matemático (ex: 11.111.111/1111-11)
   if (/^(\d)\1{13}$/.test(cnpj)) return false;
 
@@ -100,8 +100,8 @@ export function validateCnpj(raw: string): boolean {
   return result === Number(verifier.charAt(1));
 }
 
-/** 
- * Avalia se o telefone digitado possui o comprimento brasileiro válido (10 para fixos ou 11 para celulares). 
+/**
+ * Avalia se o telefone digitado possui o comprimento brasileiro válido (10 para fixos ou 11 para celulares).
  */
 export function validatePhoneLength(raw: string): boolean {
   const d = extractNumbers(raw);
@@ -162,4 +162,3 @@ export function validateCpf(raw: string): boolean {
 
   return true;
 }
-
