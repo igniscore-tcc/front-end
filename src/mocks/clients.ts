@@ -1,3 +1,4 @@
+/*
 import type { Cliente } from "@/types/cliente";
 
 export const mockClients: Cliente[] = [
@@ -106,3 +107,4 @@ export const mockClients: Cliente[] = [
     telefone: "11 92222-3333",
   },
 ];
+*/

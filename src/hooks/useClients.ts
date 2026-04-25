@@ -1,6 +1,6 @@
 import { useState, useMemo, useEffect, useCallback } from "react";
 import type { Cliente, SortKey, ClienteFormData } from "@/types/cliente";
-import { mockClients } from "@/mocks/clients";
+//import { mockClients } from "@/mocks/clients";
 import { INTERNAL_API, getAuthHeaders } from "@/lib/api";
 
 export function useClients() {
