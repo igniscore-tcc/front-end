@@ -15,8 +15,11 @@ import {
   cleanPhone,
   cleanCnpj,
 } from "@/lib/validators";
+import { useCreateCompany } from "@/hooks/useCompany";
 
 export default function CompanyForm() {
+  const { createCompany, loading } = useCreateCompany();
+
   const [formData, setFormData] = useState<CompanyFormData>({
     nome: "",
     cnpj: "",
@@ -86,19 +89,53 @@ export default function CompanyForm() {
 
   const calculateProgress = () => {
     let filledFields = 0;
-    
+
     if (formData.nome.trim().length >= 3) filledFields++;
-    if (extractNumbers(formData.cnpj).length === 14 && validateCnpj(formData.cnpj)) filledFields++;
-    if (formData.email.includes("@") && formData.email.includes(".")) filledFields++;
-    if (extractNumbers(formData.telefone).length >= 10 && validatePhoneLength(formData.telefone)) filledFields++;
-    
-    return 50 + (filledFields * 12.5);
+    if (
+      extractNumbers(formData.cnpj).length === 14 &&
+      validateCnpj(formData.cnpj)
+    )
+      filledFields++;
+    if (formData.email.includes("@") && formData.email.includes("."))
+      filledFields++;
+    if (
+      extractNumbers(formData.telefone).length >= 10 &&
+      validatePhoneLength(formData.telefone)
+    )
+      filledFields++;
+
+    return 50 + filledFields * 12.5;
   };
   const progressPercentage = calculateProgress();
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+
     if (!validate()) return;
+
+    try {
+      const company = await createCompany({
+        name: formData.nome,
+        cnpj: formData.cnpj,
+        email: formData.email,
+        phone: formData.telefone,
+      });
+
+      alert(`Empresa ${company.name} cadastrada com sucesso.`);
+
+      setFormData({
+        nome: "",
+        cnpj: "",
+        email: "",
+        telefone: "",
+      });
+
+      window.location.href = "/dashboard";
+    } catch (error) {
+      alert(
+        error instanceof Error ? error.message : "Erro ao cadastrar empresa.",
+      );
+    }
   }
 
   return (
@@ -125,7 +162,7 @@ export default function CompanyForm() {
           Cadastrar sua empresa
         </h2>
         <div className="flex w-full h-1.5 bg-[#F0F0F0] rounded-full overflow-hidden">
-          <div 
+          <div
             className="bg-[#FF5A1F] h-full rounded-full transition-all duration-500 ease-out"
             style={{ width: `${progressPercentage}%` }}
           ></div>
@@ -197,15 +234,19 @@ export default function CompanyForm() {
 
         <Button
           type="submit"
-          className="w-full mt-2 h-12 bg-[#FF5A1F] text-white rounded-lg font-semibold hover:bg-[#FF5A1F]/80 transition-all duration-200 cursor-pointer"
+          disabled={loading}
+          className="w-full mt-2 h-12 bg-[#FF5A1F] text-white rounded-lg font-semibold hover:bg-[#FF5A1F]/80 transition-all duration-200 cursor-pointer disabled:opacity-50"
         >
-          Cadastrar
+          {loading ? "Cadastrando..." : "Cadastrar"}
         </Button>
 
         <div className="mt-4 text-center">
           <p className="text-xs font-medium text-[#4A4A4A]">
             Você é funcionário?{" "}
-            <Link href="/invite" className="hover:text-[#FF5A1F] hover:underline transition-colors">
+            <Link
+              href="/invite"
+              className="hover:text-[#FF5A1F] hover:underline transition-colors"
+            >
               Enviar convite
             </Link>
           </p>
