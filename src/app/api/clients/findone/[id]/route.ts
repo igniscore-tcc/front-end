@@ -2,7 +2,13 @@ import { NextRequest, NextResponse } from "next/server";
 
 const API_URL = process.env.API_URL!;
 
-export async function GET(req: NextRequest) {
+interface Params {
+  params: Promise<{
+    id: string;
+  }>;
+}
+
+export async function GET(req: NextRequest, { params }: Params) {
   const authorization = req.headers.get("authorization");
 
   if (!authorization) {
@@ -12,22 +18,33 @@ export async function GET(req: NextRequest) {
     );
   }
 
-  const { searchParams } = new URL(req.url);
+  const { id } = await params;
 
-  const page = Number(searchParams.get("page") ?? "0");
-  const size = Number(searchParams.get("size") ?? "10");
+  if (!id) {
+    return NextResponse.json(
+      { error: "ID do cliente não informado." },
+      { status: 400 },
+    );
+  }
 
   const query = `
-    query Clients($page: Int!, $size: Int!) {
-      clients(page: $page, size: $size) {
+    query Client($id: ID!) {
+      client(id: $id) {
         id
         number
         name
         cnpj
+        cpf
         email
         phone
         ie
-        cpf
+        ufIe
+        obs
+        company {
+          id
+          name
+          cnpj
+        }
       }
     }
   `;
@@ -42,8 +59,7 @@ export async function GET(req: NextRequest) {
     body: JSON.stringify({
       query,
       variables: {
-        page: page,
-        size,
+        id,
       },
     }),
   });
@@ -53,7 +69,7 @@ export async function GET(req: NextRequest) {
   if (!response.ok || result.errors) {
     return NextResponse.json(
       {
-        error: result.errors?.[0]?.message || "Erro ao buscar clientes",
+        error: result.errors?.[0]?.message || "Erro ao buscar cliente",
       },
       {
         status: response.status || 400,
@@ -61,5 +77,5 @@ export async function GET(req: NextRequest) {
     );
   }
 
-  return NextResponse.json(result.data.clients);
+  return NextResponse.json(result.data.client);
 }

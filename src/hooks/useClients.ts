@@ -226,6 +226,44 @@ export function useClients() {
     }
   };
 
+  const getClientById = useCallback(async (id: number): Promise<Cliente> => {
+    const response = await fetch(`${INTERNAL_API}/clients/findone/${id}`, {
+      method: "GET",
+      headers: getAuthHeaders(),
+    });
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      throw new Error(result.error || "Erro ao buscar cliente");
+    }
+
+    return result.cpf
+      ? {
+          id: Number(result.id),
+          number: result.number,
+          tipo: "PF",
+          nome: result.name,
+          cpf: result.cpf,
+          email: result.email,
+          telefone: result.phone || "",
+          observacao: result.obs || "",
+          uf: result.ufIe || "SP",
+        }
+      : {
+          id: Number(result.id),
+          number: result.number,
+          tipo: "PJ",
+          nome: result.name,
+          cnpj: result.cnpj,
+          inscricao: result.ie || "",
+          email: result.email,
+          telefone: result.phone || "",
+          observacao: result.obs || "",
+          uf: result.ufIe || "SP",
+        };
+  }, []);
+
   const removeClient = (id: number) => {
     setClients((prev) => prev.filter((c) => c.id !== id));
     setDeleting(null);
@@ -258,5 +296,6 @@ export function useClients() {
     setDeleting,
     filterTipo,
     setFilterTipo,
+    getClientById,
   };
 }
