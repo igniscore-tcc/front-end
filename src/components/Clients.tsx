@@ -172,7 +172,7 @@ export default function Clients() {
                     onClick={() => router.push(`/clientes/${client.id}`)}
                   >
                     <td className="px-6 py-5 text-sm font-medium text-gray-500">
-                      {client.id}
+                      {client.number}
                     </td>
                     <td className="px-6 py-5 text-sm font-bold text-gray-800">
                       {client.nome}

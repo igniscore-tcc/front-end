@@ -1,6 +1,6 @@
 import { useState, useMemo, useEffect, useCallback } from "react";
 import type { Cliente, SortKey, ClienteFormData } from "@/types/cliente";
-import { mockClients } from "@/mocks/clients";
+//import { mockClients } from "@/mocks/clients";
 import { INTERNAL_API, getAuthHeaders } from "@/lib/api";
 
 export function useClients() {
@@ -40,6 +40,7 @@ export function useClients() {
 
       const formattedClients: Cliente[] = data.map((client: any) => ({
         id: Number(client.id),
+        number: client.number,
         nome: client.name,
         tipo: client.cpf ? "PF" : "PJ",
         email: client.email,
@@ -81,16 +82,18 @@ export function useClients() {
     const term = search.toLowerCase();
 
     let result = clients;
+
     if (filterTipo !== "ALL") {
       result = result.filter((c) => c.tipo === filterTipo);
     }
 
     return result.filter((c) => {
       const doc = c.tipo === "PF" ? c.cpf : c.cnpj;
+
       return (
-        c.nome.toLowerCase().includes(term) ||
-        c.email.toLowerCase().includes(term) ||
-        doc.toLowerCase().includes(term)
+        (c.nome || "").toLowerCase().includes(term) ||
+        (c.email || "").toLowerCase().includes(term) ||
+        (doc || "").toLowerCase().includes(term)
       );
     });
   }, [search, clients, filterTipo]);
@@ -149,7 +152,8 @@ export function useClients() {
       console.log("RAW DATA:", data);
 
       const newClient: Cliente = {
-        id: Number(result.number),
+        id: Number(result.id),
+        number: result.number,
         nome: result.name,
         tipo: result.cpf ? "PF" : "PJ",
         email: result.email,
@@ -199,6 +203,7 @@ export function useClients() {
 
       const updatedClient: Cliente = {
         id: Number(result.id),
+        number: result.number,
         nome: result.name,
         tipo: result.cpf ? "PF" : "PJ",
         email: result.email,

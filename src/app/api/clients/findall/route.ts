@@ -29,13 +29,7 @@ export async function GET(req: NextRequest) {
         email
         phone
         ie
-        ufIe
-        obs
         cpf
-        company {
-          id
-          name
-        }
       }
     }
   `;

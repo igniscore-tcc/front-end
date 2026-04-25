@@ -3,6 +3,7 @@ export type TipoCliente = "PJ" | "PF";
 export type Cliente =
   | {
       id: number;
+      number: number;
       tipo: "PF";
       nome: string;
       cpf: string;
@@ -13,6 +14,7 @@ export type Cliente =
     }
   | {
       id: number;
+      number: number;
       tipo: "PJ";
       nome: string;
       cnpj: string;
