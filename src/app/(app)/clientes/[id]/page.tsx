@@ -1,13 +1,56 @@
 "use client";
 
 import { useParams, useRouter } from "next/navigation";
-import { ArrowLeft, User, Building, Phone, Mail, Pencil, Receipt } from "lucide-react";
+import {
+  ArrowLeft,
+  User,
+  Building,
+  Phone,
+  Mail,
+  Pencil,
+  Receipt,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useClients } from "@/hooks/useClients";
+import { useEffect, useState } from "react";
+import { Cliente } from "@/types/cliente";
+import { AddClientModal } from "@/components/AddClientModal";
 
 export default function ClientDetails() {
   const params = useParams();
   const router = useRouter();
   const id = params.id;
+  const { getClientById, editing, setEditing, saveEdit } = useClients();
+
+  const [client, setClient] = useState<Cliente | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function loadClient() {
+      if (!id) return;
+
+      try {
+        setLoading(true);
+        const data = await getClientById(Number(id));
+        setClient(data);
+      } catch (error) {
+        console.error("Erro ao carregar cliente:", error);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    loadClient();
+  }, [id, getClientById]);
+
+  const handleSaveEdit = async (data: any) => {
+    await saveEdit(data);
+
+    if (data.id) {
+      const updated = await getClientById(data.id);
+      setClient(updated);
+    }
+  };
 
   return (
     <div className="p-8 min-h-screen bg-white font-sans text-base">
@@ -32,32 +75,56 @@ export default function ClientDetails() {
                 <User size={32} />
               </div>
               <div>
-                <h2 className="text-2xl font-bold text-gray-800">Carregando Cliente...</h2>
-                <p className="text-gray-500">ID: {id}</p>
+                <h2 className="text-2xl font-bold text-gray-800">
+                  {loading ? "Carregando..." : client?.nome}
+                </h2>
+
+                <p className="text-gray-500">#{client?.number ?? id}</p>
               </div>
             </div>
-            
-            <Button className="bg-[#FF5A1F] hover:bg-[#E64D17] text-white rounded-full px-6 py-2 flex items-center gap-2 transition-all cursor-pointer">
+
+            <Button
+              onClick={() => client && setEditing(client)}
+              className="bg-[#FF5A1F] hover:bg-[#E64D17] text-white rounded-full px-6 py-2 flex items-center gap-2 transition-all cursor-pointer"
+            >
               <Pencil size={16} />
               <span className="font-bold">Editar</span>
             </Button>
           </div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6 pt-2">
             <div className="space-y-2">
               <div className="flex items-center gap-2 text-gray-400">
                 <Receipt size={16} />
-                <span className="text-sm font-medium">CNPJ/CPF</span>
+                <span className="text-sm font-medium">
+                  {client?.tipo === "PF" ? "CPF" : "CNPJ"}
+                </span>
               </div>
-              <div className="h-6 bg-gray-100 rounded w-3/4 animate-pulse"></div>
+
+              {loading ? (
+                <div className="h-6 bg-gray-100 rounded w-3/4 animate-pulse" />
+              ) : (
+                <p className="font-semibold text-gray-800">
+                  {client?.tipo === "PF" ? client.cpf : client?.cnpj}
+                </p>
+              )}
             </div>
-            
+
             <div className="space-y-2">
               <div className="flex items-center gap-2 text-gray-400">
                 <Building size={16} />
                 <span className="text-sm font-medium">Inscrição Estadual</span>
               </div>
-              <div className="h-6 bg-gray-100 rounded w-2/3 animate-pulse"></div>
+
+              {loading ? (
+                <div className="h-6 bg-gray-100 rounded w-2/3 animate-pulse" />
+              ) : (
+                <p className="font-semibold text-gray-800">
+                  {client?.tipo === "PJ"
+                    ? client.inscricao || "Não informada"
+                    : "Não se aplica"}
+                </p>
+              )}
             </div>
 
             <div className="space-y-2">
@@ -65,7 +132,12 @@ export default function ClientDetails() {
                 <Mail size={16} />
                 <span className="text-sm font-medium">E-mail</span>
               </div>
-              <div className="h-6 bg-gray-100 rounded w-full animate-pulse"></div>
+
+              {loading ? (
+                <div className="h-6 bg-gray-100 rounded w-full animate-pulse" />
+              ) : (
+                <p className="font-semibold text-gray-800">{client?.email}</p>
+              )}
             </div>
 
             <div className="space-y-2">
@@ -73,7 +145,14 @@ export default function ClientDetails() {
                 <Phone size={16} />
                 <span className="text-sm font-medium">Telefone</span>
               </div>
-              <div className="h-6 bg-gray-100 rounded w-2/3 animate-pulse"></div>
+
+              {loading ? (
+                <div className="h-6 bg-gray-100 rounded w-2/3 animate-pulse" />
+              ) : (
+                <p className="font-semibold text-gray-800">
+                  {client?.telefone}
+                </p>
+              )}
             </div>
           </div>
         </div>
@@ -95,20 +174,38 @@ export default function ClientDetails() {
             <table className="w-full text-left border-collapse">
               <thead>
                 <tr className="bg-gray-50/80">
-                  <th className="px-6 py-4 text-sm font-bold text-gray-600 first:rounded-l-xl">ID</th>
-                  <th className="px-6 py-4 text-sm font-bold text-gray-600">Total</th>
-                  <th className="px-6 py-4 text-sm font-bold text-gray-600">Desconto</th>
-                  <th className="px-6 py-4 text-sm font-bold text-gray-600">Data</th>
-                  <th className="px-6 py-4 text-sm font-bold text-gray-600">Tipo</th>
-                  <th className="px-6 py-4 text-sm font-bold text-gray-600 last:rounded-r-xl">Status</th>
+                  <th className="px-6 py-4 text-sm font-bold text-gray-600 first:rounded-l-xl">
+                    ID
+                  </th>
+                  <th className="px-6 py-4 text-sm font-bold text-gray-600">
+                    Total
+                  </th>
+                  <th className="px-6 py-4 text-sm font-bold text-gray-600">
+                    Desconto
+                  </th>
+                  <th className="px-6 py-4 text-sm font-bold text-gray-600">
+                    Data
+                  </th>
+                  <th className="px-6 py-4 text-sm font-bold text-gray-600">
+                    Tipo
+                  </th>
+                  <th className="px-6 py-4 text-sm font-bold text-gray-600 last:rounded-r-xl">
+                    Status
+                  </th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-50">
                 <tr className="group hover:bg-gray-50/50 transition-colors">
-                  <td className="px-6 py-5 text-sm font-medium text-gray-500">1</td>
-                  <td className="px-6 py-5 text-sm font-bold text-gray-800">R$ 3.600,99</td>
+                  <td className="px-6 py-5 text-sm font-medium text-gray-500">
+                    1
+                  </td>
+                  <td className="px-6 py-5 text-sm font-bold text-gray-800">
+                    R$ 3.600,99
+                  </td>
                   <td className="px-6 py-5 text-sm text-gray-600">5%</td>
-                  <td className="px-6 py-5 text-sm text-gray-600">05/04/2026</td>
+                  <td className="px-6 py-5 text-sm text-gray-600">
+                    05/04/2026
+                  </td>
                   <td className="px-6 py-5 text-sm text-gray-600">Cartão</td>
                   <td className="px-6 py-5 text-sm">
                     <span className="inline-flex items-center justify-center px-3 py-1 rounded-full text-xs font-bold bg-[#E8F5E9] text-[#2E7D32]">
@@ -118,10 +215,16 @@ export default function ClientDetails() {
                 </tr>
 
                 <tr className="group hover:bg-gray-50/50 transition-colors">
-                  <td className="px-6 py-5 text-sm font-medium text-gray-500">2</td>
-                  <td className="px-6 py-5 text-sm font-bold text-gray-800">R$ 3.600,99</td>
+                  <td className="px-6 py-5 text-sm font-medium text-gray-500">
+                    2
+                  </td>
+                  <td className="px-6 py-5 text-sm font-bold text-gray-800">
+                    R$ 3.600,99
+                  </td>
                   <td className="px-6 py-5 text-sm text-gray-600">5%</td>
-                  <td className="px-6 py-5 text-sm text-gray-600">05/04/2026</td>
+                  <td className="px-6 py-5 text-sm text-gray-600">
+                    05/04/2026
+                  </td>
                   <td className="px-6 py-5 text-sm text-gray-600">PIX</td>
                   <td className="px-6 py-5 text-sm">
                     <span className="inline-flex items-center justify-center px-3 py-1 rounded-full text-xs font-bold bg-[#FFF3E0] text-[#E65100]">
@@ -131,10 +234,16 @@ export default function ClientDetails() {
                 </tr>
 
                 <tr className="group hover:bg-gray-50/50 transition-colors">
-                  <td className="px-6 py-5 text-sm font-medium text-gray-500">3</td>
-                  <td className="px-6 py-5 text-sm font-bold text-gray-800">R$ 3.600,99</td>
+                  <td className="px-6 py-5 text-sm font-medium text-gray-500">
+                    3
+                  </td>
+                  <td className="px-6 py-5 text-sm font-bold text-gray-800">
+                    R$ 3.600,99
+                  </td>
                   <td className="px-6 py-5 text-sm text-gray-600">5%</td>
-                  <td className="px-6 py-5 text-sm text-gray-600">05/04/2026</td>
+                  <td className="px-6 py-5 text-sm text-gray-600">
+                    05/04/2026
+                  </td>
                   <td className="px-6 py-5 text-sm text-gray-600">PIX</td>
                   <td className="px-6 py-5 text-sm">
                     <span className="inline-flex items-center justify-center px-3 py-1 rounded-full text-xs font-bold bg-[#FFEBEE] text-[#C62828]">
@@ -147,6 +256,14 @@ export default function ClientDetails() {
           </div>
         </div>
       </div>
+
+      {/* Editar cliente */}
+      <AddClientModal
+        isOpen={!!editing}
+        onClose={() => setEditing(null)}
+        onSave={handleSaveEdit}
+        clientToEdit={editing}
+      />
     </div>
   );
 }
