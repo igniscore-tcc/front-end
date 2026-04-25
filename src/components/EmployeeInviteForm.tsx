@@ -6,15 +6,17 @@ import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { formatCnpj, validateCnpj, extractNumbers } from "@/lib/validators";
+import { useUpdateUserCompany } from "@/hooks/useInvite";
 
 export default function EmployeeInviteForm() {
+  const { updateUserCompany, loading } = useUpdateUserCompany();
   const [cnpj, setCnpj] = useState("");
   const [error, setError] = useState("");
 
   const validate = () => {
     setError("");
     let isValid = true;
-    
+
     const plainCnpj = extractNumbers(cnpj);
 
     if (!plainCnpj) {
@@ -28,9 +30,21 @@ export default function EmployeeInviteForm() {
     return isValid;
   };
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!validate()) return;
+
+    try {
+      const plainCnpj = extractNumbers(cnpj);
+
+      const result = await updateUserCompany(plainCnpj);
+
+      alert(`Empresa ${result.company.name} vinculada com sucesso.`);
+
+      window.location.href = "/dashboard";
+    } catch (err: any) {
+      setError(err.message || "Erro ao enviar convite.");
+    }
   }
 
   return (
@@ -62,7 +76,11 @@ export default function EmployeeInviteForm() {
         </p>
       </div>
 
-      <form className="w-full flex flex-col gap-4" onSubmit={handleSubmit} noValidate>
+      <form
+        className="w-full flex flex-col gap-4"
+        onSubmit={handleSubmit}
+        noValidate
+      >
         <Input
           placeholder="CNPJ"
           inputMode="numeric"
@@ -78,14 +96,15 @@ export default function EmployeeInviteForm() {
 
         <Button
           type="submit"
-          className="w-full mt-2 h-12 bg-[#FF5A1F] text-white rounded-lg font-semibold hover:bg-[#FF5A1F]/80 transition-all duration-200 cursor-pointer"
+          disabled={loading}
+          className="w-full mt-2 h-12 bg-[#FF5A1F] text-white rounded-lg font-semibold hover:bg-[#FF5A1F]/80 transition-all duration-200 cursor-pointer disabled:opacity-60"
         >
-          Enviar convite
+          {loading ? "Enviando..." : "Enviar convite"}
         </Button>
 
         <div className="mt-4 text-center">
-          <Link 
-            href="/register" 
+          <Link
+            href="/register"
             className="text-xs font-medium text-[#4A4A4A] hover:text-[#FF5A1F] hover:underline transition-colors"
           >
             Voltar
