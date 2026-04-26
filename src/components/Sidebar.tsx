@@ -103,7 +103,7 @@ export default function Sidebar({ isExpanded, onToggle }: SidebarProps) {
                     </div>
                     <span className={`ml-2 font-bold whitespace-nowrap transition-all duration-300 ${
                       isExpanded ? "opacity-100 visible" : "opacity-0 invisible w-0"
-                    } text-base font-sans`}>
+                    } text-base`}>
                       {item.label}
                     </span>
                   </Link>
@@ -138,7 +138,7 @@ export default function Sidebar({ isExpanded, onToggle }: SidebarProps) {
                     </div>
                     <span className={`ml-2 font-bold whitespace-nowrap transition-all duration-300 ${
                       isExpanded ? "opacity-100 visible" : "opacity-0 invisible w-0"
-                    } text-base font-sans`}>
+                    } text-base`}>
                       Configurações
                     </span>
                   </Link>

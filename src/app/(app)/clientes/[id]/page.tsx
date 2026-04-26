@@ -53,7 +53,7 @@ export default function ClientDetails() {
   };
 
   return (
-    <div className="p-8 min-h-screen bg-white font-sans text-base">
+    <div className="p-8 min-h-screen bg-white text-base">
       <header className="flex items-center gap-4 mb-8">
         <Button
           onClick={() => router.back()}
