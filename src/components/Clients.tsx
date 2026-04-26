@@ -64,12 +64,12 @@ export default function Clients() {
 
   return (
     <div className="p-8 min-h-screen bg-white font-sans text-base">
-      <header className="flex flex-col md:flex-row items-center justify-between gap-6 mb-12">
-        <h1 className="text-3xl font-bold text-[#1a1a1a] font-sans">
+      <header className="flex items-center gap-6 mb-12">
+        <h1 className="text-3xl font-bold text-[#1a1a1a] font-sans shrink-0">
           Clientes
         </h1>
 
-        <div className="relative w-full max-w-lg">
+        <div className="relative flex-1 max-w-lg mx-auto">
           <input
             type="text"
             placeholder="Procurar"
@@ -98,7 +98,7 @@ export default function Clients() {
       <div className="flex flex-wrap items-center gap-4 mb-8 font-sans">
         <button
           onClick={() => handleSort("id")}
-          className={`flex items-center justify-center gap-2 px-6 py-2 rounded-full text-sm font-bold border transition-all cursor-pointer min-w-[90px] ${
+          className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold border transition-colors cursor-pointer ${
             sort.key === "id"
               ? "bg-[#FF5A1F]/10 text-[#FF5A1F] border-[#FF5A1F]/20 shadow-sm"
               : "bg-gray-100/50 text-gray-500 border-transparent hover:bg-gray-100 hover:text-gray-700"
@@ -108,7 +108,7 @@ export default function Clients() {
         </button>
         <button
           onClick={() => handleSort("nome")}
-          className={`flex items-center justify-center gap-2 px-6 py-2 rounded-full text-sm font-bold border transition-all cursor-pointer min-w-[120px] ${
+          className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold border transition-colors cursor-pointer ${
             sort.key === "nome"
               ? "bg-[#FF5A1F]/10 text-[#FF5A1F] border-[#FF5A1F]/20 shadow-sm"
               : "bg-gray-100/50 text-gray-500 border-transparent hover:bg-gray-100 hover:text-gray-700"
@@ -221,7 +221,7 @@ export default function Clients() {
                     colSpan={7}
                     className="px-6 py-12 text-center text-gray-400"
                   >
-                    Nenhum cliente encontrado para "{search}"
+                    Nenhum cliente encontrado
                   </td>
                 </tr>
               )}
