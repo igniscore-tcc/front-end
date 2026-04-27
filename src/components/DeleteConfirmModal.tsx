@@ -37,7 +37,7 @@ export function DeleteConfirmModal({ isOpen, onClose, onConfirm, client }: Props
           </h2>
           <button
             onClick={onClose}
-            className="w-8 h-8 flex items-center justify-center rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-500 transition-colors"
+            className="w-8 h-8 flex items-center justify-center rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-500 transition-colors cursor-pointer"
           >
             <X className="w-5 h-5" strokeWidth={2.5} />
           </button>
@@ -57,14 +57,14 @@ export function DeleteConfirmModal({ isOpen, onClose, onConfirm, client }: Props
             type="button"
             variant="outline"
             onClick={onClose}
-            className="px-6 py-2 h-auto text-sm font-bold rounded-lg bg-gray-200 text-gray-700 hover:bg-gray-300 border-none transition-colors"
+            className="px-6 py-2 h-auto text-sm font-bold rounded-lg bg-gray-200 text-gray-700 hover:bg-gray-300 border-none transition-colors cursor-pointer"
           >
             Cancelar
           </Button>
           <Button
             type="button"
             onClick={onConfirm}
-            className="px-6 py-2 h-auto text-sm font-bold rounded-lg bg-red-500 text-white hover:bg-red-600 transition-colors shadow-sm"
+            className="px-6 py-2 h-auto text-sm font-bold rounded-lg bg-red-500 text-white hover:bg-red-600 transition-colors shadow-sm cursor-pointer"
           >
             Confirmar
           </Button>

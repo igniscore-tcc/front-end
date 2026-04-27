@@ -41,7 +41,7 @@ export function TermsModal({
           </h2>
           <button
             onClick={onClose}
-            className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-100/50 hover:bg-gray-200 text-gray-500 transition-colors"
+            className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-100/50 hover:bg-gray-200 text-gray-500 transition-colors cursor-pointer"
           >
             <span className="sr-only">Fechar</span>
             <X className="w-5 h-5" strokeWidth={2} />
@@ -106,14 +106,14 @@ export function TermsModal({
               type="button"
               variant="outline"
               onClick={onClose}
-              className="px-6 py-2.5 h-auto text-sm font-semibold rounded-lg bg-gray-100 text-gray-700 hover:bg-gray-200 border-none transition-colors"
+              className="px-6 py-2.5 h-auto text-sm font-semibold rounded-lg bg-gray-100 text-gray-700 hover:bg-gray-200 border-none transition-colors cursor-pointer"
             >
               Cancelar
             </Button>
             <Button
               type="button"
               onClick={onAcceptAndContinue}
-              className="px-6 py-2.5 h-auto text-sm font-semibold rounded-lg bg-[#FF5A1F] text-white hover:bg-[#FF5A1F]/90 transition-colors shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-6 py-2.5 h-auto text-sm font-semibold rounded-lg bg-[#FF5A1F] text-white hover:bg-[#FF5A1F]/90 transition-colors shadow-sm disabled:opacity-50 cursor-pointer"
               disabled={!isChecked}
             >
               Aceitar e continuar

@@ -6,10 +6,11 @@ import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { TermsModal } from "@/components/TermsModal";
-import { Check } from "lucide-react";
+import { Check, Loader2 } from "lucide-react";
 import { API_URL } from "@/lib/api";
 
 export default function RegisterForm() {
+  const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState({
     nome: "",
     email: "",
@@ -100,6 +101,7 @@ export default function RegisterForm() {
     e.preventDefault();
     if (!validate()) return;
 
+    setIsLoading(true);
     try {
       const response = await fetch("/api/auth/register", {
         method: "POST",
@@ -128,6 +130,8 @@ export default function RegisterForm() {
         ...prev,
         email: "Erro ao conectar com o servidor",
       }));
+    } finally {
+      setIsLoading(false);
     }
   }
 
@@ -254,9 +258,17 @@ export default function RegisterForm() {
 
           <Button
             type="submit"
-            className="w-full mt-2 h-12 bg-[#FF5A1F] text-white rounded-lg font-semibold hover:bg-[#FF5A1F]/80 transition-all duration-200 cursor-pointer"
+            disabled={isLoading}
+            className="w-full mt-2 h-12 bg-[#FF5A1F] text-white rounded-lg font-semibold hover:bg-[#FF5A1F]/80 transition-all duration-200 cursor-pointer disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2"
           >
-            Continuar
+            {isLoading ? (
+              <>
+                <Loader2 className="h-5 w-5 animate-spin" />
+                <span>Registrando...</span>
+              </>
+            ) : (
+              "Continuar"
+            )}
           </Button>
 
           <div className="mt-4 text-center">

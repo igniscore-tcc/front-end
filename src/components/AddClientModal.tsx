@@ -59,7 +59,7 @@ export function AddClientModal({ isOpen, onClose, onSave, clientToEdit }: Props)
           </h2>
           <button
             onClick={onClose}
-            className="w-8 h-8 flex items-center justify-center rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-500 transition-colors"
+            className="w-8 h-8 flex items-center justify-center rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-500 transition-colors cursor-pointer"
           >
             <X className="w-5 h-5" strokeWidth={2.5} />
           </button>
@@ -76,7 +76,7 @@ export function AddClientModal({ isOpen, onClose, onSave, clientToEdit }: Props)
                     key={t}
                     type="button"
                     onClick={() => setTipo(t)}
-                    className={`px-6 py-2 rounded-lg text-sm font-bold transition-all ${
+                    className={`px-6 py-2 rounded-lg text-sm font-bold transition-all cursor-pointer ${
                       tipo === t ? "bg-white text-[#FF5A1F] shadow-sm" : "text-gray-500 hover:text-gray-700"
                     }`}
                   >
@@ -168,13 +168,13 @@ export function AddClientModal({ isOpen, onClose, onSave, clientToEdit }: Props)
               type="button"
               variant="outline"
               onClick={onClose}
-              className="px-8 py-2.5 h-auto text-sm font-bold rounded-lg bg-[#E5E7EB] text-gray-700 hover:bg-gray-300 border-none transition-colors"
+              className="px-8 py-2.5 h-auto text-sm font-bold rounded-lg bg-[#E5E7EB] text-gray-700 hover:bg-gray-300 border-none transition-colors cursor-pointer"
             >
               Cancelar
             </Button>
             <Button
               type="submit"
-              className="px-8 py-2.5 h-auto text-sm font-bold rounded-lg bg-[#FF5A1F] text-white hover:bg-[#E64D17] transition-colors shadow-sm"
+              className="px-8 py-2.5 h-auto text-sm font-bold rounded-lg bg-[#FF5A1F] text-white hover:bg-[#E64D17] transition-colors shadow-sm cursor-pointer"
             >
               {isEditing ? "Salvar alterações" : "Adicionar"}
             </Button>

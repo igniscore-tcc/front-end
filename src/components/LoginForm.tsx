@@ -6,9 +6,10 @@ import { LoginFormData } from "@/types/auth";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
-import { API_URL } from "@/lib/api";
+import { Loader2 } from "lucide-react";
 
 export default function LoginForm() {
+  const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState<LoginFormData>({
     email: "",
     senha: "",
@@ -50,6 +51,7 @@ export default function LoginForm() {
     e.preventDefault();
     if (!validate()) return;
 
+    setIsLoading(true);
     try {
       const response = await fetch("/api/auth/login", {
         method: "POST",
@@ -70,6 +72,8 @@ export default function LoginForm() {
       window.location.href = "/dashboard";
     } catch {
       setErrors((prev) => ({ ...prev, senha: "Erro ao conectar com o servidor" }));
+    } finally {
+      setIsLoading(false);
     }
   }
 
@@ -113,9 +117,17 @@ export default function LoginForm() {
 
         <Button
           type="submit"
-          className="w-full mt-2 h-12 bg-[#FF5A1F] text-white rounded-lg font-semibold hover:bg-[#FF5A1F]/80 transition-all duration-200 cursor-pointer"
+          disabled={isLoading}
+          className="w-full mt-2 h-12 bg-[#FF5A1F] text-white rounded-lg font-semibold hover:bg-[#FF5A1F]/80 transition-all duration-200 cursor-pointer disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2"
         >
-          Entrar
+          {isLoading ? (
+            <>
+              <Loader2 className="h-5 w-5 animate-spin" />
+              <span>Entrando...</span>
+            </>
+          ) : (
+            "Entrar"
+          )}
         </Button>
 
         <div className="mt-4 text-center">
