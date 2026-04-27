@@ -7,28 +7,10 @@ import { Input } from "./ui/Input";
 import { Select } from "./ui/Select";
 import { formatCnpj, cleanCnpj, formatPhone, cleanPhone, formatCpf, cleanCpf } from "@/lib/validators";
 import { useClientForm } from "@/hooks/useClientForm";
-import type { Cliente, TipoCliente, ClienteFormData } from "@/types/cliente";
+import type { TipoCliente, ClienteModalProps } from "@/types/cliente";
+import { UF_OPTIONS } from "@/lib/constants";
 
-interface Props {
-  isOpen: boolean;
-  onClose: () => void;
-  onSave: (data: ClienteFormData & { id?: number }) => void;
-  clientToEdit?: Cliente | null;
-}
-
-const UF_OPTIONS = [
-  { value: "AC", label: "AC" }, { value: "AL", label: "AL" }, { value: "AP", label: "AP" },
-  { value: "AM", label: "AM" }, { value: "BA", label: "BA" }, { value: "CE", label: "CE" },
-  { value: "DF", label: "DF" }, { value: "ES", label: "ES" }, { value: "GO", label: "GO" },
-  { value: "MA", label: "MA" }, { value: "MT", label: "MT" }, { value: "MS", label: "MS" },
-  { value: "MG", label: "MG" }, { value: "PA", label: "PA" }, { value: "PB", label: "PB" },
-  { value: "PR", label: "PR" }, { value: "PE", label: "PE" }, { value: "PI", label: "PI" },
-  { value: "RJ", label: "RJ" }, { value: "RN", label: "RN" }, { value: "RS", label: "RS" },
-  { value: "RO", label: "RO" }, { value: "RR", label: "RR" }, { value: "SC", label: "SC" },
-  { value: "SP", label: "SP" }, { value: "SE", label: "SE" }, { value: "TO", label: "TO" },
-];
-
-export function AddClientModal({ isOpen, onClose, onSave, clientToEdit }: Props) {
+export function AddClientModal({ isOpen, onClose, onSave, clientToEdit }: ClienteModalProps) {
   const { tipo, setTipo, form, setField, errors, isEditing, handleSubmit } = useClientForm({
     isOpen,
     clientToEdit,
