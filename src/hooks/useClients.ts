@@ -264,9 +264,23 @@ export function useClients() {
         };
   }, []);
 
-  const removeClient = (id: number) => {
-    setClients((prev) => prev.filter((c) => c.id !== id));
-    setDeleting(null);
+  const removeClient = async (id: number) => {
+    try {
+      const response = await fetch(`${INTERNAL_API}/clients/delete/${id}`, {
+        method: "DELETE",
+        headers: getAuthHeaders(),
+      });
+
+      if (!response.ok) {
+        const result = await response.json();
+        throw new Error(result.error || "Erro ao excluir cliente");
+      }
+
+      setClients((prev) => prev.filter((c) => c.id !== id));
+      setDeleting(null);
+    } catch (error) {
+      console.error("Erro ao excluir cliente:", error);
+    }
   };
 
   return {

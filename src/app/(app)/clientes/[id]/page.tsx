@@ -62,7 +62,7 @@ export default function ClientDetails() {
         >
           <ArrowLeft size={20} />
         </Button>
-        <h1 className="text-3xl font-bold text-[#1a1a1a]">
+        <h1 className="text-3xl font-semibold text-[#1a1a1a]">
           Detalhes do Cliente
         </h1>
       </header>
