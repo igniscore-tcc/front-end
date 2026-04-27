@@ -6,6 +6,7 @@ import { Button } from "./ui/button";
 import { Input } from "./ui/Input";
 import Image from "next/image";
 import Link from "next/link";
+import { Loader2 } from "lucide-react";
 import {
   formatPhone,
   formatCnpj,
@@ -235,9 +236,16 @@ export default function CompanyForm() {
         <Button
           type="submit"
           disabled={loading}
-          className="w-full mt-2 h-12 bg-[#FF5A1F] text-white rounded-lg font-semibold hover:bg-[#FF5A1F]/80 transition-all duration-200 cursor-pointer disabled:opacity-50"
+          className="w-full mt-2 h-12 bg-[#FF5A1F] text-white rounded-lg font-semibold hover:bg-[#FF5A1F]/80 transition-all duration-200 cursor-pointer disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2"
         >
-          {loading ? "Cadastrando..." : "Cadastrar"}
+          {loading ? (
+            <>
+              <Loader2 className="h-5 w-5 animate-spin" />
+              <span>Cadastrando...</span>
+            </>
+          ) : (
+            "Cadastrar"
+          )}
         </Button>
 
         <div className="mt-4 text-center">

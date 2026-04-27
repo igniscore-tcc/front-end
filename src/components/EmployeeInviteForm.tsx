@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { formatCnpj, validateCnpj, extractNumbers } from "@/lib/validators";
 import { useUpdateUserCompany } from "@/hooks/useInvite";
+import { Loader2 } from "lucide-react";
 
 export default function EmployeeInviteForm() {
   const { updateUserCompany, loading } = useUpdateUserCompany();
@@ -97,9 +98,16 @@ export default function EmployeeInviteForm() {
         <Button
           type="submit"
           disabled={loading}
-          className="w-full mt-2 h-12 bg-[#FF5A1F] text-white rounded-lg font-semibold hover:bg-[#FF5A1F]/80 transition-all duration-200 cursor-pointer disabled:opacity-60"
+          className="w-full mt-2 h-12 bg-[#FF5A1F] text-white rounded-lg font-semibold hover:bg-[#FF5A1F]/80 transition-all duration-200 cursor-pointer disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2"
         >
-          {loading ? "Enviando..." : "Enviar convite"}
+          {loading ? (
+            <>
+              <Loader2 className="h-5 w-5 animate-spin" />
+              <span>Enviando...</span>
+            </>
+          ) : (
+            "Enviar convite"
+          )}
         </Button>
 
         <div className="mt-4 text-center">
