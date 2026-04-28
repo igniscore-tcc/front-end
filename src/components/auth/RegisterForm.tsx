@@ -5,9 +5,8 @@ import { useState } from "react";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
-import { TermsModal } from "@/components/TermsModal";
+import { TermsModal } from "@/components/shared/TermsModal";
 import { Check, Loader2 } from "lucide-react";
-import { API_URL } from "@/lib/api";
 
 export default function RegisterForm() {
   const [isLoading, setIsLoading] = useState(false);

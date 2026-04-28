@@ -1,4 +1,4 @@
-import CompanyForm from "@/components/CompanyForm";
+import CompanyForm from "@/components/auth/CompanyForm";
 
 export default function CompanyPage() {
   return (

@@ -1,4 +1,4 @@
-import EmployeeInviteForm from "@/components/EmployeeInviteForm";
+import EmployeeInviteForm from "@/components/auth/EmployeeInviteForm";
 
 export default function InvitePage() {
   return (
