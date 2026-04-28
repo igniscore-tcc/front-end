@@ -237,7 +237,7 @@ export default function RegisterForm() {
                     e.preventDefault();
                     setIsTermsModalOpen(true);
                   }}
-                  className="text-gray-900 font-semibold hover:text-[#FF5A1F] transition-colors"
+                  className="text-gray-900 font-semibold hover:text-[#FF5A1F] transition-colors cursor-pointer"
                 >
                   termos de serviços
                 </button>
