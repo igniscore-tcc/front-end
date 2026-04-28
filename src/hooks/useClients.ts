@@ -2,6 +2,7 @@ import { useState, useMemo, useEffect, useCallback } from "react";
 import type { Cliente, SortKey, ClienteFormData } from "@/types/cliente";
 //import { mockClients } from "@/mocks/clients";
 import { INTERNAL_API, getAuthHeaders } from "@/lib/api";
+import { toast } from "sonner";
 
 export function useClients() {
   const [clients, setClients] = useState<Cliente[]>([]);
@@ -167,8 +168,10 @@ export function useClients() {
 
       setClients((prev) => [...prev, newClient]);
       setShowModal(false);
+      toast.success("Cliente cadastrado com sucesso!");
     } catch (error) {
       console.error("Erro ao criar cliente:", error);
+      toast.error(error instanceof Error ? error.message : "Erro ao cadastrar cliente");
       throw error;
     }
   };
@@ -220,8 +223,10 @@ export function useClients() {
       );
 
       setEditing(null);
+      toast.success("Cliente atualizado com sucesso!");
     } catch (error) {
       console.error("Erro ao atualizar cliente:", error);
+      toast.error(error instanceof Error ? error.message : "Erro ao atualizar cliente");
       throw error;
     }
   };
@@ -278,8 +283,10 @@ export function useClients() {
 
       setClients((prev) => prev.filter((c) => c.id !== id));
       setDeleting(null);
+      toast.success("Cliente excluído com sucesso!");
     } catch (error) {
       console.error("Erro ao excluir cliente:", error);
+      toast.error(error instanceof Error ? error.message : "Erro ao excluir cliente");
     }
   };
 
