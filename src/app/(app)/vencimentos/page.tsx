@@ -1,4 +1,4 @@
-import MaturityDate from "@/components/MaturityDate";
+import MaturityDate from "@/components/maturity/MaturityDate";
 
 export default function VencimentosPage() {
   return (

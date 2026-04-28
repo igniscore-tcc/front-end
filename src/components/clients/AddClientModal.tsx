@@ -2,9 +2,9 @@
 
 import { X, CheckCircle2, MapPin, Mail, Phone } from "lucide-react";
 import { useEffect } from "react";
-import { Button } from "./ui/button";
-import { Input } from "./ui/Input";
-import { Select } from "./ui/Select";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/Input";
+import { Select } from "@/components/ui/Select";
 import { formatCnpj, cleanCnpj, formatPhone, cleanPhone, formatCpf, cleanCpf } from "@/lib/validators";
 import { useClientForm } from "@/hooks/useClientForm";
 import type { TipoCliente, ClienteModalProps } from "@/types/cliente";

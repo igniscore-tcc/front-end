@@ -14,7 +14,7 @@ import { Button } from "@/components/ui/button";
 import { useClients } from "@/hooks/useClients";
 import { useEffect, useState } from "react";
 import { Cliente } from "@/types/cliente";
-import { AddClientModal } from "@/components/AddClientModal";
+import { AddClientModal } from "@/components/clients/AddClientModal";
 
 export default function ClientDetails() {
   const params = useParams();

@@ -2,7 +2,7 @@
 
 import { X, AlertTriangle } from "lucide-react";
 import { useEffect } from "react";
-import { Button } from "./ui/button";
+import { Button } from "@/components/ui/button";
 import type { Cliente } from "@/types/cliente";
 
 interface Props {

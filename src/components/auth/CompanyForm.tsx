@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import { CompanyFormData } from "@/types/auth";
-import { Button } from "./ui/button";
-import { Input } from "./ui/Input";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/Input";
 import Image from "next/image";
 import Link from "next/link";
 import { Loader2 } from "lucide-react";
