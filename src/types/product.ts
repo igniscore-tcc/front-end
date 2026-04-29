@@ -16,3 +16,10 @@ export interface ProductFormData {
 }
 
 export type ProductSortKey = "id" | "nome" | "tipo" | "validade" | "lote" | "preco";
+
+export interface ProductModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  onSave: (data: ProductFormData & { id?: number }) => void;
+  productToEdit?: Product | null;
+}

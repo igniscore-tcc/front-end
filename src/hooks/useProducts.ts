@@ -3,9 +3,9 @@ import type { Product, ProductFormData } from "@/types/product";
 import { mockProducts } from "@/mocks/product";
 
 export function useProducts() {
-
-  const [products] = useState<Product[]>(mockProducts);
+  const [products, setProducts] = useState<Product[]>(mockProducts);
   const [loading] = useState(false);
+  const [editing, setEditing] = useState<Product | null>(null);
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
   const [perPage, setPerPage] = useState(10);
@@ -57,6 +57,24 @@ export function useProducts() {
     setPage(1);
   };
 
+  const addProduct = (data: ProductFormData) => {
+    const newProduct: Product = {
+      ...data,
+      id: Math.max(...products.map(p => p.id), 0) + 1,
+    };
+    setProducts(prev => [...prev, newProduct]);
+  };
+
+  const saveEdit = (data: ProductFormData & { id?: number }) => {
+    if (!data.id) return;
+    setProducts(prev => prev.map(p => p.id === data.id ? { ...p, ...data } as Product : p));
+    setEditing(null);
+  };
+
+  const removeProduct = (id: number) => {
+    setProducts(prev => prev.filter(p => p.id !== id));
+  };
+
   return {
     pageData,
     loading,
@@ -75,5 +93,10 @@ export function useProducts() {
     setPerPage,
     showModal,
     setShowModal,
+    addProduct,
+    editing,
+    setEditing,
+    saveEdit,
+    removeProduct,
   };
 }

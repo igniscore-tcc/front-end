@@ -15,6 +15,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { useProducts } from "@/hooks/useProducts";
 import { Product } from "@/types/product";
+import { PRODUCT_TYPE_OPTIONS } from "@/lib/constants";
+import { ProductModal } from "./ProductModal";
 
 export default function Products() {
   const {
@@ -31,8 +33,22 @@ export default function Products() {
     setPage,
     perPage,
     setPerPage,
+    showModal,
     setShowModal,
+    addProduct,
+    editing,
+    setEditing,
+    saveEdit,
+    removeProduct,
   } = useProducts();
+
+  const handleSave = (data: any) => {
+    if (editing) {
+      saveEdit(data);
+    } else {
+      addProduct(data);
+    }
+  };
 
   const sortIcon = (key: keyof Product) => {
     if (sort.key !== key) return <ArrowUpDown size={14} />;
@@ -150,12 +166,12 @@ export default function Products() {
 
                     <td className="px-6 py-3.5">
                       <span className="px-2.5 py-1 text-xs font-semibold rounded-full bg-gray-100 text-gray-600">
-                        {product.tipo}
+                        {PRODUCT_TYPE_OPTIONS.find(opt => opt.value === product.tipo)?.label || product.tipo}
                       </span>
                     </td>
 
                     <td className="px-6 py-3.5 text-sm text-gray-600">
-                      {product.validade}
+                      {product.validade.split("-").reverse().join("/")}
                     </td>
 
                     <td className="px-6 py-3.5 text-sm text-gray-600">
@@ -168,10 +184,22 @@ export default function Products() {
 
                     <td className="px-6 py-3.5 text-center">
                       <div className="flex items-center justify-center gap-4 opacity-0 group-hover:opacity-100 transition-opacity">
-                        <button className="text-[#FF5A1F] hover:text-[#E64D17] p-1.5 hover:bg-[#FF5A1F]/10 rounded-lg cursor-pointer">
+                        <button 
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setEditing(product);
+                          }}
+                          className="text-[#FF5A1F] hover:text-[#E64D17] p-1.5 hover:bg-[#FF5A1F]/10 rounded-lg cursor-pointer"
+                        >
                           <Pencil size={18} />
                         </button>
-                        <button className="text-[#FF5A1F] hover:text-[#E64D17] p-1.5 hover:bg-[#FF5A1F]/10 rounded-lg cursor-pointer">
+                        <button 
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            removeProduct(product.id);
+                          }}
+                          className="text-[#FF5A1F] hover:text-[#E64D17] p-1.5 hover:bg-[#FF5A1F]/10 rounded-lg cursor-pointer"
+                        >
                           <Trash2 size={18} />
                         </button>
                       </div>
@@ -242,6 +270,16 @@ export default function Products() {
           </div>
         </div>
       </footer>
+
+      <ProductModal
+        isOpen={showModal || !!editing}
+        onClose={() => {
+          setShowModal(false);
+          setEditing(null);
+        }}
+        onSave={handleSave}
+        productToEdit={editing}
+      />
     </div>
   );
 }
