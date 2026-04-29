@@ -27,3 +27,17 @@ export const UF_OPTIONS = [
   { value: "SE", label: "SE" },
   { value: "TO", label: "TO" },
 ];
+
+export const PRODUCT_TYPE_OPTIONS = [
+  { value: "EXTINGUISHER", label: "Extintor" },
+  { value: "SERVICE", label: "Serviço" },
+  { value: "CONSUMABLE", label: "Consumível" },
+  { value: "ACCESSORY", label: "Acessório" },
+  { value: "HOSE", label: "Mangueira" },
+  { value: "DETECTOR", label: "Detector" },
+  { value: "SPRINKLER", label: "Sprinkler" },
+  { value: "CENTRAL", label: "Central" },
+  { value: "LIGHTING", label: "Iluminação" },
+  { value: "DOOR", label: "Porta" },
+  { value: "HYDRANT", label: "Hidrante" },
+];
