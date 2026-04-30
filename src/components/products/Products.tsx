@@ -14,7 +14,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useProducts } from "@/hooks/useProducts";
-import { Product } from "@/types/product";
+import { Product, ProductFormData } from "@/types/product";
 import { PRODUCT_TYPE_OPTIONS } from "@/lib/constants";
 import { ProductModal } from "./ProductModal";
 
@@ -42,11 +42,11 @@ export default function Products() {
     removeProduct,
   } = useProducts();
 
-  const handleSave = (data: any) => {
-    if (editing) {
-      saveEdit(data);
+  const handleSave = async (data: ProductFormData & { id?: number }) => {
+    if (data.id) {
+      await saveEdit(data);
     } else {
-      addProduct(data);
+      await addProduct(data);
     }
   };
 
@@ -101,7 +101,6 @@ export default function Products() {
           <Plus size={24} />
         </Button>
       </header>
-
 
       <div className="flex flex-wrap items-center gap-4 mb-8">
         {["id", "nome", "tipo", "validade"].map((key) => (
@@ -166,7 +165,9 @@ export default function Products() {
 
                     <td className="px-6 py-3.5">
                       <span className="px-2.5 py-1 text-xs font-semibold rounded-full bg-gray-100 text-gray-600">
-                        {PRODUCT_TYPE_OPTIONS.find(opt => opt.value === product.tipo)?.label || product.tipo}
+                        {PRODUCT_TYPE_OPTIONS.find(
+                          (opt) => opt.value === product.tipo,
+                        )?.label || product.tipo}
                       </span>
                     </td>
 
@@ -184,7 +185,7 @@ export default function Products() {
 
                     <td className="px-6 py-3.5 text-center">
                       <div className="flex items-center justify-center gap-4 opacity-0 group-hover:opacity-100 transition-opacity">
-                        <button 
+                        <button
                           onClick={(e) => {
                             e.stopPropagation();
                             setEditing(product);
@@ -193,7 +194,7 @@ export default function Products() {
                         >
                           <Pencil size={18} />
                         </button>
-                        <button 
+                        <button
                           onClick={(e) => {
                             e.stopPropagation();
                             removeProduct(product.id);
