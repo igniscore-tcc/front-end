@@ -89,8 +89,6 @@ export function useProductForm({
       id: productToEdit?.id,
     };
 
-    console.log("SUBMIT:", payload);
-
     setSubmitting(true);
 
     try {
