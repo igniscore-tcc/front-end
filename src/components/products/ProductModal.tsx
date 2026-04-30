@@ -8,9 +8,14 @@ import { Select } from "@/components/ui/Select";
 import { DatePicker } from "@/components/ui/DatePicker";
 import { PRODUCT_TYPE_OPTIONS } from "@/lib/constants";
 import { useProductForm } from "@/hooks/useProductForm";
-import type { ProductModalProps } from "@/types/product";
+import type { ProductModalProps, ProductType } from "@/types/product";
 
-export function ProductModal({ isOpen, onClose, onSave, productToEdit }: ProductModalProps) {
+export function ProductModal({
+  isOpen,
+  onClose,
+  onSave,
+  productToEdit,
+}: ProductModalProps) {
   const { form, setField, errors, isEditing, handleSubmit } = useProductForm({
     isOpen,
     productToEdit,
@@ -34,7 +39,6 @@ export function ProductModal({ isOpen, onClose, onSave, productToEdit }: Product
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4 animate-in fade-in duration-200">
       <div className="bg-white rounded-xl shadow-lg w-full max-w-2xl flex flex-col overflow-hidden animate-in zoom-in-95 duration-200">
-        
         <div className="flex items-center justify-between p-5 border-b border-gray-100">
           <h2 className="text-xl font-semibold text-gray-900">
             {isEditing ? "Editar produto" : "Adicionar produto"}
@@ -49,7 +53,6 @@ export function ProductModal({ isOpen, onClose, onSave, productToEdit }: Product
 
         <form onSubmit={handleSubmit} className="flex flex-col">
           <div className="p-8 space-y-6">
-            
             <div className="grid grid-cols-1 gap-4">
               <Input
                 placeholder="Nome"
@@ -63,7 +66,9 @@ export function ProductModal({ isOpen, onClose, onSave, productToEdit }: Product
               <Select
                 placeholder="Tipo"
                 value={form.tipo}
-                onChange={(e) => setField("tipo", e.target.value)}
+                onChange={(e) =>
+                  setField("tipo", e.target.value as ProductType)
+                }
                 options={PRODUCT_TYPE_OPTIONS}
                 error={errors.tipo}
               />
@@ -88,7 +93,9 @@ export function ProductModal({ isOpen, onClose, onSave, productToEdit }: Product
                 type="number"
                 step="0.01"
                 value={form.preco === 0 ? "" : form.preco}
-                onChange={(e) => setField("preco", parseFloat(e.target.value) || 0)}
+                onChange={(e) =>
+                  setField("preco", parseFloat(e.target.value) || 0)
+                }
                 error={errors.preco}
                 suffixIcon={<DollarSign size={18} className="text-gray-400" />}
               />

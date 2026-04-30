@@ -1,3 +1,4 @@
+/*
 import type { Product } from "@/types/product";
 
 export const mockProducts: Product[] = [
@@ -82,3 +83,4 @@ export const mockProducts: Product[] = [
     preco: 3500.00,
   },
 ];
+*/
