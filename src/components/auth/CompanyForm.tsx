@@ -15,6 +15,8 @@ import {
   extractNumbers,
   cleanPhone,
   cleanCnpj,
+  normalizeEmail,
+  validateEmail,
 } from "@/lib/validators";
 import { useCreateCompany } from "@/hooks/useCompany";
 
@@ -35,8 +37,6 @@ export default function CompanyForm() {
     telefone: "",
   });
 
-  const emailRegex = /\S+@\S+\.\S+/;
-
   const validate = () => {
     const newErrors = {
       nome: "",
@@ -46,6 +46,7 @@ export default function CompanyForm() {
     };
 
     let isValid = true;
+    const email = normalizeEmail(formData.email);
 
     if (!formData.nome.trim()) {
       newErrors.nome = "Nome da empresa obrigatório";
@@ -64,10 +65,10 @@ export default function CompanyForm() {
       isValid = false;
     }
 
-    if (!formData.email.trim()) {
+    if (!email) {
       newErrors.email = "Email obrigatório";
       isValid = false;
-    } else if (!emailRegex.test(formData.email)) {
+    } else if (!validateEmail(email)) {
       newErrors.email = "Email inválido";
       isValid = false;
     }
@@ -97,8 +98,7 @@ export default function CompanyForm() {
       validateCnpj(formData.cnpj)
     )
       filledFields++;
-    if (formData.email.includes("@") && formData.email.includes("."))
-      filledFields++;
+    if (validateEmail(normalizeEmail(formData.email))) filledFields++;
     if (
       extractNumbers(formData.telefone).length >= 10 &&
       validatePhoneLength(formData.telefone)
@@ -118,7 +118,7 @@ export default function CompanyForm() {
       const company = await createCompany({
         name: formData.nome,
         cnpj: formData.cnpj,
-        email: formData.email,
+        email: normalizeEmail(formData.email),
         phone: formData.telefone,
       });
 

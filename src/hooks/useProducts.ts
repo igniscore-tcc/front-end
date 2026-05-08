@@ -3,6 +3,23 @@ import type { Product, ProductFormData } from "@/types/product";
 import { INTERNAL_API, getAuthHeaders } from "@/lib/api";
 import { toast } from "sonner";
 
+async function safeJson(response: Response): Promise<any> {
+  const text = await response.text();
+  if (!text) return {};
+  try {
+    return JSON.parse(text);
+  } catch {
+    return {};
+  }
+}
+
+function isOfflineError(error: unknown): boolean {
+  return (
+    error instanceof TypeError &&
+    /fetch|network|failed/i.test(error.message || "")
+  );
+}
+
 export function useProducts() {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
@@ -33,7 +50,7 @@ export function useProducts() {
         },
       );
 
-      const result = await response.json();
+      const result = await safeJson(response);
 
       if (!response.ok) {
         throw new Error(result.error || "Erro ao buscar produtos");
@@ -57,7 +74,11 @@ export function useProducts() {
       setProducts(formattedProducts);
     } catch (error) {
       console.error("Erro ao carregar produtos:", error);
-      toast.error("Erro ao carregar produtos");
+      toast.error(
+        isOfflineError(error)
+          ? "Servidor indisponível. Tente novamente em instantes."
+          : "Erro ao carregar produtos",
+      );
     } finally {
       setLoading(false);
     }
@@ -129,7 +150,7 @@ export function useProducts() {
         body: JSON.stringify(payload),
       });
 
-      const result = await response.json();
+      const result = await safeJson(response);
 
       if (!response.ok) {
         throw new Error(result.error || "Erro ao cadastrar produto");
@@ -151,7 +172,11 @@ export function useProducts() {
     } catch (error) {
       console.error("Erro ao cadastrar produto:", error);
       toast.error(
-        error instanceof Error ? error.message : "Erro ao cadastrar produto",
+        isOfflineError(error)
+          ? "Servidor indisponível. Tente novamente em instantes."
+          : error instanceof Error
+            ? error.message
+            : "Erro ao cadastrar produto",
       );
       throw error;
     }
@@ -176,7 +201,7 @@ export function useProducts() {
         body: JSON.stringify(payload),
       });
 
-      const result = await response.json();
+      const result = await safeJson(response);
 
       if (!response.ok) {
         throw new Error(result.error || "Erro ao atualizar produto");
@@ -200,7 +225,11 @@ export function useProducts() {
     } catch (error) {
       console.error("Erro ao atualizar produto:", error);
       toast.error(
-        error instanceof Error ? error.message : "Erro ao atualizar produto",
+        isOfflineError(error)
+          ? "Servidor indisponível. Tente novamente em instantes."
+          : error instanceof Error
+            ? error.message
+            : "Erro ao atualizar produto",
       );
       throw error;
     }
@@ -213,7 +242,7 @@ export function useProducts() {
         headers: getAuthHeaders(),
       });
 
-      const result = await response.json();
+      const result = await safeJson(response);
 
       if (!response.ok) {
         throw new Error(result.error || "Erro ao excluir produto");
@@ -230,7 +259,11 @@ export function useProducts() {
       console.error("Erro ao excluir produto:", error);
 
       toast.error(
-        error instanceof Error ? error.message : "Erro ao excluir produto",
+        isOfflineError(error)
+          ? "Servidor indisponível. Tente novamente em instantes."
+          : error instanceof Error
+            ? error.message
+            : "Erro ao excluir produto",
       );
     }
   };

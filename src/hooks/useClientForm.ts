@@ -4,6 +4,8 @@ import {
   validatePhoneLength,
   extractNumbers,
   validateCpf,
+  validateEmail,
+  normalizeEmail,
 } from "@/lib/validators";
 import type { Cliente, TipoCliente, ClienteFormData } from "@/types/cliente";
 
@@ -81,8 +83,7 @@ export function useClientForm({
 
   const validate = () => {
     const next: Record<string, string> = {};
-    const email = form.email.trim();
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+    const email = normalizeEmail(form.email);
 
     const nome = form.nome.trim();
     if (!nome) next.nome = "Nome é obrigatório";
@@ -106,7 +107,7 @@ export function useClientForm({
     }
 
     if (!email) next.email = "Email é obrigatório";
-    else if (!emailRegex.test(email)) next.email = "Email inválido";
+    else if (!validateEmail(email)) next.email = "Email inválido";
 
     const phoneDigits = extractNumbers(form.telefone);
     if (!phoneDigits) next.telefone = "Telefone é obrigatório";

@@ -162,3 +162,55 @@ export function validateCpf(raw: string): boolean {
 
   return true;
 }
+
+/**
+ * Validação pragmática de email (UI): bloqueia casos comuns incorretos como múltiplos "@",
+ * espaços, ausência de domínio/TLD, etc. Não tenta cobrir 100% do RFC.
+ */
+export function validateEmail(raw: string): boolean {
+  const email = (raw ?? "").trim();
+  if (!email) return false;
+  if (email.length > 254) return false;
+  if (/\s/.test(email)) return false;
+
+  const at = email.indexOf("@");
+  if (at <= 0) return false;
+  if (email.indexOf("@", at + 1) !== -1) return false;
+
+  const local = email.slice(0, at);
+  const domain = email.slice(at + 1);
+  if (!local || !domain) return false;
+  if (local.length > 64) return false;
+
+  // Regras básicas para o local-part
+  if (local.startsWith(".") || local.endsWith(".")) return false;
+  if (local.includes("..")) return false;
+
+  // Domínio precisa ter pelo menos 1 ponto e TLD com 2+ letras
+  if (domain.startsWith(".") || domain.endsWith(".")) return false;
+  if (domain.includes("..")) return false;
+  if (!domain.includes(".")) return false;
+
+  // Domínio: labels com letras/números/hífen (sem underscore), sem hífen no início/fim do label
+  const labels = domain.split(".");
+  if (labels.some((l) => !l.length)) return false;
+  const tld = labels[labels.length - 1];
+  if (!/^[A-Za-z]{2,}$/.test(tld)) return false;
+  if (
+    labels.some(
+      (l) =>
+        l.length > 63 ||
+        !/^[A-Za-z0-9-]+$/.test(l) ||
+        l.startsWith("-") ||
+        l.endsWith("-"),
+    )
+  ) {
+    return false;
+  }
+
+  return true;
+}
+
+export function normalizeEmail(raw: string): string {
+  return (raw ?? "").trim();
+}
