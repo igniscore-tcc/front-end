@@ -32,7 +32,7 @@ const EMPTY_FORM: FormState = {
 interface UseClientFormProps {
   isOpen: boolean;
   clientToEdit?: Cliente | null;
-  onSave: (data: ClienteFormData & { id?: number }) => void;
+  onSave: (data: ClienteFormData & { id?: number }) => Promise<void>;
   onClose: () => void;
 }
 
@@ -47,6 +47,7 @@ export function useClientForm({
   const [tipo, setTipo] = useState<TipoCliente>("PJ");
   const [form, setForm] = useState<FormState>(EMPTY_FORM);
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [submitting, setSubmitting] = useState(false);
 
   // Inicializa ou reseta o formulário quando o modal abre/fecha
   useEffect(() => {
@@ -80,9 +81,17 @@ export function useClientForm({
 
   const validate = () => {
     const next: Record<string, string> = {};
-    const emailRegex = /\S+@\S+\.\S+/;
+    const email = form.email.trim();
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
-    if (!form.nome.trim()) next.nome = "Nome é obrigatório";
+    const nome = form.nome.trim();
+    if (!nome) next.nome = "Nome é obrigatório";
+    else if (nome.length < 2) next.nome = "Nome deve ter pelo menos 2 caracteres";
+    else if (nome.length > 120) next.nome = "Nome deve ter no máximo 120 caracteres";
+
+    const uf = (form.uf ?? "").trim().toUpperCase();
+    if (!uf) next.uf = "UF é obrigatória";
+    else if (!/^[A-Z]{2}$/.test(uf)) next.uf = "UF inválida";
 
     if (tipo === "PJ") {
       const d = extractNumbers(form.cnpj);
@@ -96,21 +105,31 @@ export function useClientForm({
       else if (!validateCpf(form.cpf)) next.cpf = "CPF inválido";
     }
 
-    if (!form.email.trim()) next.email = "Email é obrigatório";
-    else if (!emailRegex.test(form.email)) next.email = "Email inválido";
+    if (!email) next.email = "Email é obrigatório";
+    else if (!emailRegex.test(email)) next.email = "Email inválido";
 
-    if (!extractNumbers(form.telefone))
-      next.telefone = "Telefone é obrigatório";
-    else if (!validatePhoneLength(form.telefone))
-      next.telefone = "Telefone incompleto";
+    const phoneDigits = extractNumbers(form.telefone);
+    if (!phoneDigits) next.telefone = "Telefone é obrigatório";
+    else if (!validatePhoneLength(phoneDigits)) next.telefone = "Telefone incompleto";
+    else {
+      // Regras mínimas pro Brasil: DDD 2 dígitos, celular (11) costuma ter 9 após DDD.
+      const ddd = phoneDigits.slice(0, 2);
+      if (ddd === "00") next.telefone = "DDD inválido";
+      if (!next.telefone && phoneDigits.length === 11 && phoneDigits[2] !== "9") {
+        next.telefone = "Celular inválido (deve começar com 9 após o DDD)";
+      }
+    }
+
+    const obs = (form.observacao ?? "").trim();
+    if (obs.length > 500) next.observacao = "Observação deve ter no máximo 500 caracteres";
 
     setErrors(next);
     return Object.keys(next).length === 0;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!validate()) return;
+    if (!validate() || submitting) return;
 
     let submitData: ClienteFormData & { id?: number };
 
@@ -141,8 +160,13 @@ export function useClientForm({
       submitData.id = clientToEdit.id;
     }
 
-    onSave(submitData);
-    onClose();
+    setSubmitting(true);
+    try {
+      await onSave(submitData);
+      onClose();
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const setField = (field: keyof FormState, value: string) => {
@@ -157,6 +181,7 @@ export function useClientForm({
     setField,
     errors,
     isEditing,
+    submitting,
     handleSubmit,
   };
 }

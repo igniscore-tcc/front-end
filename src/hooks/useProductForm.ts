@@ -17,6 +17,20 @@ const EMPTY_FORM: ProductFormData = {
   preco: 0,
 };
 
+function isValidIsoDate(value: string): boolean {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) return false;
+  const d = new Date(`${value}T00:00:00`);
+  return !Number.isNaN(d.getTime());
+}
+
+function isPastDate(value: string): boolean {
+  if (!isValidIsoDate(value)) return false;
+  const selected = new Date(`${value}T00:00:00`);
+  const now = new Date();
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  return selected.getTime() < today.getTime();
+}
+
 export function useProductForm({
   isOpen,
   productToEdit,
@@ -52,8 +66,13 @@ export function useProductForm({
   const validate = () => {
     const next: Record<string, string> = {};
 
-    if (!form.nome.trim()) {
+    const nome = form.nome.trim();
+    if (!nome) {
       next.nome = "Nome é obrigatório";
+    } else if (nome.length < 2) {
+      next.nome = "Nome deve ter pelo menos 2 caracteres";
+    } else if (nome.length > 120) {
+      next.nome = "Nome deve ter no máximo 120 caracteres";
     }
 
     if (!form.tipo) {
@@ -62,14 +81,29 @@ export function useProductForm({
 
     if (!form.validade) {
       next.validade = "Validade é obrigatória";
+    } else if (!isValidIsoDate(form.validade)) {
+      next.validade = "Validade inválida";
+    } else if (isPastDate(form.validade)) {
+      next.validade = "Validade não pode ser no passado";
     }
 
-    if (!form.lote.trim()) {
+    const lote = form.lote.trim();
+    if (!lote) {
       next.lote = "Lote é obrigatório";
+    } else if (lote.length < 2) {
+      next.lote = "Lote deve ter pelo menos 2 caracteres";
+    } else if (lote.length > 40) {
+      next.lote = "Lote deve ter no máximo 40 caracteres";
+    } else if (!/^[A-Za-z0-9._\-\/]+$/.test(lote)) {
+      next.lote = "Lote deve conter apenas letras, números e . _ - /";
     }
 
-    if (form.preco < 0) {
+    if (!Number.isFinite(form.preco) || form.preco <= 0) {
+      next.preco = "Preço é obrigatório";
+    } else if (form.preco < 0) {
       next.preco = "Preço não pode ser negativo";
+    } else if (form.preco > 999999999) {
+      next.preco = "Preço inválido";
     }
 
     setErrors(next);

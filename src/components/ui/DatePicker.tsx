@@ -23,6 +23,10 @@ interface DatePickerProps {
 
 export function DatePicker({ date, setDate, placeholder, error }: DatePickerProps) {
   const [isOpen, setIsOpen] = React.useState(false)
+  const today = React.useMemo(() => {
+    const now = new Date()
+    return new Date(now.getFullYear(), now.getMonth(), now.getDate())
+  }, [])
 
   const selectedDate = React.useMemo(() => {
     if (!date) return undefined
@@ -71,6 +75,7 @@ export function DatePicker({ date, setDate, placeholder, error }: DatePickerProp
               mode="single"
               selected={selectedDate}
               onSelect={handleSelect}
+              disabled={{ before: today }}
               initialFocus
               locale={ptBR}
             />

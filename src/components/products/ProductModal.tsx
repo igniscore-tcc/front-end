@@ -16,7 +16,7 @@ export function ProductModal({
   onSave,
   productToEdit,
 }: ProductModalProps) {
-  const { form, setField, errors, isEditing, handleSubmit } = useProductForm({
+  const { form, setField, errors, isEditing, submitting, handleSubmit } = useProductForm({
     isOpen,
     productToEdit,
     onSave,
@@ -113,9 +113,14 @@ export function ProductModal({
             </Button>
             <Button
               type="submit"
+              disabled={submitting}
               className="px-8 py-2.5 h-auto text-sm font-bold rounded-lg bg-[#FF5A1F] text-white hover:bg-[#E64D17] transition-colors shadow-sm cursor-pointer"
             >
-              {isEditing ? "Salvar alterações" : "Adicionar"}
+              {submitting
+                ? "Salvando..."
+                : isEditing
+                  ? "Salvar alterações"
+                  : "Adicionar"}
             </Button>
           </div>
         </form>
