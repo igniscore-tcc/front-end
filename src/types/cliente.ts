@@ -49,7 +49,7 @@ export type ClienteFormData =
 export interface ClienteModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSave: (data: ClienteFormData & { id?: number }) => void;
+  onSave: (data: ClienteFormData & { id?: number }) => Promise<void>;
   clientToEdit?: Cliente | null;
 }
 

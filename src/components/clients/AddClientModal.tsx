@@ -11,7 +11,7 @@ import type { TipoCliente, ClienteModalProps } from "@/types/cliente";
 import { UF_OPTIONS } from "@/lib/constants";
 
 export function AddClientModal({ isOpen, onClose, onSave, clientToEdit }: ClienteModalProps) {
-  const { tipo, setTipo, form, setField, errors, isEditing, handleSubmit } = useClientForm({
+  const { tipo, setTipo, form, setField, errors, isEditing, submitting, handleSubmit } = useClientForm({
     isOpen,
     clientToEdit,
     onSave,
@@ -156,9 +156,14 @@ export function AddClientModal({ isOpen, onClose, onSave, clientToEdit }: Client
             </Button>
             <Button
               type="submit"
+              disabled={submitting}
               className="px-8 py-2.5 h-auto text-sm font-bold rounded-lg bg-[#FF5A1F] text-white hover:bg-[#E64D17] transition-colors shadow-sm cursor-pointer"
             >
-              {isEditing ? "Salvar alterações" : "Adicionar"}
+              {submitting
+                ? "Salvando..."
+                : isEditing
+                  ? "Salvar alterações"
+                  : "Adicionar"}
             </Button>
           </div>
         </form>
