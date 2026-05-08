@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { TermsModal } from "@/components/shared/TermsModal";
 import { Check, Loader2 } from "lucide-react";
+import { normalizeEmail, validateEmail } from "@/lib/validators";
 
 export default function RegisterForm() {
   const [isLoading, setIsLoading] = useState(false);
@@ -37,17 +38,17 @@ export default function RegisterForm() {
       termos: "",
     };
     let isValid = true;
-    const emailRegex = /\S+@\S+\.\S+/;
+    const email = normalizeEmail(formData.email);
 
     if (!formData.nome.trim()) {
       newErrors.nome = "Nome obrigatório";
       isValid = false;
     }
 
-    if (!formData.email.trim()) {
+    if (!email) {
       newErrors.email = "Email obrigatório";
       isValid = false;
-    } else if (!emailRegex.test(formData.email)) {
+    } else if (!validateEmail(email)) {
       newErrors.email = "Email inválido";
       isValid = false;
     }
@@ -83,8 +84,7 @@ export default function RegisterForm() {
   const calculateProgress = () => {
     let filledFields = 0;
     if (formData.nome.trim().length >= 3) filledFields++;
-    if (formData.email.includes("@") && formData.email.includes("."))
-      filledFields++;
+    if (validateEmail(normalizeEmail(formData.email))) filledFields++;
     if (formData.senha.length >= 6) filledFields++;
     if (
       formData.confirmarSenha.length >= 6 &&
@@ -107,7 +107,7 @@ export default function RegisterForm() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           name: formData.nome,
-          email: formData.email,
+          email: normalizeEmail(formData.email),
           password: formData.senha,
           role: "OWNER",
         }),

@@ -1,9 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
+import { normalizeEmail, validateEmail } from "@/lib/validators";
 
 const API_URL = process.env.API_URL!;
 
 export async function POST(req: NextRequest) {
   const body = await req.json();
+  const email = normalizeEmail(body?.email);
+
+  if (!validateEmail(email)) {
+    return NextResponse.json({ error: "Email inválido" }, { status: 400 });
+  }
 
   const authorization = req.headers.get("authorization");
 
@@ -56,7 +62,7 @@ export async function POST(req: NextRequest) {
         cnpj: body.cnpj,
         ie: body.ie,
         ufIe: body.ufIe,
-        email: body.email,
+        email,
         phone: body.phone,
       },
     }),

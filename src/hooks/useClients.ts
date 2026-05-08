@@ -4,6 +4,23 @@ import type { Cliente, SortKey, ClienteFormData } from "@/types/cliente";
 import { INTERNAL_API, getAuthHeaders } from "@/lib/api";
 import { toast } from "sonner";
 
+async function safeJson(response: Response): Promise<any> {
+  const text = await response.text();
+  if (!text) return {};
+  try {
+    return JSON.parse(text);
+  } catch {
+    return {};
+  }
+}
+
+function isOfflineError(error: unknown): boolean {
+  return (
+    error instanceof TypeError &&
+    /fetch|network|failed/i.test(error.message || "")
+  );
+}
+
 export function useClients() {
   const [clients, setClients] = useState<Cliente[]>([]);
   const [loading, setLoading] = useState(true);
@@ -27,7 +44,7 @@ export function useClients() {
         },
       );
 
-      const result = await response.json();
+      const result = await safeJson(response);
 
       if (!response.ok) {
         throw new Error(result.error || "Erro ao buscar clientes");
@@ -62,6 +79,11 @@ export function useClients() {
       );
     } catch (error) {
       console.error("Erro ao carregar clientes:", error);
+      toast.error(
+        isOfflineError(error)
+          ? "Servidor indisponível. Tente novamente em instantes."
+          : "Erro ao carregar clientes",
+      );
     } finally {
       setLoading(false);
     }
@@ -144,7 +166,7 @@ export function useClients() {
         body: JSON.stringify(payload),
       });
 
-      const result = await response.json();
+      const result = await safeJson(response);
 
       if (!response.ok) {
         throw new Error(result.error || "Erro ao cadastrar cliente");
@@ -171,7 +193,13 @@ export function useClients() {
       toast.success("Cliente cadastrado com sucesso!");
     } catch (error) {
       console.error("Erro ao criar cliente:", error);
-      toast.error(error instanceof Error ? error.message : "Erro ao cadastrar cliente");
+      toast.error(
+        isOfflineError(error)
+          ? "Servidor indisponível. Tente novamente em instantes."
+          : error instanceof Error
+            ? error.message
+            : "Erro ao cadastrar cliente",
+      );
       throw error;
     }
   };
@@ -198,7 +226,7 @@ export function useClients() {
         body: JSON.stringify(payload),
       });
 
-      const result = await response.json();
+      const result = await safeJson(response);
 
       if (!response.ok) {
         throw new Error(result.error || "Erro ao atualizar cliente");
@@ -226,7 +254,13 @@ export function useClients() {
       toast.success("Cliente atualizado com sucesso!");
     } catch (error) {
       console.error("Erro ao atualizar cliente:", error);
-      toast.error(error instanceof Error ? error.message : "Erro ao atualizar cliente");
+      toast.error(
+        isOfflineError(error)
+          ? "Servidor indisponível. Tente novamente em instantes."
+          : error instanceof Error
+            ? error.message
+            : "Erro ao atualizar cliente",
+      );
       throw error;
     }
   };
@@ -237,7 +271,7 @@ export function useClients() {
       headers: getAuthHeaders(),
     });
 
-    const result = await response.json();
+    const result = await safeJson(response);
 
     if (!response.ok) {
       throw new Error(result.error || "Erro ao buscar cliente");
@@ -277,7 +311,7 @@ export function useClients() {
       });
 
       if (!response.ok) {
-        const result = await response.json();
+        const result = await safeJson(response);
         throw new Error(result.error || "Erro ao excluir cliente");
       }
 
@@ -286,7 +320,13 @@ export function useClients() {
       toast.success("Cliente excluído com sucesso!");
     } catch (error) {
       console.error("Erro ao excluir cliente:", error);
-      toast.error(error instanceof Error ? error.message : "Erro ao excluir cliente");
+      toast.error(
+        isOfflineError(error)
+          ? "Servidor indisponível. Tente novamente em instantes."
+          : error instanceof Error
+            ? error.message
+            : "Erro ao excluir cliente",
+      );
     }
   };
 

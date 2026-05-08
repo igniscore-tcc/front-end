@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { Loader2 } from "lucide-react";
+import { normalizeEmail, validateEmail } from "@/lib/validators";
 
 export default function LoginForm() {
   const [isLoading, setIsLoading] = useState(false);
@@ -20,16 +21,15 @@ export default function LoginForm() {
     senha: "",
   });
 
-  const emailRegex = /\S+@\S+\.\S+/;
-
   const validate = () => {
     const newErrors = { email: "", senha: "" };
     let isValid = true;
+    const email = normalizeEmail(formData.email);
 
-    if (!formData.email.trim()) {
+    if (!email) {
       newErrors.email = "Email obrigatório";
       isValid = false;
-    } else if (!emailRegex.test(formData.email)) {
+    } else if (!validateEmail(email)) {
       newErrors.email = "Email inválido";
       isValid = false;
     }
@@ -57,7 +57,7 @@ export default function LoginForm() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          email: formData.email,
+          email: normalizeEmail(formData.email),
           password: formData.senha,
         }),
       });
