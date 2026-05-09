@@ -3,6 +3,7 @@ import type { Cliente, SortKey, ClienteFormData } from "@/types/cliente";
 //import { mockClients } from "@/mocks/clients";
 import { INTERNAL_API, getAuthHeaders } from "@/lib/api";
 import { toast } from "sonner";
+import { useDebounce } from "@/hooks/useDebounce";
 
 async function safeJson(response: Response): Promise<any> {
   const text = await response.text();
@@ -101,8 +102,10 @@ export function useClients() {
 
   const [filterTipo, setFilterTipo] = useState<"ALL" | "PF" | "PJ">("ALL");
 
+  const debouncedSearch = useDebounce(search, 300);
+
   const filtered = useMemo(() => {
-    const term = search.toLowerCase();
+    const term = debouncedSearch.toLowerCase();
 
     let result = clients;
 
@@ -119,7 +122,7 @@ export function useClients() {
         (doc || "").toLowerCase().includes(term)
       );
     });
-  }, [search, clients, filterTipo]);
+  }, [debouncedSearch, clients, filterTipo]);
 
   const sorted = useMemo(() => {
     return [...filtered].sort((a, b) => {
