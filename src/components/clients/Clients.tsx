@@ -177,8 +177,7 @@ export default function Clients() {
                 pageData.map((client) => (
                   <tr
                     key={client.id}
-                    onClick={() => router.push(`/clientes/${client.id}`)}
-                    className="group hover:bg-gray-50/80 active:bg-gray-100 transition-colors cursor-pointer"
+                    className="group hover:bg-gray-50/80 transition-colors"
                   >
                     <td className="px-6 py-3.5 text-sm text-gray-500">
                       {client.number}
@@ -186,9 +185,13 @@ export default function Clients() {
 
                     <td className="px-6 py-3.5 text-sm min-w-0">
                       <div className="flex items-center gap-2 overflow-hidden">
-                        <span className="font-semibold text-gray-800 group-hover:underline truncate" title={client.nome}>
+                        <button
+                          onClick={() => router.push(`/clientes/${client.id}`)}
+                          className="font-semibold text-gray-800 hover:underline truncate cursor-pointer text-left"
+                          title={client.nome}
+                        >
                           {client.nome}
-                        </span>
+                        </button>
                         <span className="px-2 py-0.5 text-[10px] rounded-full bg-gray-100 text-gray-600 shrink-0">
                           {client.tipo}
                         </span>
@@ -216,20 +219,14 @@ export default function Clients() {
                     <td className="px-6 py-3.5 text-center">
                       <div className="flex items-center justify-center gap-4 opacity-0 group-hover:opacity-100 transition-opacity">
                         <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setEditing(client);
-                          }}
+                          onClick={() => setEditing(client)}
                           className="text-[#FF5A1F] hover:text-[#E64D17] p-1.5 hover:bg-[#FF5A1F]/10 rounded-lg cursor-pointer"
                         >
                           <Pencil size={18} />
                         </button>
 
                         <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setDeleting(client);
-                          }}
+                          onClick={() => setDeleting(client)}
                           className="text-[#FF5A1F] hover:text-[#E64D17] p-1.5 hover:bg-[#FF5A1F]/10 rounded-lg cursor-pointer"
                         >
                           <Trash2 size={18} />

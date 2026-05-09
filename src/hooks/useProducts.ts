@@ -2,6 +2,7 @@ import { useState, useMemo, useEffect, useCallback } from "react";
 import type { Product, ProductFormData } from "@/types/product";
 import { INTERNAL_API, getAuthHeaders } from "@/lib/api";
 import { toast } from "sonner";
+import { useDebounce } from "@/hooks/useDebounce";
 
 async function safeJson(response: Response): Promise<any> {
   const text = await response.text();
@@ -96,8 +97,10 @@ export function useProducts() {
     fetchProducts();
   }, [fetchProducts]);
 
+  const debouncedSearch = useDebounce(search, 300);
+
   const filtered = useMemo(() => {
-    const term = search.toLowerCase();
+    const term = debouncedSearch.toLowerCase();
 
     return products.filter(
       (p) =>
@@ -105,7 +108,7 @@ export function useProducts() {
         p.tipo.toLowerCase().includes(term) ||
         p.lote.toLowerCase().includes(term),
     );
-  }, [products, search]);
+  }, [products, debouncedSearch]);
 
   const sorted = useMemo(() => {
     return [...filtered].sort((a, b) => {
