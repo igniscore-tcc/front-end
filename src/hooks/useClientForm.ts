@@ -110,14 +110,22 @@ export function useClientForm({
     else if (!validateEmail(email)) next.email = "Email inválido";
 
     const phoneDigits = extractNumbers(form.telefone);
-    if (!phoneDigits) next.telefone = "Telefone é obrigatório";
-    else if (!validatePhoneLength(phoneDigits)) next.telefone = "Telefone incompleto";
-    else {
-      // Regras mínimas pro Brasil: DDD 2 dígitos, celular (11) costuma ter 9 após DDD.
-      const ddd = phoneDigits.slice(0, 2);
-      if (ddd === "00") next.telefone = "DDD inválido";
-      if (!next.telefone && phoneDigits.length === 11 && phoneDigits[2] !== "9") {
-        next.telefone = "Celular inválido (deve começar com 9 após o DDD)";
+    if (!phoneDigits) {
+      next.telefone = "Telefone é obrigatório";
+    } else if (phoneDigits.length !== 10 && phoneDigits.length !== 11) {
+      next.telefone = "Telefone incompleto";
+    } else {
+      const ddd = Number(phoneDigits.slice(0, 2));
+
+      if (ddd < 11 || ddd > 99) {
+        next.telefone = "DDD inválido";
+      } else if (phoneDigits.length === 11 && phoneDigits[2] !== "9") {
+        next.telefone = "Telefone inválido";
+      } else if (
+        phoneDigits.length === 10 &&
+        !/^[2-5]/.test(phoneDigits[2])
+      ) {
+        next.telefone = "Telefone inválido";
       }
     }
 

@@ -65,8 +65,8 @@ export default function Clients() {
   }
 
   return (
-    <div className="p-8 min-h-screen bg-white text-base">
-      <header className="flex items-center gap-6 mb-12">
+    <div className="h-screen max-h-screen p-6 flex flex-col bg-white text-base overflow-hidden">
+      <header className="flex items-center gap-6 mb-6 shrink-0">
         <h1 className="text-3xl font-semibold text-[#1a1a1a] shrink-0">
           Clientes
         </h1>
@@ -97,7 +97,7 @@ export default function Clients() {
       </header>
 
       {/* FILTROS */}
-      <div className="flex flex-wrap items-center gap-4 mb-8">
+      <div className="flex flex-wrap items-center gap-4 mb-4">
         <button
           onClick={() => handleSort("id")}
           className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold border transition-colors cursor-pointer ${
@@ -142,30 +142,31 @@ export default function Clients() {
       </div>
 
       {/* TABELA */}
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-100">
-        <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse">
-            <thead>
+      <div className="flex-1 min-h-0 flex flex-col">
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden h-fit max-h-full flex flex-col">
+          <div className="flex-1 overflow-y-auto overflow-x-hidden custom-scrollbar">
+            <table className="w-full text-left border-collapse table-fixed">
+              <thead className="sticky top-0 z-10 bg-gray-50">
               <tr className="bg-gray-50 border-b border-gray-100">
-                <th className="px-6 py-3 text-sm font-bold text-gray-500 uppercase tracking-wider">
+                <th className="w-[80px] px-6 py-3 text-sm font-bold text-gray-500 uppercase tracking-wider">
                   ID
                 </th>
                 <th className="px-6 py-3 text-sm font-bold text-gray-500 uppercase tracking-wider">
                   Nome
                 </th>
-                <th className="px-6 py-3 text-sm font-bold text-gray-500 uppercase tracking-wider">
+                <th className="w-[210px] px-6 py-3 text-sm font-bold text-gray-500 uppercase tracking-wider">
                   CNPJ/CPF
                 </th>
-                <th className="px-6 py-3 text-sm font-bold text-gray-500 uppercase tracking-wider">
+                <th className="w-[150px] px-6 py-3 text-sm font-bold text-gray-500 uppercase tracking-wider">
                   Inscrição
                 </th>
                 <th className="px-6 py-3 text-sm font-bold text-gray-500 uppercase tracking-wider">
                   Email
                 </th>
-                <th className="px-6 py-3 text-sm font-bold text-gray-500 uppercase tracking-wider">
+                <th className="w-[180px] px-6 py-3 text-sm font-bold text-gray-500 uppercase tracking-wider">
                   Telefone
                 </th>
-                <th className="px-6 py-3 text-sm font-bold text-gray-500 uppercase tracking-wider text-center">
+                <th className="w-[100px] px-6 py-3 text-sm font-bold text-gray-500 uppercase tracking-wider text-center">
                   Ações
                 </th>
               </tr>
@@ -183,18 +184,18 @@ export default function Clients() {
                       {client.number}
                     </td>
 
-                    <td className="px-6 py-3.5 text-sm">
-                      <div className="flex items-center gap-2">
-                        <span className="font-semibold text-gray-800 group-hover:underline">
+                    <td className="px-6 py-3.5 text-sm min-w-0">
+                      <div className="flex items-center gap-2 overflow-hidden">
+                        <span className="font-semibold text-gray-800 group-hover:underline truncate" title={client.nome}>
                           {client.nome}
                         </span>
-                        <span className="px-2 py-0.5 text-[10px] rounded-full bg-gray-100 text-gray-600">
+                        <span className="px-2 py-0.5 text-[10px] rounded-full bg-gray-100 text-gray-600 shrink-0">
                           {client.tipo}
                         </span>
                       </div>
                     </td>
 
-                    <td className="px-6 py-3.5 text-sm text-gray-600 tabular-nums">
+                    <td className="px-6 py-3.5 text-sm text-gray-600 tabular-nums whitespace-nowrap">
                       {client.tipo === "PF"
                         ? formatCpf(client.cpf)
                         : formatCnpj(client.cnpj)}
@@ -204,11 +205,11 @@ export default function Clients() {
                       {client.tipo === "PJ" ? client.inscricao : "-"}
                     </td>
 
-                    <td className="px-6 py-3.5 text-sm text-gray-600">
+                    <td className="px-6 py-3.5 text-sm text-gray-600 truncate" title={client.email}>
                       {client.email}
                     </td>
 
-                    <td className="px-6 py-3.5 text-sm text-gray-700 tabular-nums">
+                    <td className="px-6 py-3.5 text-sm text-gray-700 tabular-nums whitespace-nowrap">
                       {formatPhone(client.telefone)}
                     </td>
 
@@ -251,9 +252,11 @@ export default function Clients() {
           </table>
         </div>
       </div>
+      <div className="flex-1 min-h-[20px]" />
+    </div>
 
       {/* PAGINAÇÃO */}
-      <footer className="mt-8 flex flex-col md:flex-row items-center justify-center gap-8 text-sm font-medium text-gray-500">
+      <footer className="mt-auto flex flex-col md:flex-row items-center justify-center gap-8 text-sm font-medium text-gray-500 shrink-0 py-6">
         <div className="flex items-center gap-2">
           <span>Linhas por página</span>
           <div className="relative">
@@ -304,15 +307,12 @@ export default function Clients() {
 
       {/* MODAIS */}
       <AddClientModal
-        isOpen={showModal}
-        onClose={() => setShowModal(false)}
-        onSave={addClient}
-      />
-
-      <AddClientModal
-        isOpen={!!editing}
-        onClose={() => setEditing(null)}
-        onSave={saveEdit}
+        isOpen={showModal || !!editing}
+        onClose={() => {
+          setShowModal(false);
+          setEditing(null);
+        }}
+        onSave={editing ? saveEdit : addClient}
         clientToEdit={editing}
       />
 

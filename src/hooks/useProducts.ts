@@ -29,6 +29,7 @@ export function useProducts() {
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
   const [perPage, setPerPage] = useState(10);
+  const [total, setTotal] = useState(0);
 
   const [sort, setSort] = useState<{
     key: keyof Product;
@@ -72,6 +73,13 @@ export function useProducts() {
       }));
 
       setProducts(formattedProducts);
+      
+      // Armazena o total real do banco de dados
+      setTotal(
+        typeof result.totalElements === "number"
+          ? result.totalElements
+          : formattedProducts.length,
+      );
     } catch (error) {
       console.error("Erro ao carregar produtos:", error);
       toast.error(
@@ -117,13 +125,12 @@ export function useProducts() {
     });
   }, [filtered, sort]);
 
-  const total = filtered.length;
   const totalPages = Math.ceil(total / perPage);
   const hasNextPage = page < totalPages;
   const from = total === 0 ? 0 : (page - 1) * perPage + 1;
   const to = Math.min(page * perPage, total);
 
-  const pageData = sorted.slice((page - 1) * perPage, page * perPage);
+  const pageData = sorted;
 
   const handleSort = (key: keyof Product) => {
     setSort((prev) => ({
@@ -156,16 +163,7 @@ export function useProducts() {
         throw new Error(result.error || "Erro ao cadastrar produto");
       }
 
-      const newProduct: Product = {
-        id: Number(result.id),
-        nome: result.name,
-        tipo: result.type,
-        lote: result.lot,
-        validade: result.validity,
-        preco: Number(result.price),
-      };
-
-      setProducts((prev) => [...prev, newProduct]);
+      await fetchProducts();
       setShowModal(false);
 
       toast.success("Produto cadastrado com sucesso!");
@@ -248,7 +246,7 @@ export function useProducts() {
         throw new Error(result.error || "Erro ao excluir produto");
       }
 
-      setProducts((prev) => prev.filter((product) => product.id !== id));
+      await fetchProducts();
 
       if (editing?.id === id) {
         setEditing(null);

@@ -71,8 +71,8 @@ export default function Products() {
   }
 
   return (
-    <div className="p-8 min-h-screen bg-white text-base">
-      <header className="flex items-center gap-6 mb-12">
+    <div className="h-screen max-h-screen p-6 flex flex-col bg-white text-base overflow-hidden">
+      <header className="flex items-center gap-6 mb-6 shrink-0">
         <h1 className="text-3xl font-semibold text-[#1a1a1a] shrink-0">
           Produtos
         </h1>
@@ -102,7 +102,7 @@ export default function Products() {
         </Button>
       </header>
 
-      <div className="flex flex-wrap items-center gap-4 mb-8">
+      <div className="flex flex-wrap items-center gap-4 mb-4">
         {["id", "nome", "tipo", "validade"].map((key) => (
           <button
             key={key}
@@ -119,30 +119,32 @@ export default function Products() {
         ))}
       </div>
 
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-100">
-        <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse">
-            <thead>
+      {/* TABELA */}
+      <div className="flex-1 min-h-0 flex flex-col">
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden h-fit max-h-full flex flex-col">
+          <div className="flex-1 overflow-y-auto overflow-x-hidden custom-scrollbar">
+            <table className="w-full text-left border-collapse table-fixed">
+              <thead className="sticky top-0 z-10 bg-gray-50">
               <tr className="bg-gray-50 border-b border-gray-100">
-                <th className="px-6 py-3 text-sm font-bold text-gray-500 uppercase tracking-wider">
+                <th className="w-[80px] px-6 py-3 text-sm font-bold text-gray-500 uppercase tracking-wider">
                   ID
                 </th>
                 <th className="px-6 py-3 text-sm font-bold text-gray-500 uppercase tracking-wider">
                   Nome
                 </th>
-                <th className="px-6 py-3 text-sm font-bold text-gray-500 uppercase tracking-wider">
+                <th className="w-[150px] px-6 py-3 text-sm font-bold text-gray-500 uppercase tracking-wider">
                   Tipo
                 </th>
-                <th className="px-6 py-3 text-sm font-bold text-gray-500 uppercase tracking-wider">
+                <th className="w-[120px] px-6 py-3 text-sm font-bold text-gray-500 uppercase tracking-wider">
                   Validade
                 </th>
-                <th className="px-6 py-3 text-sm font-bold text-gray-500 uppercase tracking-wider">
+                <th className="w-[120px] px-6 py-3 text-sm font-bold text-gray-500 uppercase tracking-wider">
                   Lote
                 </th>
-                <th className="px-6 py-3 text-sm font-bold text-gray-500 uppercase tracking-wider text-right">
+                <th className="w-[150px] px-6 py-3 text-sm font-bold text-gray-500 uppercase tracking-wider text-right">
                   Preço
                 </th>
-                <th className="px-6 py-3 text-sm font-bold text-gray-500 uppercase tracking-wider text-center">
+                <th className="w-[100px] px-6 py-3 text-sm font-bold text-gray-500 uppercase tracking-wider text-center">
                   Ações
                 </th>
               </tr>
@@ -159,7 +161,7 @@ export default function Products() {
                       {product.id}
                     </td>
 
-                    <td className="px-6 py-3.5 text-sm font-bold text-gray-800">
+                    <td className="px-6 py-3.5 text-sm font-bold text-gray-800 truncate" title={product.nome}>
                       {product.nome}
                     </td>
 
@@ -171,15 +173,15 @@ export default function Products() {
                       </span>
                     </td>
 
-                    <td className="px-6 py-3.5 text-sm text-gray-600">
+                    <td className="px-6 py-3.5 text-sm text-gray-600 whitespace-nowrap">
                       {product.validade.split("-").reverse().join("/")}
                     </td>
 
-                    <td className="px-6 py-3.5 text-sm text-gray-600">
+                    <td className="px-6 py-3.5 text-sm text-gray-600 whitespace-nowrap">
                       {product.lote}
                     </td>
 
-                    <td className="px-6 py-3.5 text-sm font-bold text-gray-800 text-right tabular-nums">
+                    <td className="px-6 py-3.5 text-sm font-bold text-gray-800 text-right tabular-nums whitespace-nowrap">
                       {formatCurrency(product.preco)}
                     </td>
 
@@ -221,9 +223,11 @@ export default function Products() {
           </table>
         </div>
       </div>
+      <div className="flex-1 min-h-[20px]" />
+    </div>
 
       {/* FOOTER */}
-      <footer className="mt-8 flex flex-col md:flex-row items-center justify-center gap-8 text-sm font-medium text-gray-500">
+      <footer className="mt-auto flex flex-col md:flex-row items-center justify-center gap-8 text-sm font-medium text-gray-500 shrink-0 py-6">
         <div className="flex items-center gap-2">
           <span>Linhas por página</span>
           <div className="relative">
