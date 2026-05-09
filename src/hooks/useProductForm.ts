@@ -98,12 +98,12 @@ export function useProductForm({
       next.lote = "Lote deve conter apenas letras, números e . _ - /";
     }
 
-    if (!Number.isFinite(form.preco) || form.preco <= 0) {
+    if (!Number.isFinite(form.preco) || form.preco === 0) {
       next.preco = "Preço é obrigatório";
     } else if (form.preco < 0) {
       next.preco = "Preço não pode ser negativo";
     } else if (form.preco > 999999999) {
-      next.preco = "Preço inválido";
+      next.preco = "Preço inválido (valor muito alto)";
     }
 
     setErrors(next);

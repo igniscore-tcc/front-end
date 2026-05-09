@@ -214,3 +214,42 @@ export function validateEmail(raw: string): boolean {
 export function normalizeEmail(raw: string): string {
   return (raw ?? "").trim();
 }
+
+/**
+ * Formata um número para o padrão de moeda brasileiro (R$ 0,00).
+ * Útil para exibição em inputs ou textos.
+ */
+export function formatCurrencyBRL(value: number | string): string {
+  const number = typeof value === "string" ? parseFloat(value) : value;
+  if (isNaN(number)) return "";
+
+  return new Intl.NumberFormat("pt-BR", {
+    style: "currency",
+    currency: "BRL",
+  }).format(number);
+}
+
+/**
+ * Máscara dinâmica para inputs de preço.
+ * Transforma números digitados em formato decimal (ex: 123 -> 1,23).
+ */
+export function maskCurrency(value: string): string {
+  const digits = extractNumbers(value);
+  if (!digits) return "";
+
+  const numberValue = parseFloat(digits) / 100;
+  
+  return new Intl.NumberFormat("pt-BR", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  }).format(numberValue);
+}
+
+/**
+ * Converte uma string formatada (1.234,56) de volta para um número (1234.56).
+ */
+export function parseCurrencyToNumber(value: string): number {
+  const digits = extractNumbers(value);
+  if (!digits) return 0;
+  return parseFloat(digits) / 100;
+}

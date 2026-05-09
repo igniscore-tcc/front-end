@@ -8,6 +8,7 @@ import { Select } from "@/components/ui/Select";
 import { DatePicker } from "@/components/ui/DatePicker";
 import { PRODUCT_TYPE_OPTIONS } from "@/lib/constants";
 import { useProductForm } from "@/hooks/useProductForm";
+import { maskCurrency, parseCurrencyToNumber } from "@/lib/validators";
 import type { ProductModalProps, ProductType } from "@/types/product";
 
 export function ProductModal({
@@ -90,14 +91,13 @@ export function ProductModal({
             <div className="grid grid-cols-1 gap-4">
               <Input
                 placeholder="Preço"
-                type="number"
-                step="0.01"
-                value={form.preco === 0 ? "" : form.preco}
+                type="text"
+                value={form.preco === 0 ? "" : maskCurrency(form.preco.toFixed(2).replace(".", ""))}
                 onChange={(e) =>
-                  setField("preco", parseFloat(e.target.value) || 0)
+                  setField("preco", parseCurrencyToNumber(e.target.value))
                 }
                 error={errors.preco}
-                suffixIcon={<DollarSign size={18} className="text-gray-400" />}
+                suffixIcon={<span className="text-sm font-bold text-gray-400">R$</span>}
               />
             </div>
           </div>

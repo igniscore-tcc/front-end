@@ -131,8 +131,8 @@ export function useClients() {
     });
   }, [filtered, sort]);
 
-  const hasNextPage = clients.length === perPage;
-  const totalPages = hasNextPage ? page + 1 : page;
+  const totalPages = Math.ceil(total / perPage);
+  const hasNextPage = page < totalPages;
 
   const pageData = sorted;
 
@@ -172,23 +172,7 @@ export function useClients() {
         throw new Error(result.error || "Erro ao cadastrar cliente");
       }
 
-      console.log("RAW DATA:", data);
-
-      const newClient: Cliente = {
-        id: Number(result.id),
-        number: result.number,
-        nome: result.name,
-        tipo: result.cpf ? "PF" : "PJ",
-        email: result.email,
-        telefone: result.phone,
-        cpf: result.cpf || "",
-        cnpj: result.cnpj || "",
-        inscricao: result.ie || "",
-        uf: result.ufIe || "SP",
-        observacao: result.obs || "",
-      };
-
-      setClients((prev) => [...prev, newClient]);
+      await fetchClients();
       setShowModal(false);
       toast.success("Cliente cadastrado com sucesso!");
     } catch (error) {
@@ -315,7 +299,7 @@ export function useClients() {
         throw new Error(result.error || "Erro ao excluir cliente");
       }
 
-      setClients((prev) => prev.filter((c) => c.id !== id));
+      await fetchClients();
       setDeleting(null);
       toast.success("Cliente excluído com sucesso!");
     } catch (error) {
