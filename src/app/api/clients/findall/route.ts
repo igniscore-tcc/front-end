@@ -20,14 +20,18 @@ export async function GET(req: NextRequest) {
   const query = `
     query Clients($page: Int!, $size: Int!) {
       clients(page: $page, size: $size) {
-        id
-        number
-        name
-        cnpj
-        email
-        phone
-        ie
-        cpf
+        clients {
+          id
+          number
+          name
+          cnpj
+          email
+          phone
+          ie
+          cpf
+        }
+        totalPages
+        totalClients
       }
     }
   `;
