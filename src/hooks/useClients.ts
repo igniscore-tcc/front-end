@@ -51,11 +51,7 @@ export function useClients() {
         throw new Error(result.error || "Erro ao buscar clientes");
       }
 
-      const data = Array.isArray(result)
-        ? result
-        : Array.isArray(result.content)
-          ? result.content
-          : [];
+      const data = Array.isArray(result.clients) ? result.clients : [];
 
       const formattedClients: Cliente[] = data.map((client: any) => ({
         id: Number(client.id),
@@ -74,8 +70,8 @@ export function useClients() {
       setClients(formattedClients);
 
       setTotal(
-        typeof result.totalElements === "number"
-          ? result.totalElements
+        typeof result.totalClients === "number"
+          ? result.totalClients
           : formattedClients.length,
       );
     } catch (error) {
