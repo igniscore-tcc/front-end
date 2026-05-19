@@ -21,22 +21,8 @@ export async function POST(req: NextRequest) {
   }
 
   const query = `
-    mutation CreateCompany(
-      $name: String!,
-      $cnpj: String!,
-      $ie: String,
-      $ufIe: String,
-      $email: String!,
-      $phone: String!
-    ) {
-      createCompany(
-        name: $name,
-        cnpj: $cnpj,
-        ie: $ie,
-        ufIe: $ufIe,
-        email: $email,
-        phone: $phone
-      ) {
+    mutation CreateCompany($input: CreateCompanyInput!) {
+      createCompany(input: $input) {
         id
         name
         cnpj
@@ -58,12 +44,14 @@ export async function POST(req: NextRequest) {
     body: JSON.stringify({
       query,
       variables: {
-        name: body.name,
-        cnpj: body.cnpj,
-        ie: body.ie,
-        ufIe: body.ufIe,
-        email,
-        phone: body.phone,
+        input: {
+          name: body.name,
+          cnpj: body.cnpj,
+          ie: body.ie,
+          ufIe: body.ufIe,
+          email,
+          phone: body.phone,
+        },
       },
     }),
   });
