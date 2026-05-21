@@ -10,7 +10,7 @@ export default function Header() {
 
   return (
     <header className="fixed top-0 left-0 w-dvw z-50 bg-white">
-      <div className="px-6 md:px-10 lg:px-16 py-4 flex items-center justify-between">
+      <div className="px-6 md:px-10 lg:px-16 py-6 flex items-center justify-between">
         <Link
           href="/"
           className="flex gap-4 items-center transition-opacity duration-300 hover:opacity-80"

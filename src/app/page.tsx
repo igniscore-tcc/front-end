@@ -4,6 +4,7 @@ import Hero from "@/components/home/Hero";
 import InteractionDashboard from "@/components/home/interaction-dashboard";
 import Result from "@/components/home/results";
 import Solutions from "@/components/home/solutions";
+import Timeline from "@/components/home/timeline";
 import {
   ArrowRight,
   CalendarClock,
@@ -33,132 +34,7 @@ export default function Home() {
 
       <Result />
 
-      <section className="grid justify-center w-full grid-cols-1 gap-12 mt-16 px-6 md:px-10 lg:px-16">
-        <div className="flex justify-center w-full">
-          <h2 className="text-4xl md:text-5xl text-[#B1B4B8] font-medium leading-[1.3] tracking-[0.01em] max-w-full lg:max-w-[50dvw] text-center">
-            <span className="text-[#FF5A1F]">Comece</span> em poucos passos
-          </h2>
-        </div>
-
-        <div>
-          <article>
-            <div className="flex gap-32">
-              <div className="flex gap-6 p-8 border border-[#B1B4B8]">
-                <div className="flex gap-6 flex-col">
-                  <div className="flex gap-4">
-                    <Package
-                      width={32}
-                      height={32}
-                      className="text-[#B1B4B8]"
-                    />
-                    <h5 className="text-2xl font-medium text-[#B1B4B8]">
-                      Cadastre sua empresa
-                    </h5>
-                  </div>
-                  <p className="text-[#B1B4B8]">
-                    Norem ipsum dolor sit amet, consectetur adipiscing elit.
-                  </p>
-                </div>
-                <div>
-                  <p className="text-5xl text-[#B1B4B8] font-medium border-l pl-6 border-[#B1B4B8] h-full flex items-center">
-                    1
-                  </p>
-                </div>
-              </div>
-
-              <div className="flex gap-6 p-8 border border-[#B1B4B8]">
-                <div className="flex gap-6 flex-col">
-                  <div className="flex gap-4">
-                    <Package
-                      width={32}
-                      height={32}
-                      className="text-[#B1B4B8]"
-                    />
-                    <h5 className="text-2xl font-medium text-[#B1B4B8]">
-                      Automatize vencimentos
-                    </h5>
-                  </div>
-                  <p className="text-[#B1B4B8]">
-                    Norem ipsum dolor sit amet, consectetur adipiscing elit.
-                  </p>
-                </div>
-                <div>
-                  <p className="text-5xl text-[#B1B4B8] font-medium border-l pl-6 border-[#B1B4B8] h-full flex items-center">
-                    3
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            <div className="relative flex items-center justify-between mx-auto my-6">
-              <div className="absolute top-2 left-0 w-full h-px bg-[#B1B4B8]"></div>
-
-              <div className="relative left-[12.5%] z-10 flex flex-col items-center">
-                <div className="w-4 h-4 bg-[#FF5A1F] rounded-full"></div>
-              </div>
-              <div className="relative left-4 z-10 flex flex-col items-center">
-                <div className="w-4 h-4 bg-[#FF5A1F] rounded-full"></div>
-              </div>
-
-              <div className="relative -left-8 z-10 flex flex-col items-center">
-                <div className="w-4 h-4 bg-[#FF5A1F] rounded-full"></div>
-              </div>
-
-              <div className="relative -left-[12.5%] z-10 flex flex-col items-center">
-                <div className="w-4 h-4 bg-[#FF5A1F] rounded-full"></div>
-              </div>
-            </div>
-
-            <div className="flex gap-32 justify-end">
-              <div className="flex gap-6 p-8 border border-[#B1B4B8]">
-                <div className="flex gap-6 flex-col">
-                  <div className="flex gap-4">
-                    <Package
-                      width={32}
-                      height={32}
-                      className="text-[#B1B4B8]"
-                    />
-                    <h5 className="text-2xl font-medium text-[#B1B4B8]">
-                      Cadastre sua empresa
-                    </h5>
-                  </div>
-                  <p className="text-[#B1B4B8]">
-                    Norem ipsum dolor sit amet, consectetur adipiscing elit.
-                  </p>
-                </div>
-                <div>
-                  <p className="text-5xl text-[#B1B4B8] font-medium border-l pl-6 border-[#B1B4B8] h-full flex items-center">
-                    2
-                  </p>
-                </div>
-              </div>
-
-              <div className="flex gap-6 p-8 border border-[#B1B4B8]">
-                <div className="flex gap-6 flex-col">
-                  <div className="flex gap-4">
-                    <Package
-                      width={32}
-                      height={32}
-                      className="text-[#B1B4B8]"
-                    />
-                    <h5 className="text-2xl font-medium text-[#B1B4B8]">
-                      Automatize vencimentos
-                    </h5>
-                  </div>
-                  <p className="text-[#B1B4B8]">
-                    Norem ipsum dolor sit amet, consectetur adipiscing elit.
-                  </p>
-                </div>
-                <div>
-                  <p className="text-5xl text-[#B1B4B8] font-medium border-l pl-6 border-[#B1B4B8] h-full flex items-center">
-                    4
-                  </p>
-                </div>
-              </div>
-            </div>
-          </article>
-        </div>
-      </section>
+      <Timeline />
 
       <section className="grid justify-center w-full grid-cols-1 gap-12 mt-16 px-6 md:px-10 lg:px-16">
         <div className="flex w-full justify-center">
