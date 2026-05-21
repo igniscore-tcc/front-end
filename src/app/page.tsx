@@ -2,21 +2,10 @@ import Challenges from "@/components/home/challenges";
 import Header from "@/components/home/header";
 import Hero from "@/components/home/Hero";
 import InteractionDashboard from "@/components/home/interaction-dashboard";
+import Market from "@/components/home/market";
 import Result from "@/components/home/results";
 import Solutions from "@/components/home/solutions";
 import Timeline from "@/components/home/timeline";
-import {
-  ArrowRight,
-  CalendarClock,
-  ChartBarIncreasingIcon,
-  ClipboardListIcon,
-  Package,
-  ShoppingCartIcon,
-  UsersIcon,
-  UserX,
-} from "lucide-react";
-import { redirect } from "next/dist/server/api-utils";
-import Image from "next/image";
 import Link from "next/link";
 
 export default function Home() {
@@ -36,74 +25,7 @@ export default function Home() {
 
       <Timeline />
 
-      <section className="grid justify-center w-full grid-cols-1 gap-12 mt-16 px-6 md:px-10 lg:px-16">
-        <div className="flex w-full justify-center">
-          <h2 className="text-4xl md:text-5xl text-[#B1B4B8] font-medium leading-[1.3] tracking-[0.01em] max-w-full text-center">
-            <span className="text-[#FF5A1F]">Desenvolvido</span> para quem vive
-            esse
-            <span className="block">mercado</span>
-          </h2>
-        </div>
-
-        <div className="grid grid-cols-3 mt-12 border-l border[#B1B4B8]">
-          <article className="flex flex-col justify-center gap-12">
-            <Image
-              src="/payments.svg"
-              alt="Hero Image"
-              width={0}
-              height={0}
-              className="w-full h-80"
-            />
-
-            <div className="flex gap-6 flex-col text-center">
-              <h5 className="text-2xl font-medium text-[#B1B4B8]">
-                Revendas de Extintores
-              </h5>
-              <p className="text-[#B1B4B8]">
-                Norem ipsum dolor sit amet, consectetur adipiscing elit.
-              </p>
-            </div>
-          </article>
-
-          <article className="flex flex-col justify-center gap-12 border-x border[#B1B4B8]">
-            <Image
-              src="/contract.svg"
-              alt="Hero Image"
-              width={0}
-              height={0}
-              className="w-full h-80"
-            />
-
-            <div className="flex gap-6 flex-col text-center">
-              <h5 className="text-2xl font-medium text-[#B1B4B8]">
-                Empresas de Manutenção
-              </h5>
-              <p className="text-[#B1B4B8]">
-                Norem ipsum dolor sit amet, consectetur adipiscing elit.
-              </p>
-            </div>
-          </article>
-
-          <article className="flex flex-col justify-center gap-12 border-r border[#B1B4B8]">
-            <Image
-              src="/brief.svg"
-              alt="Hero Image"
-              width={0}
-              height={0}
-              className="w-full h-80"
-            />
-
-            <div className="flex gap-6 flex-col text-center">
-              <h5 className="text-2xl font-medium text-[#B1B4B8]">
-                Prestadores de Serviços
-              </h5>
-              <p className="text-[#B1B4B8]">
-                Norem ipsum dolor sit amet, consectetur adipiscing elit.
-              </p>
-            </div>
-          </article>
-        </div>
-      </section>
+      <Market />
 
       <section
         className="grid justify-center w-full grid-cols-1 gap-12 mt-16 px-6 md:px-10 lg:px-16 py-16 bg-cover bg-center bg-no-repeat relative overflow-hidden"
