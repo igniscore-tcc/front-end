@@ -144,3 +144,7 @@
     background: #d1d5db;
   }
 }
+
+html {
+  scroll-behavior: smooth;
+}

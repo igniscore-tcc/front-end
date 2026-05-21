@@ -1,3 +1,4 @@
+import Header from "@/components/home/header";
 import {
   ArrowRight,
   CalendarClock,
@@ -15,46 +16,7 @@ import Link from "next/link";
 export default function Home() {
   return (
     <div>
-      <header className="px-6 md:px-10 lg:px-16 py-6 md:py-8 flex justify-between items-center fixed w-full bg-white z-50">
-        <div className="flex gap-4 items-center">
-          <Image
-            src="/igniscore.png"
-            alt="Igniscore Logo"
-            width={36}
-            height={48}
-            className="object-contain"
-            priority
-          />
-
-          <p className="text-[#FF5A1F] font-bold text-2xl tracking-[0.01em] leading-[1.3]">
-            IgnisCore
-          </p>
-        </div>
-
-        <nav className="hidden lg:block">
-          <ul className="flex gap-6 items-center">
-            <li>
-              <Link href="/">Recursos</Link>
-            </li>
-            <li>
-              <Link href="">Soluções</Link>
-            </li>
-            <li>
-              <Link href="">Preços</Link>
-            </li>
-            <li>
-              <Link href="">Contato</Link>
-            </li>
-          </ul>
-        </nav>
-
-        <Link
-          href="/login"
-          className="hidden md:block border border-[#FF5A1F] px-4 py-3 text-[#FF5A1F]"
-        >
-          Solicitar Demonstração
-        </Link>
-      </header>
+      <Header></Header>
 
       <section className="flex flex-col lg:flex-row justify-between mx-16 pb-8 md:px-10 lg:px-16 items-center min-h-screen border-b border-[#B1B4B8] gap-16 pt-32 lg:pt-0">
         <div className="flex flex-col gap-8">
@@ -100,7 +62,10 @@ export default function Home() {
         />
       </section>
 
-      <section className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 px-6 md:px-10 lg:px-16 py-24">
+      <section
+        id="recursos"
+        className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 px-6 md:px-10 lg:px-16 py-24"
+      >
         <h2 className="text-4xl md:text-5xl text-[#B1B4B8] font-medium leading-[1.3] tracking-[0.01em]">
           <span className="text-[#FF5A1F]">Sua operação</span> ainda depende de{" "}
           <span className="block">planilhas e processos manuais?</span>
