@@ -54,8 +54,8 @@ export function DatePicker({ date, setDate, placeholder, error }: DatePickerProp
             <Button
               type="button"
               className={cn(
-                "w-full flex items-center justify-between px-4 pt-[24px] pb-2 min-h-[54px] bg-[#E5E7EB] hover:bg-[#E5E7EB] border-none rounded-lg text-gray-800 focus:outline-none focus:ring-2 transition-all duration-300 text-left font-normal overflow-hidden shadow-none",
-                error ? "focus:ring-red-500 ring-2 ring-red-500/50" : "focus:ring-[#FF5A1F]",
+                "w-full flex items-center justify-between px-4 pt-[24px] pb-2 min-h-[54px] bg-[#E5E7EB] hover:bg-[#E5E7EB] border-2 border-transparent rounded-lg text-gray-800 focus:outline-none transition-all duration-300 text-left font-normal overflow-hidden shadow-none",
+                error ? "focus:border-red-500 border-red-500/60" : "focus:border-[#FF5A1F]",
                 !date && "text-transparent" 
               )}
             >

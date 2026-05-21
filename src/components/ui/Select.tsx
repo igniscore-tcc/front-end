@@ -7,9 +7,25 @@ export interface SelectProps extends React.SelectHTMLAttributes<HTMLSelectElemen
   options: { value: string; label: string }[];
 }
 
-export function Select({ error, className = "", placeholder, id: externalId, options, ...props }: SelectProps) {
+const fieldBaseClass =
+  "peer w-full px-4 pt-[24px] pb-2 min-h-[54px] bg-[#E5E7EB] border-2 border-transparent rounded-lg text-gray-800 appearance-none focus:outline-none transition-all duration-300";
+
+const fieldFocusClass = (hasError: boolean) =>
+  hasError
+    ? "focus:border-red-500 border-red-500/60"
+    : "focus:border-[#FF5A1F]";
+
+export function Select({
+  error,
+  className = "",
+  placeholder,
+  id: externalId,
+  options,
+  ...props
+}: SelectProps) {
   const internalId = useId();
   const id = externalId || internalId;
+  const hasError = Boolean(error);
 
   return (
     <div className="w-full relative mb-1">
@@ -17,18 +33,20 @@ export function Select({ error, className = "", placeholder, id: externalId, opt
         <select
           {...props}
           id={id}
-          className={`peer w-full px-4 pt-[24px] pb-2 min-h-[54px] bg-[#E5E7EB] border-none rounded-lg text-gray-800 appearance-none focus:outline-none focus:ring-2 transition-all duration-300 ${
-            error ? "focus:ring-red-500 ring-2 ring-red-500/50" : "focus:ring-[#FF5A1F]"
-          } ${className}`}
+          className={`${fieldBaseClass} ${fieldFocusClass(hasError)} ${className}`}
         >
-          {placeholder && <option value="" disabled hidden>{placeholder}</option>}
+          {placeholder && (
+            <option value="" disabled hidden>
+              {placeholder}
+            </option>
+          )}
           {options.map((opt) => (
             <option key={opt.value} value={opt.value}>
               {opt.label}
             </option>
           ))}
         </select>
-        
+
         {placeholder && (
           <label
             htmlFor={id}
@@ -44,7 +62,7 @@ export function Select({ error, className = "", placeholder, id: externalId, opt
       </div>
       <span
         className={`absolute left-1 -bottom-4 text-[11px] font-medium text-red-500 transition-all duration-300 ${
-          error ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-2 pointer-events-none"
+          hasError ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-2 pointer-events-none"
         }`}
         role="alert"
       >
