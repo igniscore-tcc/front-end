@@ -7,15 +7,23 @@ export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement |
   isTextarea?: boolean;
 }
 
-export function Input({ 
-  error, 
-  className = "", 
-  placeholder, 
-  type, 
-  id: externalId, 
+const fieldBaseClass =
+  "peer w-full px-4 pt-[24px] pb-2 min-h-[54px] bg-[#E5E7EB] border-2 border-transparent rounded-lg text-gray-800 placeholder-transparent focus:outline-none transition-all duration-300 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none";
+
+const fieldFocusClass = (hasError: boolean) =>
+  hasError
+    ? "focus:border-red-500 border-red-500/60"
+    : "focus:border-[#FF5A1F]";
+
+export function Input({
+  error,
+  className = "",
+  placeholder,
+  type,
+  id: externalId,
   suffixIcon,
   isTextarea,
-  ...props 
+  ...props
 }: InputProps) {
   const internalId = useId();
   const id = externalId || internalId;
@@ -25,6 +33,7 @@ export function Input({
   const currentType = isPassword ? (showPassword ? "text" : "password") : type;
 
   const Component = isTextarea ? "textarea" : "input";
+  const hasError = Boolean(error);
 
   return (
     <div className="w-full relative mb-1">
@@ -34,26 +43,24 @@ export function Input({
           type={isTextarea ? undefined : currentType}
           id={id}
           placeholder=" "
-          aria-invalid={error ? "true" : "false"}
-          className={`peer w-full px-4 pt-[24px] pb-2 min-h-[54px] bg-[#E5E7EB] border-none rounded-lg text-gray-800 placeholder-transparent focus:outline-none focus:ring-2 transition-all duration-300 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none ${isPassword || suffixIcon ? "pr-12" : ""} ${
-            isTextarea ? "resize-none h-32 pt-6" : ""
-          } ${
-            error ? "focus:ring-red-500 ring-2 ring-red-500/50" : "focus:ring-[#FF5A1F]"
-          } ${className}`}
+          aria-invalid={hasError ? "true" : "false"}
+          className={`${fieldBaseClass} ${fieldFocusClass(hasError)} ${
+            isPassword || suffixIcon ? "pr-12" : ""
+          } ${isTextarea ? "resize-none h-32 pt-6" : ""} ${className}`}
         />
         {placeholder && (
           <label
             htmlFor={id}
             className={`absolute left-4 z-10 origin-[0] -translate-y-3 scale-75 transform text-gray-500 duration-200 peer-placeholder-shown:scale-100 peer-focus:-translate-y-3 peer-focus:scale-75 pointer-events-none ${
-              isTextarea 
-                ? "top-4 peer-placeholder-shown:top-4" 
+              isTextarea
+                ? "top-4 peer-placeholder-shown:top-4"
                 : "top-4 peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2"
             } peer-focus:top-4`}
           >
             {placeholder}
           </label>
         )}
-        
+
         {isPassword && (
           <button
             type="button"
@@ -72,7 +79,7 @@ export function Input({
       </div>
       <span
         className={`absolute left-1 -bottom-4 text-[11px] font-medium text-red-500 transition-all duration-300 ${
-          error ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-2 pointer-events-none"
+          hasError ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-2 pointer-events-none"
         }`}
         role="alert"
       >

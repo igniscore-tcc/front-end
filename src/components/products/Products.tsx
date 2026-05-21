@@ -6,13 +6,11 @@ import {
   ArrowUpDown,
   ChevronLeft,
   ChevronRight,
-  Search,
-  Plus,
   Pencil,
   Trash2,
   ChevronDown,
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { ListPageHeader } from "@/components/shared/ListPageHeader";
 import { useProducts } from "@/hooks/useProducts";
 import { Product, ProductFormData } from "@/types/product";
 import { PRODUCT_TYPE_OPTIONS } from "@/lib/constants";
@@ -72,35 +70,15 @@ export default function Products() {
 
   return (
     <div className="h-screen max-h-screen p-6 flex flex-col bg-white text-base overflow-hidden">
-      <header className="flex items-center gap-6 mb-6 shrink-0">
-        <h1 className="text-3xl font-semibold text-[#1a1a1a] shrink-0">
-          Produtos
-        </h1>
-
-        <div className="relative flex-1 max-w-lg mx-auto">
-          <input
-            type="text"
-            placeholder="Procurar"
-            value={search}
-            onChange={(e) => {
-              setSearch(e.target.value);
-              setPage(1);
-            }}
-            className="w-full bg-gray-100/80 rounded-full py-2.5 px-6 pl-12 focus:ring-2 focus:ring-[#FF5A1F]/20 focus:bg-white transition-all outline-none text-gray-700 font-medium"
-          />
-          <Search
-            className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
-            size={20}
-          />
-        </div>
-
-        <Button
-          onClick={() => setShowModal(true)}
-          className="bg-[#FF5A1F] hover:bg-[#E64D17] text-white rounded-full w-12 h-12 flex items-center justify-center transition-all p-0"
-        >
-          <Plus size={24} />
-        </Button>
-      </header>
+      <ListPageHeader
+        title="Produtos"
+        search={search}
+        onSearchChange={(value) => {
+          setSearch(value);
+          setPage(1);
+        }}
+        onAddClick={() => setShowModal(true)}
+      />
 
       <div className="flex flex-wrap items-center gap-4 mb-4">
         {["id", "nome", "tipo", "validade"].map((key) => (
