@@ -6,6 +6,7 @@ import { ptBR } from "date-fns/locale"
 import { Calendar as CalendarIcon } from "lucide-react"
 
 import { cn } from "@/lib/utils"
+import { INPUT_FIELD_HEIGHT_CLASS } from "@/components/ui/Input"
 import { Button } from "@/components/ui/button"
 import { Calendar } from "@/components/ui/calendar"
 import {
@@ -54,7 +55,7 @@ export function DatePicker({ date, setDate, placeholder, error }: DatePickerProp
             <Button
               type="button"
               className={cn(
-                "w-full flex items-center justify-between px-4 pt-[24px] pb-2 min-h-[54px] bg-[#E5E7EB] hover:bg-[#E5E7EB] border-2 border-transparent rounded-lg text-gray-800 focus:outline-none transition-all duration-300 text-left font-normal overflow-hidden shadow-none",
+                `w-full flex items-center justify-between px-4 pt-[24px] pb-2 ${INPUT_FIELD_HEIGHT_CLASS} box-border bg-[#E5E7EB] hover:bg-[#E5E7EB] border-2 border-transparent rounded-lg text-gray-800 focus:outline-none transition-all duration-300 text-left font-normal overflow-hidden shadow-none`,
                 error ? "focus:border-red-500 border-red-500/60" : "focus:border-[#FF5A1F]",
                 !date && "text-transparent" 
               )}
