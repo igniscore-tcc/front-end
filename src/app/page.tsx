@@ -1,6 +1,7 @@
 import Challenges from "@/components/home/challenges";
 import Header from "@/components/home/header";
 import Hero from "@/components/home/Hero";
+import InteractionDashboard from "@/components/home/interaction-dashboard";
 import Solutions from "@/components/home/solutions";
 import {
   ArrowRight,
@@ -27,22 +28,7 @@ export default function Home() {
 
       <Solutions />
 
-      <section className="grid justify-center w-full grid-cols-1 gap-12 mt-16 px-6 md:px-10 lg:px-16">
-        <div className="flex justify-center w-full">
-          <h2 className="text-4xl md:text-5xl text-[#B1B4B8] font-medium leading-[1.3] tracking-[0.01em] max-w-full lg:max-w-[50dvw] text-center">
-            <span className="text-[#FF5A1F]">Visualize sua</span> operação em
-            <span className="block">tempo real</span>
-          </h2>
-        </div>
-
-        <Image
-          src="/dashboard.svg"
-          alt="Hero Image"
-          width={0}
-          height={0}
-          className="object-contain w-full mt-12"
-        ></Image>
-      </section>
+      <InteractionDashboard />
 
       <section className="grid justify-center w-full grid-cols-1 gap-12 mt-16 px-6 md:px-10 lg:px-16">
         <div className="flex w-full">
