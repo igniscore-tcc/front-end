@@ -63,7 +63,7 @@ export default function Home() {
       </section>
 
       <section
-        id="recursos"
+        id="desafios"
         className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 px-6 md:px-10 lg:px-16 py-24"
       >
         <h2 className="text-4xl md:text-5xl text-[#B1B4B8] font-medium leading-[1.3] tracking-[0.01em]">

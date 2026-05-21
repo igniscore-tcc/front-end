@@ -111,11 +111,11 @@ export default function Header() {
           <ul className="flex flex-col gap-6 text-lg">
             <li>
               <Link
-                href="/#recursos"
+                href="/#desafios"
                 onClick={() => setMenuOpen(false)}
                 className="text-[#B1B4B8] transition-colors duration-300 hover:text-[#FF5A1F]"
               >
-                Recursos
+                Desafios
               </Link>
             </li>
 
