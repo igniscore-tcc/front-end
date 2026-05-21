@@ -1,6 +1,7 @@
 import Challenges from "@/components/home/challenges";
 import Header from "@/components/home/header";
 import Hero from "@/components/home/Hero";
+import Solutions from "@/components/home/solutions";
 import {
   ArrowRight,
   CalendarClock,
@@ -24,215 +25,7 @@ export default function Home() {
 
       <Challenges />
 
-      <section className="grid justify-center w-full grid-cols-1 gap-12 mt-16 px-6 md:px-10 lg:px-16">
-        <div className="flex justify-center w-full">
-          <h2 className="text-4xl md:text-5xl text-[#B1B4B8] font-medium leading-[1.3] tracking-[0.01em] max-w-full lg:max-w-[50dvw] text-center">
-            <span className="text-[#FF5A1F]">Gerencie toda</span> a operação da
-            sua empresa em uma única plataforma.
-          </h2>
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 w-full">
-          <article
-            className="
-        group
-        text-[#B1B4B8]
-        border-x
-        border-b
-        border-[#B1B4B8]
-        p-8
-        flex
-        flex-col
-        gap-6
-        transition-all
-        duration-300
-        hover:border-[#FF5A1F]
-        hover:text-[#FF5A1F]
-      "
-          >
-            <div className="flex gap-4 items-center">
-              <UsersIcon
-                width={32}
-                height={32}
-                className="transition-colors duration-300 group-hover:text-[#FF5A1F]"
-              />
-
-              <h3 className="text-2xl transition-colors duration-300 group-hover:text-[#FF5A1F]">
-                Gestão de Clientes
-              </h3>
-            </div>
-
-            <p className="transition-colors duration-300 group-hover:text-[#FF5A1F]">
-              Norem ipsum dolor sit amet, consectetur adipiscing elit.
-            </p>
-          </article>
-
-          <article
-            className="
-        group
-        text-[#B1B4B8]
-        border-b
-        border-[#B1B4B8]
-        p-8
-        flex
-        flex-col
-        gap-6
-        transition-all
-        duration-300
-        hover:border-[#FF5A1F]
-        hover:text-[#FF5A1F]
-      "
-          >
-            <div className="flex gap-4 items-center">
-              <Package
-                width={32}
-                height={32}
-                className="transition-colors duration-300 group-hover:text-[#FF5A1F]"
-              />
-
-              <h3 className="text-2xl transition-colors duration-300 group-hover:text-[#FF5A1F]">
-                Controle de Produtos
-              </h3>
-            </div>
-
-            <p className="transition-colors duration-300 group-hover:text-[#FF5A1F]">
-              Norem ipsum dolor sit amet, consectetur adipiscing elit.
-            </p>
-          </article>
-
-          <article
-            className="
-        group
-        text-[#B1B4B8]
-        border-x
-        border-b
-        border-[#B1B4B8]
-        p-8
-        flex
-        flex-col
-        gap-6
-        transition-all
-        duration-300
-        hover:border-[#FF5A1F]
-        hover:text-[#FF5A1F]
-      "
-          >
-            <div className="flex gap-4 items-center">
-              <ShoppingCartIcon
-                width={32}
-                height={32}
-                className="transition-colors duration-300 group-hover:text-[#FF5A1F]"
-              />
-
-              <h3 className="text-2xl transition-colors duration-300 group-hover:text-[#FF5A1F]">
-                Vendas Inteligentes
-              </h3>
-            </div>
-
-            <p className="transition-colors duration-300 group-hover:text-[#FF5A1F]">
-              Norem ipsum dolor sit amet, consectetur adipiscing elit.
-            </p>
-          </article>
-
-          <article
-            className="
-        group
-        text-[#B1B4B8]
-        border-x
-        border-[#B1B4B8]
-        p-8
-        flex
-        flex-col
-        gap-6
-        transition-all
-        duration-300
-        hover:border-[#FF5A1F]
-        hover:text-[#FF5A1F]
-      "
-          >
-            <div className="flex gap-4 items-center">
-              <ClipboardListIcon
-                width={32}
-                height={32}
-                className="transition-colors duration-300 group-hover:text-[#FF5A1F]"
-              />
-
-              <h3 className="text-2xl transition-colors duration-300 group-hover:text-[#FF5A1F]">
-                Ordens de Serviço
-              </h3>
-            </div>
-
-            <p className="transition-colors duration-300 group-hover:text-[#FF5A1F]">
-              Norem ipsum dolor sit amet, consectetur adipiscing elit.
-            </p>
-          </article>
-
-          <article
-            className="
-        group
-        text-[#B1B4B8]
-        border-[#B1B4B8]
-        p-8
-        flex
-        flex-col
-        gap-6
-        transition-all
-        duration-300
-        hover:border-[#FF5A1F]
-        hover:text-[#FF5A1F]
-      "
-          >
-            <div className="flex gap-4 items-center">
-              <CalendarClock
-                width={32}
-                height={32}
-                className="transition-colors duration-300 group-hover:text-[#FF5A1F]"
-              />
-
-              <h3 className="text-2xl transition-colors duration-300 group-hover:text-[#FF5A1F]">
-                Controle de Vencimentos
-              </h3>
-            </div>
-
-            <p className="transition-colors duration-300 group-hover:text-[#FF5A1F]">
-              Norem ipsum dolor sit amet, consectetur adipiscing elit.
-            </p>
-          </article>
-
-          <article
-            className="
-        group
-        text-[#B1B4B8]
-        border-x
-        border-[#B1B4B8]
-        p-8
-        flex
-        flex-col
-        gap-6
-        transition-all
-        duration-300
-        hover:border-[#FF5A1F]
-        hover:text-[#FF5A1F]
-      "
-          >
-            <div className="flex gap-4 items-center">
-              <ChartBarIncreasingIcon
-                width={32}
-                height={32}
-                className="transition-colors duration-300 group-hover:text-[#FF5A1F]"
-              />
-
-              <h3 className="text-2xl transition-colors duration-300 group-hover:text-[#FF5A1F]">
-                Dashboard Gerencial
-              </h3>
-            </div>
-
-            <p className="transition-colors duration-300 group-hover:text-[#FF5A1F]">
-              Norem ipsum dolor sit amet, consectetur adipiscing elit.
-            </p>
-          </article>
-        </div>
-      </section>
+      <Solutions />
 
       <section className="grid justify-center w-full grid-cols-1 gap-12 mt-16 px-6 md:px-10 lg:px-16">
         <div className="flex justify-center w-full">
@@ -243,7 +36,7 @@ export default function Home() {
         </div>
 
         <Image
-          src="/next.svg"
+          src="/dashboard.svg"
           alt="Hero Image"
           width={0}
           height={0}
