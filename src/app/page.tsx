@@ -488,18 +488,18 @@ export default function Home() {
             <div className="relative flex items-center justify-between mx-auto my-6">
               <div className="absolute top-2 left-0 w-full h-px bg-[#B1B4B8]"></div>
 
-              <div className="relative left-50 z-10 flex flex-col items-center">
+              <div className="relative left-[12.5%] z-10 flex flex-col items-center">
                 <div className="w-4 h-4 bg-[#FF5A1F] rounded-full"></div>
               </div>
-              <div className="relative left-30 z-10 flex flex-col items-center">
-                <div className="w-4 h-4 bg-[#FF5A1F] rounded-full"></div>
-              </div>
-
-              <div className="relative z-10 flex flex-col items-center">
+              <div className="relative left-4 z-10 flex flex-col items-center">
                 <div className="w-4 h-4 bg-[#FF5A1F] rounded-full"></div>
               </div>
 
-              <div className="relative -left-50 z-10 flex flex-col items-center">
+              <div className="relative -left-8 z-10 flex flex-col items-center">
+                <div className="w-4 h-4 bg-[#FF5A1F] rounded-full"></div>
+              </div>
+
+              <div className="relative -left-[12.5%] z-10 flex flex-col items-center">
                 <div className="w-4 h-4 bg-[#FF5A1F] rounded-full"></div>
               </div>
             </div>
