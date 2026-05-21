@@ -1,4 +1,5 @@
 import Challenges from "@/components/home/challenges";
+import Contact from "@/components/home/contact";
 import Header from "@/components/home/header";
 import Hero from "@/components/home/Hero";
 import InteractionDashboard from "@/components/home/interaction-dashboard";
@@ -27,38 +28,7 @@ export default function Home() {
 
       <Market />
 
-      <section
-        className="grid justify-center w-full grid-cols-1 gap-12 mt-16 px-6 md:px-10 lg:px-16 py-16 bg-cover bg-center bg-no-repeat relative overflow-hidden"
-        style={{
-          backgroundImage: `
-      linear-gradient(
-        135deg,
-        rgba(255,90,31,0.95) 0%,
-        rgba(109,40,217,0.85) 100%
-      ),
-      url('/backgroud-gradient.svg')
-    `,
-        }}
-      >
-        <div className="flex w-full justify-center flex-col gap-6 relative z-10">
-          <h2 className="text-4xl md:text-5xl text-white/50 font-medium leading-[1.3] tracking-[0.01em] max-w-full text-center">
-            <span className="text-white">Modernize sua</span> operação com o
-            <span className="block">IgnisCore</span>
-          </h2>
-
-          <p className="text-lg md:text-xl text-white leading-normal tracking-[0.02em] text-center">
-            Controle vendas, vencimentos e ordens de serviço em uma única
-            plataforma.
-          </p>
-        </div>
-
-        <Link
-          href="/login"
-          className="px-4 py-3 border border-white text-white flex items-center justify-center gap-4 font-semibold w-max mx-auto relative z-10"
-        >
-          Agendar demonstração
-        </Link>
-      </section>
+      <Contact />
 
       <footer className="w-full grid-cols-1 gap-12 mt-16 px-6 md:px-10 lg:px-16">
         <div className="flex gap-32">
