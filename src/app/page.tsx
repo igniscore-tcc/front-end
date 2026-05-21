@@ -1,4 +1,5 @@
 import Header from "@/components/home/header";
+import Hero from "@/components/home/Hero";
 import {
   ArrowRight,
   CalendarClock,
@@ -16,51 +17,9 @@ import Link from "next/link";
 export default function Home() {
   return (
     <div>
-      <Header></Header>
+      <Header />
 
-      <section className="flex flex-col lg:flex-row justify-between mx-16 pb-8 md:px-10 lg:px-16 items-center min-h-screen border-b border-[#B1B4B8] gap-16 pt-32 lg:pt-0">
-        <div className="flex flex-col gap-8">
-          <p className="text-sm md:text-base text-[#B1B4B8] font-semibold leading-normal tracking-[0.02em]">
-            Plataforma SaaS para Empresas de Extintores
-          </p>
-
-          <article className="flex flex-col gap-4">
-            <h1 className="text-4xl md:text-5xl lg:text-6xl text-[#B1B4B8] font-medium leading-[1.3] tracking-[0.01em]">
-              <span className="text-[#FF5A1F]">Gestão inteligente</span> para
-              empresas <span className="block">de extintores</span>
-            </h1>
-
-            <p className="text-lg md:text-xl text-[#0B0F19] leading-normal tracking-[0.02em]">
-              Controle vendas, vencimentos e ordens de serviço em uma única
-              plataforma.
-            </p>
-          </article>
-
-          <article className="flex flex-col sm:flex-row gap-4 sm:gap-6">
-            <Link
-              href="/login"
-              className="px-4 py-3 bg-[#FF5A1F] text-white border border-[#FF5A1F] font-semibold"
-            >
-              Solicitar demonstração
-            </Link>
-
-            <Link
-              href="/login"
-              className="px-4 py-3 border border-[#FF5A1F] text-[#FF5A1F] flex items-center justify-center gap-4 font-semibold"
-            >
-              Ver plataforma <ArrowRight width={16} height={16} />
-            </Link>
-          </article>
-        </div>
-
-        <Image
-          src="/next.svg"
-          alt="Hero Image"
-          width={600}
-          height={400}
-          className="object-contain w-full max-w-150"
-        />
-      </section>
+      <Hero />
 
       <section
         id="desafios"
