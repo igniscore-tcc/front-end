@@ -33,10 +33,10 @@ export default function Header() {
           <ul className="flex gap-8 items-center">
             <li>
               <Link
-                href="/#recursos"
+                href="/#desafios"
                 className="text-[#B1B4B8] transition-all duration-300 hover:text-[#FF5A1F]"
               >
-                Recursos
+                Desafios
               </Link>
             </li>
 
