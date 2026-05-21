@@ -390,7 +390,7 @@ export default function Home() {
 
         <div className="flex gap-16">
           <article className="w-110">
-            <div className="flex flex-col gap-4 pb-6">
+            <div className="flex flex-col gap-4 py-6 border-b border[#B1B4B8]">
               <h4 className="text-2xl text-[#FF5A1F] font-medium">
                 Redução de atrasos
               </h4>
@@ -399,17 +399,17 @@ export default function Home() {
                 vulputate libero et velit interdum, ac aliquet odio mattis.
               </p>
             </div>
-            <div className="py-6 border-y border[#B1B4B8]">
+            <div className="py-6 border-b border[#B1B4B8]">
               <h4 className="text-xl text-[#B1B4B8] font-medium">
                 Mais produtividade
               </h4>
             </div>
-            <div className="py-6 border-y border[#B1B4B8]">
+            <div className="py-6 border-b border[#B1B4B8]">
               <h4 className="text-xl text-[#B1B4B8] font-medium">
                 Melhor atendimento
               </h4>
             </div>
-            <div className="py-6 border-y border[#B1B4B8]">
+            <div className="py-6 border-b border[#B1B4B8]">
               <h4 className="text-xl text-[#B1B4B8] font-medium">
                 Gestão centralizada
               </h4>
