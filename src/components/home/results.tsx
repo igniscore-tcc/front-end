@@ -72,14 +72,11 @@ export default function Result() {
     flex-col
     gap-14
     lg:gap-20
-
     mt-20
     lg:mt-24
-
     px-6
     md:px-10
     lg:px-16
-
     py-20
     lg:py-32
   "
@@ -165,10 +162,8 @@ export default function Result() {
                     absolute
                     left-0
                     top-0
-
                     h-full
                     w-0.5
-
                     transition-all
                     duration-500
 
@@ -183,7 +178,6 @@ export default function Result() {
                       border
                       transition-all
                       duration-500
-
                       ${
                         isActive
                           ? "border-[#FF5A1F] bg-[#FF5A1F]/10"
@@ -206,7 +200,6 @@ export default function Result() {
                           font-medium
                           transition-all
                           duration-500
-
                           ${isActive ? "text-[#FF5A1F]" : "text-[#B1B4B8]"}
                         `}
                       >
@@ -290,7 +283,6 @@ export default function Result() {
       w-full
       max-w-5xl
       object-contain
-
       drop-shadow-[0_25px_80px_rgba(0,0,0,0.22)]
     "
             />
