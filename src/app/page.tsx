@@ -1,3 +1,4 @@
+import Challenges from "@/components/home/challenges";
 import Header from "@/components/home/header";
 import Hero from "@/components/home/Hero";
 import {
@@ -21,61 +22,7 @@ export default function Home() {
 
       <Hero />
 
-      <section
-        id="desafios"
-        className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 px-6 md:px-10 lg:px-16 py-24"
-      >
-        <h2 className="text-4xl md:text-5xl text-[#B1B4B8] font-medium leading-[1.3] tracking-[0.01em]">
-          <span className="text-[#FF5A1F]">Sua operação</span> ainda depende de{" "}
-          <span className="block">planilhas e processos manuais?</span>
-        </h2>
-
-        <div className="flex flex-col gap-8">
-          <article className="w-full border border-[#B1B4B8] p-6 md:p-8 flex justify-between items-center gap-6">
-            <p className="text-lg md:text-xl text-[#0B0F19] leading-normal tracking-[0.02em]">
-              Controle manual de vencimentos
-            </p>
-
-            <CalendarClock
-              width={48}
-              height={48}
-              className="text-[#FF5A1F] min-w-12"
-            />
-          </article>
-
-          <article className="w-full border border-[#B1B4B8] p-6 md:p-8 flex justify-between items-center gap-6">
-            <p className="text-lg md:text-xl text-[#0B0F19] leading-normal tracking-[0.02em]">
-              Perda de clientes
-            </p>
-
-            <UserX width={48} height={48} className="text-[#FF5A1F] min-w-12" />
-          </article>
-
-          <article className="w-full border border-[#B1B4B8] p-6 md:p-8 flex justify-between items-center gap-6">
-            <p className="text-lg md:text-xl text-[#0B0F19] leading-normal tracking-[0.02em]">
-              Ordens de serviço desorganizadas
-            </p>
-
-            <ClipboardListIcon
-              width={48}
-              height={48}
-              className="text-[#FF5A1F] min-w-12"
-            />
-          </article>
-
-          <article className="w-full border border-[#B1B4B8] p-6 md:p-8 flex justify-between items-center gap-6">
-            <p className="text-lg md:text-xl text-[#0B0F19] leading-normal tracking-[0.02em]">
-              Controle manual de indicadores
-            </p>
-
-            <ChartBarIncreasingIcon
-              width={48}
-              height={48}
-              className="text-[#FF5A1F] min-w-12"
-            />
-          </article>
-        </div>
-      </section>
+      <Challenges />
 
       <section className="grid justify-center w-full grid-cols-1 gap-12 mt-16 px-6 md:px-10 lg:px-16">
         <div className="flex justify-center w-full">

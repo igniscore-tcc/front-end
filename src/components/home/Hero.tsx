@@ -16,7 +16,7 @@ export default function Hero() {
         items-center
         gap-16
         min-h-screen
-        mx-16
+        mx-6
         md:mx-10
         lg:mx-16
         pt-32
