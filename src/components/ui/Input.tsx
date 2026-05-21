@@ -7,8 +7,11 @@ export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement |
   isTextarea?: boolean;
 }
 
+/** Altura fixa do campo (label flutuante + valor); usar a mesma classe em botões alinhados na mesma linha */
+export const INPUT_FIELD_HEIGHT_CLASS = "h-14 min-h-0";
+
 const fieldBaseClass =
-  "peer w-full px-4 pt-[24px] pb-2 min-h-[54px] bg-[#E5E7EB] border-2 border-transparent rounded-lg text-gray-800 placeholder-transparent focus:outline-none transition-all duration-300 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none";
+  `peer w-full px-4 pt-[24px] pb-2 ${INPUT_FIELD_HEIGHT_CLASS} box-border bg-[#E5E7EB] border-2 border-transparent rounded-lg text-gray-800 placeholder-transparent focus:outline-none transition-all duration-300 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none`;
 
 const fieldFocusClass = (hasError: boolean) =>
   hasError
