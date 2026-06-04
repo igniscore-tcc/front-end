@@ -1,8 +1,7 @@
-"use client"
+"use client";
 
 import { useState, useMemo, useEffect, useCallback } from "react";
 import { Sale, SaleStatus } from "@/types/sale";
-import { mockSales } from "@/mocks/sales";
 import { Cliente } from "@/types/cliente";
 import { Product } from "@/types/product";
 import { toast } from "sonner";
@@ -17,22 +16,32 @@ interface CartItem {
   total: number;
 }
 
-export function useSales() {
-  const [sales, setSales] = useState<Sale[]>(mockSales);
-  const [hydrated, setHydrated] = useState(false);
+const paymentMethodMap: Record<string, string> = {
+  Dinheiro: "CASH",
+  dinheiro: "CASH",
+  CASH: "CASH",
 
-  // Hidrata do localStorage apenas no cliente, após a montagem
-  useEffect(() => {
-    const stored = localStorage.getItem("sales_data");
-    if (stored) {
-      try {
-        setSales(JSON.parse(stored));
-      } catch {
-        // Mantém mockSales se o JSON for inválido
-      }
-    }
-    setHydrated(true);
-  }, []);
+  "Cartão de Crédito": "CREDIT_CARD",
+  "cartão de crédito": "CREDIT_CARD",
+  CREDIT_CARD: "CREDIT_CARD",
+
+  "Cartão de Débito": "DEBIT_CARD",
+  "cartão de débito": "DEBIT_CARD",
+  DEBIT_CARD: "DEBIT_CARD",
+
+  Pix: "PIX",
+  pix: "PIX",
+  PIX: "PIX",
+
+  Boleto: "BANK_SLIP",
+  boleto: "BANK_SLIP",
+  BANK_SLIP: "BANK_SLIP",
+};
+
+export function useSales() {
+  const [sales, setSales] = useState<Sale[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [total, setTotal] = useState(0);
 
   const [page, setPage] = useState(1);
   const [perPage, setPerPage] = useState(10);
@@ -42,9 +51,11 @@ export function useSales() {
     dir: "desc",
   });
 
-  const [filterStatus, setFilterStatus] = useState<"ALL" | "CONCLUDED" | "PENDING" | "CANCELLED">("ALL");
+  const [filterStatus, setFilterStatus] = useState<
+    "ALL" | "CONCLUDED" | "PENDING" | "CANCELLED"
+  >("ALL");
 
-  // --- Estados da Nova Venda ---
+  // Estados da Nova Venda
   const [cart, setCart] = useState<CartItem[]>([]);
   const [selectedClient, setSelectedClient] = useState<Cliente | null>(null);
   const [clientSearch, setClientSearch] = useState("");
@@ -64,16 +75,105 @@ export function useSales() {
   const [dbProducts, setDbProducts] = useState<Product[]>([]);
   const [loadingSuggestions, setLoadingSuggestions] = useState(false);
 
-  // Carrega clientes e produtos diretamente da API para as sugestões do PDV
+  // 2. Criar fetchSales()
+  const fetchSales = useCallback(async () => {
+    try {
+      setLoading(true);
+
+      const response = await fetch(
+        `${INTERNAL_API}/sales/findall?page=${page - 1}&size=${perPage}`,
+        {
+          method: "GET",
+          headers: getAuthHeaders(),
+        },
+      );
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error("Erro ao buscar vendas");
+      }
+
+      const data = Array.isArray(result?.sales) ? result.sales : [];
+
+      const formattedSales: Sale[] = data.map((sale: any) => ({
+        id: Number(sale.id),
+
+        total: new Intl.NumberFormat("pt-BR", {
+          style: "currency",
+          currency: "BRL",
+        }).format(Number(sale.total ?? 0)),
+
+        desconto: sale.discount ? `${sale.discount}%` : "0%",
+
+        data: sale.date ? new Date(sale.date).toLocaleDateString("pt-BR") : "-",
+
+        tipo: sale.paymentMethod ?? "-",
+
+        status: sale.status ?? SaleStatus.PENDING,
+
+        cliente: sale.client
+          ? {
+              id: Number(sale.client.id),
+              nome: sale.client.name,
+              tipo: sale.client.cpf ? "PF" : "PJ",
+              cpf: sale.client.cpf || "",
+              cnpj: sale.client.cnpj || "",
+              telefone: sale.client.phone || "",
+              email: sale.client.email || "",
+              inscricao: sale.client.ie || "",
+              uf: sale.client.ufIe || "SP",
+              observacao: sale.client.obs || "",
+            }
+          : undefined,
+
+        items:
+          sale.items?.map((item: any) => ({
+            id: Number(item.id),
+            nome: item.product?.name ?? "Produto",
+            units: Number(item.quantity ?? 1),
+            price: Number(item.unitPrice ?? 0),
+            total: new Intl.NumberFormat("pt-BR", {
+              style: "currency",
+              currency: "BRL",
+            }).format(Number(item.total ?? 0)),
+          })) ?? [],
+      }));
+
+      setSales(formattedSales);
+      setTotal(Number(result?.totalSales ?? formattedSales.length));
+    } catch (err) {
+      console.error("Erro ao carregar vendas:", err);
+      toast.error("Erro ao carregar vendas");
+    } finally {
+      setLoading(false);
+    }
+  }, [page, perPage]);
+
+  // Função auxiliar para resetar o fluxo de vendas no front após concluir
+  const clearCart = useCallback(() => {
+    setCart([]);
+    setSelectedClient(null);
+    setClientSearch("");
+    setSelectedProduct(null);
+    setProductSearch("");
+    setPriceInput(0);
+    setUnitsInput(1);
+    setDiscountInput("0%");
+  }, []);
+
   const loadSuggestions = useCallback(async () => {
     try {
       setLoadingSuggestions(true);
 
       // Buscar Clientes
-      const clientsRes = await fetch(`${INTERNAL_API}/clients/findall?page=0&size=500`, {
-        method: "GET",
-        headers: getAuthHeaders(),
-      });
+      const clientsRes = await fetch(
+        `${INTERNAL_API}/clients/findall?page=0&size=100`,
+        {
+          method: "GET",
+          headers: getAuthHeaders(),
+        },
+      );
 
       if (clientsRes.ok) {
         const result = await clientsRes.json();
@@ -95,18 +195,17 @@ export function useSales() {
       }
 
       // Buscar Produtos
-      const productsRes = await fetch(`${INTERNAL_API}/products/findall?page=0&size=500`, {
-        method: "GET",
-        headers: getAuthHeaders(),
-      });
+      const productsRes = await fetch(
+        `${INTERNAL_API}/products/findall?page=0&size=100`,
+        {
+          method: "GET",
+          headers: getAuthHeaders(),
+        },
+      );
 
       if (productsRes.ok) {
         const result = await productsRes.json();
-        const data = Array.isArray(result)
-          ? result
-          : Array.isArray(result.content)
-            ? result.content
-            : [];
+        const data = Array.isArray(result?.products) ? result.products : [];
         const formattedProducts: Product[] = data.map((product: any) => ({
           id: Number(product.id),
           nome: product.name,
@@ -115,6 +214,7 @@ export function useSales() {
           validade: product.validity,
           preco: Number(product.price),
         }));
+
         setDbProducts(formattedProducts);
       }
     } catch (err) {
@@ -124,12 +224,10 @@ export function useSales() {
     }
   }, []);
 
-  const formatCurrency = (value: number) => {
-    return new Intl.NumberFormat("pt-BR", {
-      style: "currency",
-      currency: "BRL",
-    }).format(value);
-  };
+  useEffect(() => {
+    fetchSales();
+    loadSuggestions();
+  }, [fetchSales, loadSuggestions]);
 
   // Debounce da busca de vendas
   const debouncedSearch = useDebounce(search, 300);
@@ -140,10 +238,12 @@ export function useSales() {
 
     if (filterStatus !== "ALL") {
       result = result.filter((sale) => {
-        // Mapeia o enum de status da Venda para a string correta
-        if (filterStatus === "CONCLUDED") return sale.status === SaleStatus.CONCLUDED;
-        if (filterStatus === "PENDING") return sale.status === SaleStatus.PENDING;
-        if (filterStatus === "CANCELLED") return sale.status === SaleStatus.CANCELLED;
+        if (filterStatus === "CONCLUDED")
+          return sale.status === SaleStatus.CONCLUDED;
+        if (filterStatus === "PENDING")
+          return sale.status === SaleStatus.PENDING;
+        if (filterStatus === "CANCELLED")
+          return sale.status === SaleStatus.CANCELLED;
         return true;
       });
     }
@@ -163,26 +263,37 @@ export function useSales() {
       const vb = b[sort.key];
 
       if (sort.key === "total") {
-        const numA = parseFloat(String(va).replace(/[^0-9,-]/g, "").replace(",", ".")) || 0;
-        const numB = parseFloat(String(vb).replace(/[^0-9,-]/g, "").replace(",", ".")) || 0;
+        const numA =
+          parseFloat(
+            String(va)
+              .replace(/[^0-9,-]/g, "")
+              .replace(",", "."),
+          ) || 0;
+
+        const numB =
+          parseFloat(
+            String(vb)
+              .replace(/[^0-9,-]/g, "")
+              .replace(",", "."),
+          ) || 0;
+
         return sort.dir === "asc" ? numA - numB : numB - numA;
       }
 
-      if (va < vb) return sort.dir === "asc" ? -1 : 1;
-      if (va > vb) return sort.dir === "asc" ? 1 : -1;
+      const valueA = String(va ?? "");
+      const valueB = String(vb ?? "");
+
+      if (valueA < valueB) return sort.dir === "asc" ? -1 : 1;
+      if (valueA > valueB) return sort.dir === "asc" ? 1 : -1;
       return 0;
     });
   }, [filtered, sort]);
 
-  const paginatedSales = useMemo(() => {
-    const startIndex = (page - 1) * perPage;
-    return sorted.slice(startIndex, startIndex + perPage);
-  }, [sorted, page, perPage]);
-
-  const totalPages = Math.ceil(filtered.length / perPage);
+  const pageData = sorted;
+  const totalPages = Math.ceil(total / perPage);
   const hasNextPage = page < totalPages;
-  const from = filtered.length === 0 ? 0 : (page - 1) * perPage + 1;
-  const to = Math.min(page * perPage, filtered.length);
+  const from = total === 0 ? 0 : (page - 1) * perPage + 1;
+  const to = Math.min(page * perPage, total);
 
   const handleSort = (key: keyof Sale) => {
     setSort((prev) => ({
@@ -196,25 +307,29 @@ export function useSales() {
   const filteredClientSuggestions = useMemo(() => {
     if (!clientSearch.trim()) return [];
     const term = clientSearch.toLowerCase();
-    return dbClients.filter(c => {
-      const doc = c.tipo === "PF" ? c.cpf : c.cnpj;
-      return (
-        c.nome.toLowerCase().includes(term) ||
-        (doc && doc.toLowerCase().includes(term))
-      );
-    }).slice(0, 5);
+    return dbClients
+      .filter((c) => {
+        const doc = c.tipo === "PF" ? c.cpf : c.cnpj;
+        return (
+          c.nome.toLowerCase().includes(term) ||
+          (doc && doc.toLowerCase().includes(term))
+        );
+      })
+      .slice(0, 5);
   }, [clientSearch, dbClients]);
 
   // Autocomplete Produtos
   const filteredProductSuggestions = useMemo(() => {
     if (!productSearch.trim()) return [];
     const term = productSearch.toLowerCase();
-    return dbProducts.filter(p => {
-      return (
-        p.nome.toLowerCase().includes(term) ||
-        (p.lote && p.lote.toLowerCase().includes(term))
-      );
-    }).slice(0, 5);
+    return dbProducts
+      .filter((p) => {
+        return (
+          p.nome.toLowerCase().includes(term) ||
+          (p.lote && p.lote.toLowerCase().includes(term))
+        );
+      })
+      .slice(0, 5);
   }, [productSearch, dbProducts]);
 
   const handleSelectProduct = (product: Product) => {
@@ -227,6 +342,7 @@ export function useSales() {
 
   const clearProductSelection = () => {
     setSelectedProduct(null);
+    setProductSearch("");
     setPriceInput(0);
     setUnitsInput(1);
   };
@@ -239,7 +355,9 @@ export function useSales() {
     }
 
     const currentItemTotal = priceInput * unitsInput;
-    const existingIndex = cart.findIndex(item => item.product.id === selectedProduct.id);
+    const existingIndex = cart.findIndex(
+      (item) => item.product.id === selectedProduct.id,
+    );
 
     if (existingIndex > -1) {
       const updated = [...cart];
@@ -248,7 +366,7 @@ export function useSales() {
       updated[existingIndex] = {
         ...prevItem,
         units: newUnits,
-        total: newUnits * prevItem.price
+        total: newUnits * prevItem.price,
       };
       setCart(updated);
     } else {
@@ -257,12 +375,11 @@ export function useSales() {
         product: selectedProduct,
         units: unitsInput,
         price: priceInput,
-        total: currentItemTotal
+        total: currentItemTotal,
       };
       setCart([...cart, newItem]);
     }
 
-    // Reset campos
     setProductSearch("");
     setSelectedProduct(null);
     setPriceInput(0);
@@ -271,43 +388,58 @@ export function useSales() {
   };
 
   const handleRemoveCartItem = (id: string) => {
-    setCart(cart.filter(item => item.id !== id));
+    setCart(cart.filter((item) => item.id !== id));
   };
 
-  const finalizeSale = (finalTotal: number) => {
-    if (cart.length === 0) {
-      toast.error("Adicione itens à venda primeiro.");
-      return false;
+  const finalizeSale = async () => {
+    try {
+      if (!selectedClient) {
+        throw new Error("Selecione um cliente antes de finalizar a venda.");
+      }
+      if (cart.length === 0) {
+        throw new Error("O carrinho está vazio.");
+      }
+
+      const mappedPayment = paymentMethodMap[paymentMethod] || "CASH";
+
+      const payload = {
+        clientId: Number(selectedClient.id),
+        paymentMethod: mappedPayment,
+        items: cart.map((item) => ({
+          productId: Number(item.product.id),
+          quantity: Number(item.units),
+          unitPrice: Number(item.price),
+        })),
+      };
+
+      const response = await fetch(`${INTERNAL_API}/sales/create`, {
+        method: "POST",
+        headers: {
+          ...getAuthHeaders(),
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+
+      const dataResult = await response.json();
+
+      if (!response.ok) {
+        throw new Error(dataResult.error || "Erro ao finalizar venda.");
+      }
+
+      clearCart();
+      toast.success("Venda realizada com sucesso!");
+      fetchSales(); // Atualiza o grid de vendas na interface automaticamente
+    } catch (error: any) {
+      toast.error(error.message);
     }
-
-    const newId = sales.length > 0 ? Math.max(...sales.map(s => s.id)) + 1 : 101;
-    const newSale: Sale = {
-      id: newId,
-      total: formatCurrency(finalTotal),
-      desconto: discountInput || "0%",
-      data: new Date().toLocaleDateString("pt-BR"),
-      tipo: paymentMethod,
-      status: SaleStatus.CONCLUDED
-    };
-
-    const nextSales = [newSale, ...sales];
-    setSales(nextSales);
-    if (typeof window !== "undefined") {
-      localStorage.setItem("sales_data", JSON.stringify(nextSales));
-    }
-
-    setCart([]);
-    setSelectedClient(null);
-    setDiscountInput("0%");
-    toast.success(`Venda #${newId} realizada com sucesso!`);
-    return true;
   };
 
   return {
     sales,
-    pageData: paginatedSales,
-    loading: !hydrated,
-    total: filtered.length,
+    pageData,
+    loading,
+    total,
     totalPages,
     hasNextPage,
     from,
@@ -323,7 +455,6 @@ export function useSales() {
     filterStatus,
     setFilterStatus,
 
-    // Estados POS
     cart,
     setCart,
     selectedClient,
@@ -351,15 +482,14 @@ export function useSales() {
     loadingSuggestions,
     loadSuggestions,
 
-    // Autocomplete helpers
     filteredClientSuggestions,
     filteredProductSuggestions,
 
-    // POS Actions
     handleSelectProduct,
     clearProductSelection,
     handleAddCartItem,
     handleRemoveCartItem,
     finalizeSale,
+    clearCart,
   };
 }

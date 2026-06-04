@@ -1,7 +1,17 @@
+import { Cliente } from "./cliente";
+
 export enum SaleStatus {
   CONCLUDED = "Concluída",
   PENDING = "Pendente",
   CANCELLED = "Cancelada",
+}
+
+export interface SaleItem {
+  id: number;
+  nome: string;
+  units: number;
+  price: number;
+  total: string;
 }
 
 export interface Sale {
@@ -11,4 +21,7 @@ export interface Sale {
   data: string;
   tipo: string;
   status: SaleStatus;
+
+  cliente?: Cliente;
+  items?: SaleItem[];
 }

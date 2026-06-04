@@ -58,11 +58,9 @@ export function useProducts() {
         throw new Error(result.error || "Erro ao buscar produtos");
       }
 
-      const data = Array.isArray(result)
-        ? result
-        : Array.isArray(result.content)
-          ? result.content
-          : [];
+      const data = Array.isArray(result?.products)
+        ? result.products
+        : [];
 
       const formattedProducts: Product[] = data.map((product: any) => ({
         id: Number(product.id),
@@ -74,13 +72,18 @@ export function useProducts() {
       }));
 
       setProducts(formattedProducts);
+
+      setTotal(Number(result?.totalProducts ?? 0));
       
-      // Armazena o total real do banco de dados
-      setTotal(
-        typeof result.totalElements === "number"
-          ? result.totalElements
-          : formattedProducts.length,
-      );
+      const totalFromApi =
+        typeof result?.totalProducts === "number"
+          ? result.totalProducts
+          : Array.isArray(result?.products)
+            ? result.products.length
+            : formattedProducts.length;
+
+      setTotal(totalFromApi);
+
     } catch (error) {
       console.error("Erro ao carregar produtos:", error);
       toast.error(

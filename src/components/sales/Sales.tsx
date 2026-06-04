@@ -17,6 +17,14 @@ import { SaleStatus, Sale } from "@/types/sale";
 import { useSales } from "@/hooks/useSales";
 import NewSale from "@/components/sales/NewSale";
 
+const paymentLabels: Record<string, string> = {
+  pix: "PIX",
+  cash: "Dinheiro",
+  credit_card: "Cartão de Crédito",
+  debit_card: "Cartão de Débito",
+  bank_slip: "Boleto",
+};
+
 export default function Sales() {
   const [view, setView] = useState<"list" | "create">("list");
 
@@ -71,6 +79,8 @@ export default function Sales() {
   useEffect(() => {
     if (view === "create") loadSuggestions();
   }, [view, loadSuggestions]);
+
+  const [selectedSale, setSelectedSale] = useState<Sale | null>(null);
 
   const sortIcon = (key: keyof Sale) => {
     if (sort.key !== key) return <ArrowUpDown size={14} />;
@@ -214,7 +224,8 @@ export default function Sales() {
                   pageData.map((sale) => (
                     <tr
                       key={sale.id}
-                      className="group hover:bg-gray-50/80 transition-colors"
+                      onClick={() => setSelectedSale(sale)}
+                      className="group hover:bg-gray-50/80 transition-colors cursor-pointer"
                     >
                       <td className="px-6 py-3.5 text-sm text-gray-500 font-semibold text-center">
                         {sale.id}
@@ -228,8 +239,9 @@ export default function Sales() {
                       <td className="px-6 py-3.5 text-sm text-gray-600 whitespace-nowrap text-center">
                         {sale.data}
                       </td>
+                      {/* 🔄 Corrigido para sale.tipo + Tradução do Enum Java */}
                       <td className="px-6 py-3.5 text-sm text-gray-600 font-medium text-center">
-                        {sale.tipo}
+                        {paymentLabels[sale.tipo] || sale.tipo}
                       </td>
                       <td className="px-6 py-3.5 text-center">
                         <span
@@ -324,6 +336,115 @@ export default function Sales() {
           </div>
         </div>
       </footer>
+
+      {selectedSale && (
+        <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-6">
+          <div className="bg-white w-full max-w-[980px] rounded-[28px] shadow-2xl overflow-hidden">
+            <div className="flex items-center justify-between border-b border-gray-100 px-8 py-6">
+              <h2 className="text-[26px] font-medium text-[#1A1A1A]">
+                Detalhes da venda
+              </h2>
+
+              <button
+                onClick={() => setSelectedSale(null)}
+                className="w-10 h-10 rounded-lg hover:bg-gray-100 flex items-center justify-center text-gray-500 text-2xl cursor-pointer"
+              >
+                ×
+              </button>
+            </div>
+
+            <div className="p-8">
+              <div className="flex justify-between items-start mb-8">
+                <div>
+                  <h1 className="text-[32px] font-bold text-[#1A1A1A]">
+                    {selectedSale.cliente?.nome || "Cliente não informado"}
+                  </h1>
+
+                  <div className="flex items-center gap-4 mt-4">
+                    {/* 🔄 Corrigido para selectedSale.data */}
+                    <span className="text-[20px] text-gray-600">
+                      {selectedSale.data}
+                    </span>
+
+                    <span
+                      className={`px-5 py-2 rounded-full text-sm font-semibold ${
+                        selectedSale.status === SaleStatus.CONCLUDED
+                          ? "bg-green-100 text-green-700"
+                          : selectedSale.status === SaleStatus.PENDING
+                          ? "bg-yellow-100 text-yellow-700"
+                          : "bg-red-100 text-red-700"
+                      }`}
+                    >
+                      {selectedSale.status}
+                    </span>
+                  </div>
+                </div>
+
+                <h1 className="text-[40px] font-black text-[#FF5A1F]">
+                  {selectedSale.total}
+                </h1>
+              </div>
+
+              <div className="rounded-2xl overflow-hidden border border-gray-100">
+                <table className="w-full">
+                  <thead className="bg-[#FDF0EB]">
+                    <tr>
+                      <th className="px-6 py-5 text-left text-[#FF5A1F] font-bold">
+                        ID
+                      </th>
+                      <th className="px-6 py-5 text-left text-[#FF5A1F] font-bold">
+                        Item
+                      </th>
+                      <th className="px-6 py-5 text-left text-[#FF5A1F] font-bold">
+                        Unidades
+                      </th>
+                      <th className="px-6 py-5 text-left text-[#FF5A1F] font-bold">
+                        Total
+                      </th>
+                    </tr>
+                  </thead>
+
+                  <tbody>
+                    {selectedSale.items?.length ? (
+                      selectedSale.items.map((item) => (
+                        <tr
+                          key={`${item.id}-${item.nome}`}
+                          className="border-t border-gray-100"
+                        >
+                          <td className="px-6 py-5 text-gray-700">
+                            {item.id}
+                          </td>
+
+                          <td className="px-6 py-5 text-gray-800 font-medium">
+                            {item.nome}
+                          </td>
+
+                          <td className="px-6 py-5 text-gray-700">
+                            {item.units}
+                          </td>
+
+                          <td className="px-6 py-5 font-bold text-gray-900">
+                            {item.total}
+                          </td>
+                        </tr>
+                      ))
+                    ) : (
+                      <tr>
+                        <td
+                          colSpan={4}
+                          className="text-center py-10 text-gray-400"
+                        >
+                          Nenhum item encontrado
+                        </td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
