@@ -20,19 +20,24 @@ export async function GET(req: NextRequest) {
   const query = `
     query Products($page: Int!, $size: Int!) {
       products(page: $page, size: $size) {
-        id
-        name
-        type
-        validity
-        lot
-        price
-        company {
+        products {
           id
           name
+          type
+          validity
+          lot
+          price
+          company {
+            id
+            name
+          }
         }
+        totalPages
+        totalProducts
       }
     }
   `;
+
 
   const response = await fetch(`${API_URL}/graphql`, {
     method: "POST",

@@ -44,7 +44,7 @@ interface NewSaleProps {
   clearProductSelection: () => void;
   handleAddCartItem: (e: React.FormEvent) => void;
   handleRemoveCartItem: (id: string) => void;
-  finalizeSale: (total: number) => boolean;
+  finalizeSale: () => Promise<void>;
 }
 
 export default function NewSale({
@@ -99,9 +99,14 @@ export default function NewSale({
     [subtotal, discountValue]
   );
 
-  const handleFinalize = () => {
-    const success = finalizeSale(finalTotal);
-    if (success) onBack();
+  // 🛠️ CORRIGIDO: Executa a função do hook e volta para a listagem
+  const handleFinalize = async () => {
+    try {
+      await finalizeSale();
+      onBack();
+    } catch (error) {
+      console.error("Erro ao finalizar a venda:", error);
+    }
   };
 
   return (
@@ -311,11 +316,11 @@ export default function NewSale({
             value={paymentMethod}
             onChange={(e) => setPaymentMethod(e.target.value)}
             options={[
-              { value: "Dinheiro", label: "Dinheiro" },
-              { value: "PIX", label: "PIX" },
-              { value: "Cartão de Crédito", label: "Cartão de Crédito" },
-              { value: "Débito", label: "Cartão de Débito" },
-              { value: "Boleto", label: "Boleto" },
+              { value: "cash", label: "Dinheiro" },
+              { value: "pix", label: "PIX" },
+              { value: "credit_card", label: "Cartão de Crédito" },
+              { value: "debit_card", label: "Cartão de Débito" },
+              { value: "bank_slip", label: "Boleto" },
             ]}
           />
 
