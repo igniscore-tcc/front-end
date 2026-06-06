@@ -1,9 +1,9 @@
-import MaturityDate from "@/components/maturity/MaturityDate";
+import ExpirationDate from "@/components/expiration/ExpirationDate";
 
 export default function VencimentosPage() {
   return (
     <div>
-      <MaturityDate />
+      <ExpirationDate />
     </div>
   );
 }
