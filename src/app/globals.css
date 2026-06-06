@@ -4,6 +4,26 @@
 
 @custom-variant dark (&:is(.dark *));
 
+.recharts-wrapper,
+.recharts-surface,
+.recharts-surface *,
+.recharts-wrapper * {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+.recharts-wrapper *:focus,
+.recharts-surface *:focus,
+.recharts-surface:focus,
+svg:focus {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+svg[role="application"] {
+  outline: none !important;
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
