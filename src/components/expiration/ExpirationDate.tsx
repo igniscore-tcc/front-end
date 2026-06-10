@@ -1,6 +1,7 @@
 "use client";
 
-import { Pencil, Trash2 } from "lucide-react";
+import { useExpiration } from "@/hooks/useExpiration";
+import { Pencil, Trash2, ChevronDown, ChevronLeft, ChevronRight } from "lucide-react";
 
 const mockData = [
   {
@@ -33,6 +34,19 @@ const mockData = [
 ];
 
 export default function MaturityDate() {
+  
+  const {
+    perPage,
+    setPage,
+    setPerPage,
+    from,
+    to,
+    total,
+    page,
+    totalPages,
+    hasNextPage,
+  } = useExpiration();
+
   return (
     <div className="h-screen max-h-screen p-6 flex flex-col bg-white text-base overflow-hidden">
       <div className="mb-6 shrink-0">
@@ -147,6 +161,54 @@ export default function MaturityDate() {
           </div>
         </div>
       </div>
+      <footer className="mt-auto flex flex-col md:flex-row items-center justify-center gap-8 text-sm font-medium text-gray-500 shrink-0 py-6">
+        <div className="flex items-center gap-2">
+          <span>Linhas por página</span>
+          <div className="relative">
+            <select
+              value={perPage}
+              onChange={(e) => {
+                setPerPage(Number(e.target.value));
+                setPage(1);
+              }}
+              className="bg-transparent font-bold text-gray-800 outline-none pr-4 appearance-none cursor-pointer"
+            >
+              <option value={5}>5</option>
+              <option value={10}>10</option>
+              <option value={20}>20</option>
+              <option value={50}>50</option>
+            </select>
+            <ChevronDown
+              size={14}
+              className="absolute right-0 top-1/2 -translate-y-1/2 pointer-events-none"
+            />
+          </div>
+        </div>
+
+        <div className="flex items-center gap-4">
+          <span>
+            {from}-{to} de {total}
+          </span>
+          <div className="flex items-center gap-3">
+            <button
+              type="button"
+              onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
+              disabled={page === 1}
+              className="p-1.5 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-400 disabled:opacity-30 cursor-pointer disabled:cursor-not-allowed"
+            >
+              <ChevronLeft size={20} />
+            </button>
+            <button
+              type="button"
+              onClick={() => setPage((prev) => Math.min(prev + 1, totalPages))}
+              disabled={!hasNextPage}
+              className="p-1.5 rounded-lg bg-[#FF5A1F] hover:bg-[#E64D17] text-white disabled:opacity-30 cursor-pointer disabled:cursor-not-allowed"
+            >
+              <ChevronRight size={20} />
+            </button>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }
