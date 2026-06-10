@@ -10,6 +10,7 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import { useState } from "react";
+import { CalendarClock, CalendarX2, NotebookText, ShoppingCart, User } from "lucide-react"
 
 const data = [
   { mes: "Jan", vendas: 12000 },
@@ -27,46 +28,61 @@ const data = [
 ];
 
 export default function Dashboard() {
-  const [periodo, setPeriodo] = useState("");
+  const [periodo, setPeriodo] = useState("3");
 
   const dadosFiltrados = data.slice(-Number(periodo));
 
   return (
-    <div className="bg-[#F6F8FA] min-h-screen">
+    <div className="bg-[#F6F6F6] min-h-screen">
       <div className="bg-white px-6 py-4 border-b border-gray-200">
         <h1 className="text-2xl font-semibold text-gray-900">Dashboard</h1>
 
         <p className="text-sm text-gray-500 mt-1">Visão geral do sistema</p>
       </div>
 
-      <div className="p-6 grid grid-cols-5 gap-5">
-        <div className="bg-white p-5 rounded-xl min-h-[150px] text-[#6B7280]">
-          Vendas do mês
-          <div className="text-black mt-4 font-semibold text-4xl">400k</div>
+      <div className="p-6 grid grid-cols-5 gap-8">
+        <div className="bg-white p-5 rounded-xl min-h-[150px] text-[#6B7280] flex justify-between">
+          <div>
+            Vendas do mês
+            <div className="text-black mt-4 font-semibold text-4xl">400k</div>
+          </div>
+          <ShoppingCart className="text-[#FF5A1F]" width={32} height={32} />
         </div>
 
-        <div className="bg-white p-5 rounded-xl min-h-[150px] text-[#6B7280]">
-          Clientes ativos
-          <div className="text-black mt-4 font-semibold text-4xl">20k</div>
+        <div className="bg-white p-5 rounded-xl min-h-[150px] text-[#6B7280] flex justify-between">
+          <div>
+            Clientes ativos
+            <div className="text-black mt-4 font-semibold text-4xl">20k</div>
+          </div>
+          <User className="text-[#FF5A1F]" width={32} height={32} />
         </div>
 
-        <div className="bg-white p-5 rounded-xl min-h-[150px] text-[#6B7280]">
-          Ordens em aberto
-          <div className="text-black mt-4 font-semibold text-4xl">10</div>
+        <div className="bg-white p-5 rounded-xl min-h-[150px] text-[#6B7280] flex justify-between">
+          <div>
+            Ordens em aberto
+            <div className="text-black mt-4 font-semibold text-4xl">10</div>
+          </div>
+          <NotebookText className="text-[#FF5A1F]" width={32} height={32} />
         </div>
 
-        <div className="bg-white p-5 rounded-xl min-h-[150px] text-[#6B7280]">
-          Vencimentos próximos
-          <div className="text-black mt-4 font-semibold text-4xl">2</div>
+        <div className="bg-white p-5 rounded-xl min-h-[150px] text-[#6B7280] flex justify-between">
+          <div>
+            Vencimentos próximos
+            <div className="text-black mt-4 font-semibold text-4xl">2</div>
+          </div>
+          <CalendarClock className="text-[#FF5A1F]" width={32} height={32} />
         </div>
 
-        <div className="bg-white p-5 rounded-xl min-h-[150px] text-[#6B7280]">
-          Vencidos
-          <div className="text-black mt-4 font-semibold text-4xl">10</div>
+        <div className="bg-white p-5 rounded-xl min-h-[150px] text-[#6B7280] flex justify-between">
+          <div>
+            Vencidos
+            <div className="text-black mt-4 font-semibold text-4xl">10</div>
+          </div>
+          <CalendarX2 className="text-[#FF5A1F]" width={32} height={32} />
         </div>
       </div>
 
-      <div className="px-6 pb-6 grid grid-cols-3 gap-5">
+      <div className="px-6 pb-6 mt-8 grid grid-cols-3 gap-8">
         <div className="col-span-2 bg-white rounded-xl p-5 h-[400px] select-none">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-lg font-semibold text-gray-900">
@@ -95,11 +111,11 @@ export default function Dashboard() {
               <Area
                 type="monotone"
                 dataKey="vendas"
-                stroke="#2563EB"
-                fill="#93C5FD"
+                stroke="#FF5A1F"
+                fill="#FF5A1F"
               />
             </AreaChart>
-          </ResponsiveContainer> 
+          </ResponsiveContainer>
         </div>
 
         <div className="bg-white rounded-xl p-5 h-[400px]">
