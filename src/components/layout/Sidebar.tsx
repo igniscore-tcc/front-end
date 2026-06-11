@@ -49,9 +49,11 @@ export default function Sidebar({ isExpanded, onToggle }: SidebarProps) {
 
   const getLinkClassName = (href: string) => {
     const isActive = pathname === href;
-    const baseClasses = "transition-all duration-300 py-2 rounded-xl flex items-center group overflow-hidden w-full";
+    const baseClasses = "relative transition-all duration-300 py-2 rounded-xl flex items-center group overflow-hidden w-full";
     const activeClasses = isActive 
-      ? "bg-[#FF5A1F]/10 text-[#FF5A1F]" 
+      ? isExpanded 
+        ? "bg-[#FF5A1F]/10 text-[#FF5A1F]" 
+        : "text-[#FF5A1F]"
       : "text-gray-400 hover:text-gray-600 hover:bg-gray-100";
     
     return `${baseClasses} ${activeClasses}`;
@@ -98,6 +100,9 @@ export default function Sidebar({ isExpanded, onToggle }: SidebarProps) {
                     href={item.href}
                     className={getLinkClassName(item.href)}
                   >
+                    {!isExpanded && pathname === item.href && (
+                      <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-[#FF5A1F] rounded-r-full" />
+                    )}
                     <div className="w-16 flex-none flex items-center justify-center">
                       <item.icon size={iconSize} />
                     </div>
@@ -133,6 +138,9 @@ export default function Sidebar({ isExpanded, onToggle }: SidebarProps) {
                     href="/configuracoes"
                     className={getLinkClassName("/configuracoes")}
                   >
+                    {!isExpanded && pathname === "/configuracoes" && (
+                      <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-[#FF5A1F] rounded-r-full" />
+                    )}
                     <div className="w-16 flex-none flex items-center justify-center">
                       <Settings size={iconSize} />
                     </div>

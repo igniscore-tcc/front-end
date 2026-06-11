@@ -1,8 +1,8 @@
 "use client";
 
 import {
-  AreaChart,
-  Area,
+  BarChart,
+  Bar,
   CartesianGrid,
   Tooltip,
   XAxis,
@@ -10,7 +10,13 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import { useState } from "react";
-import { CalendarClock, CalendarX2, NotebookText, ShoppingCart, User } from "lucide-react"
+import {
+  CalendarClock,
+  CalendarX2,
+  NotebookText,
+  ShoppingCart,
+  User,
+} from "lucide-react";
 
 const data = [
   { mes: "Jan", vendas: 12000 },
@@ -41,44 +47,55 @@ export default function Dashboard() {
       </div>
 
       <div className="p-6 grid grid-cols-5 gap-8">
-        <div className="bg-white p-5 rounded-xl min-h-[150px] text-[#6B7280] flex justify-between">
+        <div className="bg-white p-5 border border-gray-100 shadow-sm rounded-2xl min-h-[150px] text-[#6B7280] flex justify-between items-center">
           <div>
             Vendas do mês
             <div className="text-black mt-4 font-semibold text-4xl">400k</div>
           </div>
-          <ShoppingCart className="text-[#FF5A1F]" width={32} height={32} />
+          <div className="w-14 h-14 rounded-2xl bg-orange-100 flex items-center justify-center">
+            <ShoppingCart className="text-[#FF5A1F]" width={28} height={28} />
+          </div>
         </div>
 
-        <div className="bg-white p-5 rounded-xl min-h-[150px] text-[#6B7280] flex justify-between">
+        <div className="bg-white p-5 border border-gray-100 shadow-sm rounded-2xl min-h-[150px] text-[#6B7280] flex justify-between items-center">
           <div>
             Clientes ativos
             <div className="text-black mt-4 font-semibold text-4xl">20k</div>
           </div>
-          <User className="text-[#FF5A1F]" width={32} height={32} />
+          <div className="w-14 h-14 rounded-2xl bg-blue-100 flex items-center justify-center">
+            <User className="text-blue-600" width={28} height={28} />
+          </div>
         </div>
 
-        <div className="bg-white p-5 rounded-xl min-h-[150px] text-[#6B7280] flex justify-between">
+        <div className="bg-white p-5 border border-gray-100 shadow-sm rounded-2xl min-h-[150px] text-[#6B7280] flex justify-between items-center">
           <div>
             Ordens em aberto
             <div className="text-black mt-4 font-semibold text-4xl">10</div>
           </div>
-          <NotebookText className="text-[#FF5A1F]" width={32} height={32} />
+          <div className="w-14 h-14 rounded-2xl bg-purple-100 flex items-center justify-center">
+            <NotebookText className="text-purple-600" width={28} height={28} />
+          </div>
         </div>
 
-        <div className="bg-white p-5 rounded-xl min-h-[150px] text-[#6B7280] flex justify-between">
+        <div className="bg-white p-5 border border-gray-100 shadow-sm rounded-2xl min-h-[150px] text-[#6B7280] flex justify-between items-center">
           <div>
             Vencimentos próximos
             <div className="text-black mt-4 font-semibold text-4xl">2</div>
           </div>
-          <CalendarClock className="text-[#FF5A1F]" width={32} height={32} />
+          <div className="w-14 h-14 rounded-2xl bg-yellow-100 flex items-center justify-center">
+            <CalendarClock className="text-yellow-600" width={28} height={28} />
+          </div>
         </div>
 
-        <div className="bg-white p-5 rounded-xl min-h-[150px] text-[#6B7280] flex justify-between">
+        <div className="bg-white p-5 border border-gray-100 shadow-sm rounded-2xl min-h-[150px] text-[#6B7280] flex justify-between items-center">
           <div>
             Vencidos
             <div className="text-black mt-4 font-semibold text-4xl">10</div>
           </div>
-          <CalendarX2 className="text-[#FF5A1F]" width={32} height={32} />
+
+          <div className="w-14 h-14 rounded-2xl bg-red-100 flex items-center justify-center">
+            <CalendarX2 className="text-red-600" width={28} height={28} />
+          </div>
         </div>
       </div>
 
@@ -102,19 +119,41 @@ export default function Dashboard() {
           </div>
 
           <ResponsiveContainer width="100%" height="90%">
-            <AreaChart data={dadosFiltrados} className="outline-none">
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="mes" />
-              <YAxis />
-              <Tooltip />
+            <BarChart data={dadosFiltrados}>
+              <CartesianGrid vertical={false} stroke="#F3F4F6" />
 
-              <Area
-                type="monotone"
+              <XAxis dataKey="mes" tickLine={false} axisLine={false} />
+
+              <YAxis tickLine={false} axisLine={false} />
+
+              <Tooltip
+                cursor={false}
+                contentStyle={{
+                  backgroundColor: "#FFFFFF",
+                  border: "1px solid #E5E7EB",
+                  borderRadius: "12px",
+                  boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
+                }}
+                labelStyle={{
+                  color: "#111827",
+                  fontWeight: 600,
+                }}
+                itemStyle={{
+                  color: "#FF5A1F",
+                }}
+                formatter={(value) => [
+                  `R$ ${Number(value).toLocaleString("pt-BR")}`,
+                  "Vendas",
+                ]}
+              />
+
+              <Bar
                 dataKey="vendas"
-                stroke="#FF5A1F"
+                radius={[12, 12, 0, 0]}
+                maxBarSize={55}
                 fill="#FF5A1F"
               />
-            </AreaChart>
+            </BarChart>
           </ResponsiveContainer>
         </div>
 
