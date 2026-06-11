@@ -49,16 +49,17 @@ export default function MaturityDate() {
 
   return (
     <div className="h-screen max-h-screen p-6 flex flex-col bg-white text-base overflow-hidden">
-      <div className="mb-6 shrink-0">
-        <h1 className="text-3xl font-bold text-gray-900">
+      <header className="relative flex items-center justify-between min-h-12 mb-6 shrink-0 w-full isolate">
+        <h1 className="text-2xl sm:text-3xl font-semibold text-[#1a1a1a] shrink-0 max-w-[38%] sm:max-w-[32%] truncate relative z-20 pr-2">
           Vencimentos
         </h1>
-      </div>
+      </header>
 
+      <div className="h-[42px] mb-4" />
       <div className="flex-1 min-h-0 flex flex-col">
         <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden h-fit max-h-full flex flex-col">
           <div className="flex-1 overflow-y-auto overflow-x-hidden custom-scrollbar">
-            <table className="w-full text-left border-collapse">
+            <table className="w-full text-left border-collapse table-fixed">
               <thead className="sticky top-0 z-10 bg-gray-50">
                 <tr className="border-b border-gray-100">
                   <th className="w-[80px] px-6 py-3 text-sm font-bold text-gray-500 uppercase text-center">
@@ -160,6 +161,7 @@ export default function MaturityDate() {
             </table>
           </div>
         </div>
+        <div className="flex-1 min-h-[20px]" />
       </div>
       <footer className="mt-auto flex flex-col md:flex-row items-center justify-center gap-8 text-sm font-medium text-gray-500 shrink-0 py-6">
         <div className="flex items-center gap-2">
