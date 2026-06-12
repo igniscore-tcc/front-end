@@ -33,7 +33,7 @@ export default function Sidebar({ isExpanded, onToggle }: SidebarProps) {
   const [tooltipResetKey, setTooltipResetKey] = useState(0);
 
   useEffect(() => {
-    const handleBlur = () => setTooltipResetKey(prev => prev + 1);
+    const handleBlur = () => setTooltipResetKey((prev) => prev + 1);
     window.addEventListener("blur", handleBlur);
     return () => window.removeEventListener("blur", handleBlur);
   }, []);
@@ -49,18 +49,19 @@ export default function Sidebar({ isExpanded, onToggle }: SidebarProps) {
 
   const getLinkClassName = (href: string) => {
     const isActive = pathname === href;
-    const baseClasses = "relative transition-all duration-300 py-2 rounded-xl flex items-center group overflow-hidden w-full";
-    const activeClasses = isActive 
-      ? isExpanded 
-        ? "bg-[#FF5A1F]/10 text-[#FF5A1F]" 
+    const baseClasses =
+      "relative transition-all duration-300 py-2 flex items-center group overflow-hidden w-full";
+    const activeClasses = isActive
+      ? isExpanded
+        ? "bg-[#FF5A1F]/10 text-[#FF5A1F] rounded-xl"
         : "text-[#FF5A1F]"
       : "text-gray-400 hover:text-gray-600 hover:bg-gray-100";
-    
+
     return `${baseClasses} ${activeClasses}`;
   };
 
   return (
-    <aside 
+    <aside
       className={`fixed bottom-0 left-0 w-full h-16 bg-white border-t md:top-0 md:left-0 md:h-screen border-gray-100 flex flex-row md:flex-col items-center shadow-sm z-50 transition-all duration-300 ease-in-out ${
         isExpanded ? "md:w-64" : "md:w-20"
       }`}
@@ -72,8 +73,8 @@ export default function Sidebar({ isExpanded, onToggle }: SidebarProps) {
             onClick={onToggle}
             className="absolute -right-3 top-9 w-6 h-6 bg-white border border-gray-100 rounded-full flex items-center justify-center shadow-sm text-gray-400 hover:text-[#FF5A1F] hover:border-[#FF5A1F]/20 transition-all duration-300 z-50 group hover:scale-110 active:scale-95"
           >
-            <ChevronLeft 
-              size={14} 
+            <ChevronLeft
+              size={14}
               className={`transition-transform duration-500 ${!isExpanded ? "rotate-180" : ""}`}
               strokeWidth={3}
             />
@@ -81,11 +82,20 @@ export default function Sidebar({ isExpanded, onToggle }: SidebarProps) {
 
           <div className="flex items-center w-full px-4 overflow-hidden">
             <div className="w-12 flex flex-none items-center justify-center">
-              <Image src="/igniscore.png" alt="IgnisCore Logo" width={28} height={38} className="object-contain" />
+              <Image
+                src="/igniscore.png"
+                alt="IgnisCore Logo"
+                width={28}
+                height={38}
+                className="object-contain"
+              />
             </div>
-            <span className={`ml-3 font-bold text-xl text-[#FF5A1F] whitespace-nowrap transition-all duration-300 ${
-              isExpanded ? "opacity-100 visible" : "opacity-0 invisible w-0"
-            }`} style={{ fontFamily: "var(--font-space-grotesk)" }}>
+            <span
+              className={`ml-3 font-bold text-xl text-[#FF5A1F] whitespace-nowrap transition-all duration-300 ${
+                isExpanded ? "opacity-100 visible" : "opacity-0 invisible w-0"
+              }`}
+              style={{ fontFamily: "var(--font-space-grotesk)" }}
+            >
               IgnisCore
             </span>
           </div>
@@ -101,14 +111,18 @@ export default function Sidebar({ isExpanded, onToggle }: SidebarProps) {
                     className={getLinkClassName(item.href)}
                   >
                     {!isExpanded && pathname === item.href && (
-                      <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-[#FF5A1F] rounded-r-full" />
+                      <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-[#FF5A1F]" />
                     )}
                     <div className="w-16 flex-none flex items-center justify-center">
                       <item.icon size={iconSize} />
                     </div>
-                    <span className={`ml-2 font-bold whitespace-nowrap transition-all duration-300 ${
-                      isExpanded ? "opacity-100 visible" : "opacity-0 invisible w-0"
-                    } text-base`}>
+                    <span
+                      className={`ml-2 font-bold whitespace-nowrap transition-all duration-300 ${
+                        isExpanded
+                          ? "opacity-100 visible"
+                          : "opacity-0 invisible w-0"
+                      } text-base`}
+                    >
                       {item.label}
                     </span>
                   </Link>
@@ -120,11 +134,12 @@ export default function Sidebar({ isExpanded, onToggle }: SidebarProps) {
               return (
                 <Tooltip key={item.href}>
                   <TooltipTrigger asChild>
-                    <div className="w-full">
-                      {link}
-                    </div>
+                    <div className="w-full">{link}</div>
                   </TooltipTrigger>
-                  <TooltipContent side="right" className="hidden md:block font-medium">
+                  <TooltipContent
+                    side="right"
+                    className="hidden md:block font-medium"
+                  >
                     <p>{item.label}</p>
                   </TooltipContent>
                 </Tooltip>
@@ -144,9 +159,13 @@ export default function Sidebar({ isExpanded, onToggle }: SidebarProps) {
                     <div className="w-16 flex-none flex items-center justify-center">
                       <Settings size={iconSize} />
                     </div>
-                    <span className={`ml-2 font-bold whitespace-nowrap transition-all duration-300 ${
-                      isExpanded ? "opacity-100 visible" : "opacity-0 invisible w-0"
-                    } text-base`}>
+                    <span
+                      className={`ml-2 font-bold whitespace-nowrap transition-all duration-300 ${
+                        isExpanded
+                          ? "opacity-100 visible"
+                          : "opacity-0 invisible w-0"
+                      } text-base`}
+                    >
                       Configurações
                     </span>
                   </Link>
@@ -157,11 +176,12 @@ export default function Sidebar({ isExpanded, onToggle }: SidebarProps) {
                 return (
                   <Tooltip key="config-tooltip">
                     <TooltipTrigger asChild>
-                      <div className="w-full">
-                        {configLink}
-                      </div>
+                      <div className="w-full">{configLink}</div>
                     </TooltipTrigger>
-                    <TooltipContent side="right" className="hidden md:block font-medium">
+                    <TooltipContent
+                      side="right"
+                      className="hidden md:block font-medium"
+                    >
                       <p>Configurações</p>
                     </TooltipContent>
                   </Tooltip>
