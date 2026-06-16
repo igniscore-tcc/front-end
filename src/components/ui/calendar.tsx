@@ -16,7 +16,7 @@ function Calendar({
   className,
   classNames,
   showOutsideDays = true,
-  captionLayout = "label",
+  captionLayout = "dropdown",
   buttonVariant = "ghost",
   locale,
   formatters,
@@ -37,6 +37,8 @@ function Calendar({
         className
       )}
       captionLayout={captionLayout}
+      startMonth={props.startMonth || new Date(1900, 0)}
+      endMonth={props.endMonth || new Date(new Date().getFullYear() + 10, 11)}
       locale={locale}
       formatters={{
         formatMonthDropdown: (date) =>
@@ -56,12 +58,12 @@ function Calendar({
         ),
         button_previous: cn(
           buttonVariants({ variant: buttonVariant }),
-          "size-(--cell-size) p-0 select-none aria-disabled:opacity-50",
+          "size-(--cell-size) p-0 select-none aria-disabled:opacity-50 !border-transparent !ring-0 focus:!ring-0 focus:!border-transparent focus-visible:!ring-0 focus-visible:!border-transparent",
           defaultClassNames.button_previous
         ),
         button_next: cn(
           buttonVariants({ variant: buttonVariant }),
-          "size-(--cell-size) p-0 select-none aria-disabled:opacity-50",
+          "size-(--cell-size) p-0 select-none aria-disabled:opacity-50 !border-transparent !ring-0 focus:!ring-0 focus:!border-transparent focus-visible:!ring-0 focus-visible:!border-transparent",
           defaultClassNames.button_next
         ),
         month_caption: cn(

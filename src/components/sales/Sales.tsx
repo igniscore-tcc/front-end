@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import {
-  Calendar,
+  Calendar as CalendarIcon,
   ChevronDown,
   ChevronLeft,
   ChevronRight,
@@ -16,6 +16,10 @@ import { ListPageHeader } from "@/components/shared/ListPageHeader";
 import { SaleStatus, Sale } from "@/types/sale";
 import { useSales } from "@/hooks/useSales";
 import NewSale from "@/components/sales/NewSale";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Calendar } from "@/components/ui/calendar";
+import { format, parseISO } from "date-fns";
+import { ptBR } from "date-fns/locale";
 
 const paymentLabels: Record<string, string> = {
   PIX: "PIX",
@@ -52,6 +56,10 @@ export default function Sales() {
     setPerPage,
     filterStatus,
     setFilterStatus,
+    dateFrom,
+    setDateFrom,
+    dateTo,
+    setDateTo,
     loadSuggestions,
     cart,
     selectedClient,
@@ -87,8 +95,6 @@ export default function Sales() {
   }, [view, loadSuggestions]);
 
   const [selectedSale, setSelectedSale] = useState<Sale | null>(null);
-  const [dateFrom, setDateFrom] = useState<string>("");
-  const [dateTo, setDateTo] = useState<string>("");
 
   const sortIcon = (key: keyof Sale) => {
     if (sort.key !== key) return <ArrowUpDown size={14} />;
@@ -175,33 +181,53 @@ export default function Sales() {
           </button>
 
           <div className="flex items-center gap-3">
-            <div className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-gray-200 bg-gray-50 hover:bg-gray-100 transition-colors">
-              <Calendar size={16} className="text-gray-400" />
-
-              <input
-                type="date"
-                value={dateFrom}
-                onChange={(e) => {
-                  setDateFrom(e.target.value);
-                  setPage(1);
-                }}
-                className="bg-transparent text-sm text-gray-700 outline-none cursor-pointer"
-              />
-            </div>
+            <Popover>
+              <PopoverTrigger asChild>
+                <div className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-gray-200 bg-gray-50 hover:bg-gray-100 transition-colors cursor-pointer text-sm text-gray-700 min-w-[140px]">
+                  <CalendarIcon size={16} className="text-gray-400 shrink-0" />
+                  <span className={!dateFrom ? "text-gray-400" : ""}>
+                    {dateFrom ? format(parseISO(dateFrom), "dd/MM/yyyy") : "Data inicial"}
+                  </span>
+                </div>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0" align="start">
+                <Calendar
+                  mode="single"
+                  selected={dateFrom ? parseISO(dateFrom) : undefined}
+                  onSelect={(date) => {
+                    setDateFrom(date ? format(date, "yyyy-MM-dd") : "");
+                    setPage(1);
+                  }}
+                  initialFocus
+                  locale={ptBR}
+                />
+              </PopoverContent>
+            </Popover>
 
             <span className="text-gray-400 text-sm font-medium">até</span>
 
-            <div className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-gray-200 bg-gray-50 hover:bg-gray-100 transition-colors">
-              <input
-                type="date"
-                value={dateTo}
-                onChange={(e) => {
-                  setDateTo(e.target.value);
-                  setPage(1);
-                }}
-                className="bg-transparent text-sm text-gray-700 outline-none cursor-pointer"
-              />
-            </div>
+            <Popover>
+              <PopoverTrigger asChild>
+                <div className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-gray-200 bg-gray-50 hover:bg-gray-100 transition-colors cursor-pointer text-sm text-gray-700 min-w-[140px]">
+                  <CalendarIcon size={16} className="text-gray-400 shrink-0" />
+                  <span className={!dateTo ? "text-gray-400" : ""}>
+                    {dateTo ? format(parseISO(dateTo), "dd/MM/yyyy") : "Data final"}
+                  </span>
+                </div>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0" align="start">
+                <Calendar
+                  mode="single"
+                  selected={dateTo ? parseISO(dateTo) : undefined}
+                  onSelect={(date) => {
+                    setDateTo(date ? format(date, "yyyy-MM-dd") : "");
+                    setPage(1);
+                  }}
+                  initialFocus
+                  locale={ptBR}
+                />
+              </PopoverContent>
+            </Popover>
           </div>
         </div>
 
@@ -213,9 +239,9 @@ export default function Sales() {
                 setFilterStatus(e.target.value as typeof filterStatus);
                 setPage(1);
               }}
-              className="px-5 py-2.5 pr-10 rounded-xl text-sm font-bold border border-gray-200 bg-white text-gray-600 appearance-none outline-none"
+              className="px-5 py-2.5 pr-10 rounded-xl text-sm font-bold border border-gray-200 bg-gray-50 hover:bg-gray-100 transition-colors text-gray-600 appearance-none outline-none cursor-pointer"
             >
-              <option value="ALL">Status: Todos</option>
+              <option value="ALL">Todos os status</option>
               <option value="CONCLUDED">Concluídas</option>
               <option value="PENDING">Pendentes</option>
               <option value="CANCELLED">Canceladas</option>
@@ -381,8 +407,14 @@ export default function Sales() {
       </footer>
 
       {selectedSale && (
-        <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-6">
-          <div className="bg-white w-full max-w-[980px] rounded-[28px] shadow-2xl overflow-hidden">
+        <div 
+          className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-6"
+          onClick={() => setSelectedSale(null)}
+        >
+          <div 
+            className="bg-white w-full max-w-[980px] rounded-[28px] shadow-2xl overflow-hidden"
+            onClick={(e) => e.stopPropagation()}
+          >
             <div className="flex items-center justify-between border-b border-gray-100 px-8 py-6">
               <h2 className="text-[26px] font-medium text-[#1A1A1A]">
                 Detalhes da venda
