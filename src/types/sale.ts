@@ -1,9 +1,9 @@
 import { Cliente } from "./cliente";
 
 export enum SaleStatus {
-  CONCLUDED = "Concluída",
-  PENDING = "Pendente",
-  CANCELLED = "Cancelada",
+  COMPLETED = "COMPLETED",
+  PENDING = "PENDING",
+  CANCELLED = "CANCELLED",
 }
 
 export interface SaleItem {
