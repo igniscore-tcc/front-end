@@ -4,6 +4,7 @@ import { useMemo } from "react";
 import { Search, Plus, ArrowLeft, X, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input, INPUT_FIELD_HEIGHT_CLASS } from "@/components/ui/Input";
+import { toast } from "sonner";
 import { Select } from "@/components/ui/Select";
 import { Cliente } from "@/types/cliente";
 import { Product } from "@/types/product";
@@ -104,11 +105,28 @@ export default function NewSale({
 
   // 🛠️ CORRIGIDO: Executa a função do hook e volta para a listagem
   const handleFinalize = async () => {
+    if (!selectedClient) {
+      toast.warning("Selecione um cliente antes de finalizar a venda");
+      return;
+    }
+
+    if (cart.length === 0) {
+      toast.warning("Adicione pelo menos um produto");
+      return;
+    }
+
+    const toastId = toast.loading("Finalizando venda...");
+
     try {
       await finalizeSale();
+
+      toast.success("Venda finalizada com sucesso");
       onBack();
     } catch (error) {
-      console.error("Erro ao finalizar a venda:", error);
+      console.error(error);
+      toast.error("Erro ao finalizar a venda");
+    } finally {
+      toast.dismiss(toastId);
     }
   };
 
@@ -388,7 +406,7 @@ export default function NewSale({
               />
 
               <Input
-                placeholder="Desconto %"
+                placeholder="Desconto (ex: 10% ou 50)"
                 value={discountInput}
                 onChange={(e) => setDiscountInput(e.target.value)}
               />
