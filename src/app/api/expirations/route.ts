@@ -53,7 +53,7 @@ export async function GET(req: NextRequest) {
     }
 
     return NextResponse.json(result.data.expirations);
-  } catchhttp://localhost:3000/api/expirations {
+  } catch {
     return NextResponse.json(
       { error: "Erro ao conectar com a API." },
       { status: 500 },
