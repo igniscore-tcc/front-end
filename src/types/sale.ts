@@ -19,6 +19,7 @@ export interface Sale {
   total: string;
   desconto: string;
   data: string;
+  rawDate?: string;
   tipo: string;
   status: SaleStatus;
 

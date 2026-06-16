@@ -9,7 +9,7 @@ import {
   YAxis,
   ResponsiveContainer,
 } from "recharts";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   CalendarClock,
   CalendarX2,
@@ -32,6 +32,26 @@ const data = [
   { mes: "Nov", vendas: 23000 },
   { mes: "Dec", vendas: 35000 },
 ];
+
+interface CustomTooltipProps {
+  active?: boolean;
+  payload?: Array<{ value: number }>;
+  label?: string;
+}
+
+const CustomTooltip = ({ active, payload, label }: CustomTooltipProps) => {
+  if (active && payload && payload.length) {
+    return (
+      <div className="bg-white border border-gray-200 rounded-xl shadow-[0_4px_12px_rgba(0,0,0,0.08)] p-3 outline-none">
+        <p className="text-gray-500 text-sm font-medium mb-1">{label}</p>
+        <p className="text-[#FF5A1F] font-bold text-base">
+          R$ {Number(payload[0].value).toLocaleString("pt-BR")}
+        </p>
+      </div>
+    );
+  }
+  return null;
+};
 
 export default function Dashboard() {
   const [periodo, setPeriodo] = useState("3");
@@ -126,26 +146,7 @@ export default function Dashboard() {
 
               <YAxis tickLine={false} axisLine={false} />
 
-              <Tooltip
-                cursor={false}
-                contentStyle={{
-                  backgroundColor: "#FFFFFF",
-                  border: "1px solid #E5E7EB",
-                  borderRadius: "12px",
-                  boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
-                }}
-                labelStyle={{
-                  color: "#111827",
-                  fontWeight: 600,
-                }}
-                itemStyle={{
-                  color: "#FF5A1F",
-                }}
-                formatter={(value) => [
-                  `R$ ${Number(value).toLocaleString("pt-BR")}`,
-                  "Vendas",
-                ]}
-              />
+              <Tooltip cursor={false} content={<CustomTooltip />} />
 
               <Bar
                 dataKey="vendas"

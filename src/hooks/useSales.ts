@@ -41,7 +41,6 @@ const paymentMethodMap: Record<string, string> = {
 export function useSales() {
   const [sales, setSales] = useState<Sale[]>([]);
   const [loading, setLoading] = useState(true);
-  const [total, setTotal] = useState(0);
 
   const [page, setPage] = useState(1);
   const [perPage, setPerPage] = useState(10);
@@ -54,6 +53,8 @@ export function useSales() {
   const [filterStatus, setFilterStatus] = useState<
     "ALL" | "CONCLUDED" | "PENDING" | "CANCELLED"
   >("ALL");
+  const [dateFrom, setDateFrom] = useState<string>("");
+  const [dateTo, setDateTo] = useState<string>("");
 
   // Estados da Nova Venda
   const [cart, setCart] = useState<CartItem[]>([]);
@@ -80,8 +81,9 @@ export function useSales() {
     try {
       setLoading(true);
 
+      // Busca todas as vendas (ou um limite alto) para que o filtro e paginação no front-end funcionem
       const response = await fetch(
-        `${INTERNAL_API}/sales/findall?page=${page - 1}&size=${perPage}`,
+        `${INTERNAL_API}/sales/findall?page=0&size=1000`,
         {
           method: "GET",
           headers: getAuthHeaders(),
@@ -107,6 +109,7 @@ export function useSales() {
         desconto: sale.discount ? `${sale.discount}%` : "0%",
 
         data: sale.date ? new Date(sale.date).toLocaleDateString("pt-BR") : "-",
+        rawDate: sale.date || undefined,
 
         tipo: sale.paymentMethod ?? "-",
 
@@ -141,14 +144,13 @@ export function useSales() {
       }));
 
       setSales(formattedSales);
-      setTotal(Number(result?.totalSales ?? formattedSales.length));
     } catch (err) {
       console.error("Erro ao carregar vendas:", err);
       toast.error("Erro ao carregar vendas");
     } finally {
       setLoading(false);
     }
-  }, [page, perPage]);
+  }, []);
 
   // Função auxiliar para resetar o fluxo de vendas no front após concluir
   const clearCart = useCallback(() => {
@@ -248,6 +250,31 @@ export function useSales() {
       });
     }
 
+    if (dateFrom || dateTo) {
+      result = result.filter((sale) => {
+        if (!sale.rawDate) return false;
+        
+        // Formatar para comparar no fuso horário local sem horas
+        const saleDate = new Date(sale.rawDate);
+        saleDate.setHours(0, 0, 0, 0);
+
+        if (dateFrom) {
+          // dataFrom vem como YYYY-MM-DD
+          const [year, month, day] = dateFrom.split("-").map(Number);
+          const fromDate = new Date(year, month - 1, day);
+          if (saleDate < fromDate) return false;
+        }
+
+        if (dateTo) {
+          const [year, month, day] = dateTo.split("-").map(Number);
+          const toDate = new Date(year, month - 1, day);
+          if (saleDate > toDate) return false;
+        }
+
+        return true;
+      });
+    }
+
     return result.filter((sale) => {
       return (
         sale.id.toString().includes(term) ||
@@ -255,7 +282,7 @@ export function useSales() {
         sale.status.toLowerCase().includes(term)
       );
     });
-  }, [debouncedSearch, sales, filterStatus]);
+  }, [debouncedSearch, sales, filterStatus, dateFrom, dateTo]);
 
   const sorted = useMemo(() => {
     return [...filtered].sort((a, b) => {
@@ -289,11 +316,12 @@ export function useSales() {
     });
   }, [filtered, sort]);
 
-  const pageData = sorted;
-  const totalPages = Math.ceil(total / perPage);
+  const effectiveTotal = sorted.length;
+  const pageData = sorted.slice((page - 1) * perPage, page * perPage);
+  const totalPages = Math.ceil(effectiveTotal / perPage);
   const hasNextPage = page < totalPages;
-  const from = total === 0 ? 0 : (page - 1) * perPage + 1;
-  const to = Math.min(page * perPage, total);
+  const from = effectiveTotal === 0 ? 0 : (page - 1) * perPage + 1;
+  const to = Math.min(page * perPage, effectiveTotal);
 
   const handleSort = (key: keyof Sale) => {
     setSort((prev) => ({
@@ -439,7 +467,7 @@ export function useSales() {
     sales,
     pageData,
     loading,
-    total,
+    total: effectiveTotal,
     totalPages,
     hasNextPage,
     from,
@@ -454,6 +482,10 @@ export function useSales() {
     setPerPage,
     filterStatus,
     setFilterStatus,
+    dateFrom,
+    setDateFrom,
+    dateTo,
+    setDateTo,
 
     cart,
     setCart,
