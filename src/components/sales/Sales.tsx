@@ -11,6 +11,7 @@ import {
   ArrowUp,
   ArrowDown,
   ArrowUpDown,
+  X,
 } from "lucide-react";
 import { ListPageHeader } from "@/components/shared/ListPageHeader";
 import { SaleStatus, Sale } from "@/types/sale";
@@ -228,6 +229,21 @@ export default function Sales() {
                 />
               </PopoverContent>
             </Popover>
+
+            {(dateFrom || dateTo) && (
+              <button
+                type="button"
+                onClick={() => {
+                  setDateFrom("");
+                  setDateTo("");
+                  setPage(1);
+                }}
+                className="group flex items-center gap-1.5 px-3 py-2 ml-1 rounded-xl bg-gray-100 hover:bg-red-50 text-gray-500 hover:text-red-500 transition-all cursor-pointer text-sm font-medium"
+              >
+                <X size={14} className="group-hover:rotate-90 transition-transform duration-200" />
+                <span>Limpar</span>
+              </button>
+            )}
           </div>
         </div>
 
