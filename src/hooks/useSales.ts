@@ -239,7 +239,7 @@ export function useSales() {
     if (filterStatus !== "ALL") {
       result = result.filter((sale) => {
         if (filterStatus === "CONCLUDED")
-          return sale.status === SaleStatus.CONCLUDED;
+          return sale.status === SaleStatus.COMPLETED;
         if (filterStatus === "PENDING")
           return sale.status === SaleStatus.PENDING;
         if (filterStatus === "CANCELLED")
