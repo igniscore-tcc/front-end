@@ -18,11 +18,17 @@ import { useSales } from "@/hooks/useSales";
 import NewSale from "@/components/sales/NewSale";
 
 const paymentLabels: Record<string, string> = {
-  pix: "PIX",
-  cash: "Dinheiro",
-  credit_card: "Cartão de Crédito",
-  debit_card: "Cartão de Débito",
-  bank_slip: "Boleto",
+  PIX: "PIX",
+  CASH: "Dinheiro",
+  CREDIT_CARD: "Cartão de Crédito",
+  DEBIT_CARD: "Cartão de Débito",
+  BANK_SLIP: "Boleto",
+};
+
+const statusLabels: Record<SaleStatus, string> = {
+  COMPLETED: "Concluída",
+  PENDING: "Pendente",
+  CANCELLED: "Cancelada",
 };
 
 export default function Sales() {
@@ -81,6 +87,8 @@ export default function Sales() {
   }, [view, loadSuggestions]);
 
   const [selectedSale, setSelectedSale] = useState<Sale | null>(null);
+  const [dateFrom, setDateFrom] = useState<string>("");
+  const [dateTo, setDateTo] = useState<string>("");
 
   const sortIcon = (key: keyof Sale) => {
     if (sort.key !== key) return <ArrowUpDown size={14} />;
@@ -143,49 +151,81 @@ export default function Sales() {
         addButtonClassName="bg-[#FF5A1F] hover:bg-[#E64D17] text-white rounded-full w-12 h-12 flex items-center justify-center transition-colors p-0 shrink-0 cursor-pointer shadow-none"
       />
 
-      <div className="flex flex-wrap items-center gap-4 mb-4 shrink-0">
-        <button
-          type="button"
-          onClick={() => handleSort("id")}
-          className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold border transition-colors cursor-pointer ${
-            sort.key === "id"
-              ? "bg-[#FF5A1F]/10 text-[#FF5A1F] border-[#FF5A1F]/20 shadow-sm"
-              : "bg-gray-100/50 text-gray-500 hover:bg-gray-100 hover:text-gray-700 border-transparent"
-          }`}
-        >
-          ID {sortIcon("id")}
-        </button>
-
-        <button
-          type="button"
-          onClick={() => handleSort("data")}
-          className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold border transition-colors cursor-pointer ${
-            sort.key === "data"
-              ? "bg-[#FF5A1F]/10 text-[#FF5A1F] border-[#FF5A1F]/20 shadow-sm"
-              : "bg-gray-100/50 text-gray-500 hover:bg-gray-100 hover:text-gray-700 border-transparent"
-          }`}
-        >
-          Data {sort.key === "data" ? sortIcon("data") : <Calendar size={16} />}
-        </button>
-
-        <div className="relative">
-          <select
-            value={filterStatus}
-            onChange={(e) => {
-              setFilterStatus(e.target.value as typeof filterStatus);
-              setPage(1);
-            }}
-            className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold border border-gray-200 transition-colors cursor-pointer bg-white text-gray-500 hover:bg-gray-50 appearance-none pr-9 outline-none"
+      <div className="flex flex-wrap items-center justify-between gap-4 mb-4 shrink-0">
+        <div className="flex items-center gap-3">
+          <button
+            type="button"
+            onClick={() => handleSort("id")}
+            className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold border transition-colors ${
+              sort.key === "id"
+                ? "bg-[#FF5A1F]/10 text-[#FF5A1F] border-[#FF5A1F]/20"
+                : "bg-gray-100/50 text-gray-500 hover:bg-gray-100 border-transparent"
+            }`}
           >
-            <option value="ALL">Status: Todos</option>
-            <option value="CONCLUDED">Concluídas</option>
-            <option value="PENDING">Pendentes</option>
-            <option value="CANCELLED">Canceladas</option>
-          </select>
-          <ChevronDown
-            size={16}
-            className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-gray-500"
-          />
+            <span>ID</span>
+            {sort.key === "id" ? (
+              sort.dir === "asc" ? (
+                <ArrowUp size={14} />
+              ) : (
+                <ArrowDown size={14} />
+              )
+            ) : (
+              <ArrowUpDown size={14} />
+            )}
+          </button>
+
+          <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-gray-200 bg-gray-50 hover:bg-gray-100 transition-colors">
+              <Calendar size={16} className="text-gray-400" />
+
+              <input
+                type="date"
+                value={dateFrom}
+                onChange={(e) => {
+                  setDateFrom(e.target.value);
+                  setPage(1);
+                }}
+                className="bg-transparent text-sm text-gray-700 outline-none cursor-pointer"
+              />
+            </div>
+
+            <span className="text-gray-400 text-sm font-medium">até</span>
+
+            <div className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-gray-200 bg-gray-50 hover:bg-gray-100 transition-colors">
+              <input
+                type="date"
+                value={dateTo}
+                onChange={(e) => {
+                  setDateTo(e.target.value);
+                  setPage(1);
+                }}
+                className="bg-transparent text-sm text-gray-700 outline-none cursor-pointer"
+              />
+            </div>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-3">
+          <div className="relative">
+            <select
+              value={filterStatus}
+              onChange={(e) => {
+                setFilterStatus(e.target.value as typeof filterStatus);
+                setPage(1);
+              }}
+              className="px-5 py-2.5 pr-10 rounded-xl text-sm font-bold border border-gray-200 bg-white text-gray-600 appearance-none outline-none"
+            >
+              <option value="ALL">Status: Todos</option>
+              <option value="CONCLUDED">Concluídas</option>
+              <option value="PENDING">Pendentes</option>
+              <option value="CANCELLED">Canceladas</option>
+            </select>
+
+            <ChevronDown
+              size={16}
+              className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400"
+            />
+          </div>
         </div>
       </div>
 
@@ -249,11 +289,11 @@ export default function Sales() {
                             sale.status === SaleStatus.CONCLUDED
                               ? "bg-green-100 text-green-700"
                               : sale.status === SaleStatus.PENDING
-                              ? "bg-yellow-100 text-yellow-700"
-                              : "bg-red-100 text-red-700"
+                                ? "bg-yellow-100 text-yellow-700"
+                                : "bg-red-100 text-red-700"
                           }`}
                         >
-                          {sale.status}
+                          {statusLabels[sale.status] || sale.status}
                         </span>
                       </td>
                       <td className="px-6 py-3.5 text-center">
@@ -276,7 +316,10 @@ export default function Sales() {
                   ))
                 ) : (
                   <tr>
-                    <td colSpan={7} className="px-6 py-12 text-center text-gray-400">
+                    <td
+                      colSpan={7}
+                      className="px-6 py-12 text-center text-gray-400"
+                    >
                       Nenhuma venda encontrada
                     </td>
                   </tr>
@@ -371,8 +414,8 @@ export default function Sales() {
                         selectedSale.status === SaleStatus.CONCLUDED
                           ? "bg-green-100 text-green-700"
                           : selectedSale.status === SaleStatus.PENDING
-                          ? "bg-yellow-100 text-yellow-700"
-                          : "bg-red-100 text-red-700"
+                            ? "bg-yellow-100 text-yellow-700"
+                            : "bg-red-100 text-red-700"
                       }`}
                     >
                       {selectedSale.status}
@@ -411,9 +454,7 @@ export default function Sales() {
                           key={`${item.id}-${item.nome}`}
                           className="border-t border-gray-100"
                         >
-                          <td className="px-6 py-5 text-gray-700">
-                            {item.id}
-                          </td>
+                          <td className="px-6 py-5 text-gray-700">{item.id}</td>
 
                           <td className="px-6 py-5 text-gray-800 font-medium">
                             {item.nome}
