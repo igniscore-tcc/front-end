@@ -12,18 +12,30 @@ export async function GET(req: NextRequest) {
     );
   }
 
+  const searchParams = req.nextUrl.searchParams;
+
+  const page = Number(searchParams.get("page") ?? "0");
+  const size = Number(searchParams.get("size") ?? "10");
+
   const query = `
-    query {
-        expirations {
-            saleId
-            clientName
-            saleDate
-            dueDate
-            totalSale
-            status
+    query Expirations($page: Int!, $size: Int!) {
+      expirations(page: $page, size: $size) {
+        items {
+          expirationId
+          saleId
+          clientName
+          saleDate
+          dueDate
+          totalSale
+          status
         }
+        totalItems
+        totalPages
+        currentPage
+        pageSize
+      }
     }
- `;
+  `;
 
   try {
     const response = await fetch(`${API_URL}/graphql`, {
@@ -35,7 +47,10 @@ export async function GET(req: NextRequest) {
       },
       body: JSON.stringify({
         query,
-        variables: {},
+        variables: {
+          page,
+          size,
+        },
       }),
     });
 
@@ -47,7 +62,7 @@ export async function GET(req: NextRequest) {
           error: result.errors?.[0]?.message || "Erro ao buscar vencimentos",
         },
         {
-          status: response.status,
+          status: response.status || 500,
         },
       );
     }
