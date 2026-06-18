@@ -14,14 +14,13 @@ export async function GET(req: NextRequest) {
 
   const searchParams = req.nextUrl.searchParams;
 
-  const page = Number(searchParams.get("page") ?? "0");
-  const size = Number(searchParams.get("size") ?? "10");
+  const page = Number(searchParams.get("page") ?? "0"); 
+  const size = Number(searchParams.get("size") ?? "10");  
 
   const query = `
     query Expirations($page: Int!, $size: Int!) {
       expirations(page: $page, size: $size) {
         items {
-          expirationId
           saleId
           clientName
           saleDate
