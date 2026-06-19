@@ -52,7 +52,7 @@ export function useDashboard() {
     try {
       setLoading(true);
 
-      const response = await fetch(`${INTERNAL_API}/dashboard`, {
+      const response = await fetch(`${INTERNAL_API}/dashboard/dashboard`, {
         method: "GET",
         headers: getAuthHeaders(),
       });

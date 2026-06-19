@@ -17,6 +17,7 @@ import {
   ShoppingCart,
   User,
 } from "lucide-react";
+import { useDashboard } from "@/hooks/useDashboard";
 
 const data = [
   { mes: "Jan", vendas: 12000 },
@@ -56,7 +57,24 @@ const CustomTooltip = ({ active, payload, label }: CustomTooltipProps) => {
 export default function Dashboard() {
   const [periodo, setPeriodo] = useState("3");
 
+  const { dashboard, loading } = useDashboard();
+
   const dadosFiltrados = data.slice(-Number(periodo));
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <span className="text-gray-500">Carregando dashboard...</span>
+      </div>
+    );
+  }
+
+  const formatCurrency = (value: number) =>
+    new Intl.NumberFormat("pt-BR", {
+      style: "currency",
+      currency: "BRL",
+      maximumFractionDigits: 0,
+    }).format(value);
 
   return (
     <div className="bg-[#F6F6F6] min-h-screen">
@@ -70,7 +88,9 @@ export default function Dashboard() {
         <div className="bg-white p-5 border border-gray-100 shadow-sm rounded-2xl min-h-[150px] text-[#6B7280] flex justify-between items-center">
           <div>
             Vendas do mês
-            <div className="text-black mt-4 font-semibold text-4xl">400k</div>
+            <div className="text-black mt-4 font-semibold text-4xl">
+              {formatCurrency(dashboard.monthlyRevenue)}
+            </div>
           </div>
           <div className="w-14 h-14 rounded-2xl bg-orange-100 flex items-center justify-center">
             <ShoppingCart className="text-[#FF5A1F]" width={28} height={28} />
@@ -80,7 +100,9 @@ export default function Dashboard() {
         <div className="bg-white p-5 border border-gray-100 shadow-sm rounded-2xl min-h-[150px] text-[#6B7280] flex justify-between items-center">
           <div>
             Clientes ativos
-            <div className="text-black mt-4 font-semibold text-4xl">20k</div>
+            <div className="text-black mt-4 font-semibold text-4xl">
+              {dashboard.totalClients}
+            </div>
           </div>
           <div className="w-14 h-14 rounded-2xl bg-blue-100 flex items-center justify-center">
             <User className="text-blue-600" width={28} height={28} />
@@ -90,7 +112,9 @@ export default function Dashboard() {
         <div className="bg-white p-5 border border-gray-100 shadow-sm rounded-2xl min-h-[150px] text-[#6B7280] flex justify-between items-center">
           <div>
             Ordens em aberto
-            <div className="text-black mt-4 font-semibold text-4xl">10</div>
+            <div className="text-black mt-4 font-semibold text-4xl">
+              {dashboard.pendingOrders}
+            </div>
           </div>
           <div className="w-14 h-14 rounded-2xl bg-purple-100 flex items-center justify-center">
             <NotebookText className="text-purple-600" width={28} height={28} />
@@ -100,7 +124,9 @@ export default function Dashboard() {
         <div className="bg-white p-5 border border-gray-100 shadow-sm rounded-2xl min-h-[150px] text-[#6B7280] flex justify-between items-center">
           <div>
             Vencimentos próximos
-            <div className="text-black mt-4 font-semibold text-4xl">2</div>
+            <div className="text-black mt-4 font-semibold text-4xl">
+              {dashboard.upcomingExpirations}
+            </div>
           </div>
           <div className="w-14 h-14 rounded-2xl bg-yellow-100 flex items-center justify-center">
             <CalendarClock className="text-yellow-600" width={28} height={28} />
@@ -110,7 +136,9 @@ export default function Dashboard() {
         <div className="bg-white p-5 border border-gray-100 shadow-sm rounded-2xl min-h-[150px] text-[#6B7280] flex justify-between items-center">
           <div>
             Vencidos
-            <div className="text-black mt-4 font-semibold text-4xl">10</div>
+            <div className="text-black mt-4 font-semibold text-4xl">
+              {dashboard.expiredExpirations}
+            </div>
           </div>
 
           <div className="w-14 h-14 rounded-2xl bg-red-100 flex items-center justify-center">
