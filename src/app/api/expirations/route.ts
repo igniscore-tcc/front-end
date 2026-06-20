@@ -3,9 +3,9 @@ import { NextRequest, NextResponse } from "next/server";
 const API_URL = process.env.API_URL;
 
 export async function GET(req: NextRequest) {
-  const authorization = req.headers.get("authorization");
+  const token = req.cookies.get("token")?.value;
 
-  if (!authorization) {
+  if (!token) {
     return NextResponse.json(
       { error: "Token não informado." },
       { status: 401 },
@@ -14,8 +14,8 @@ export async function GET(req: NextRequest) {
 
   const searchParams = req.nextUrl.searchParams;
 
-  const page = Number(searchParams.get("page") ?? "0"); 
-  const size = Number(searchParams.get("size") ?? "10");  
+  const page = Number(searchParams.get("page") ?? "0");
+  const size = Number(searchParams.get("size") ?? "10");
 
   const query = `
     query Expirations($page: Int!, $size: Int!) {
@@ -41,7 +41,7 @@ export async function GET(req: NextRequest) {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: authorization,
+        Authorization: `Bearer ${token}`,
         "ngrok-skip-browser-warning": "true",
       },
       body: JSON.stringify({
