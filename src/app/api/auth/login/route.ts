@@ -23,8 +23,22 @@ export async function POST(req: NextRequest) {
   const data = await response.json();
 
   if (!response.ok) {
-    return NextResponse.json(data, { status: response.status });
+    return NextResponse.json(data, {
+      status: response.status,
+    });
   }
 
-  return NextResponse.json(data);
+  console.log(data);
+
+  const nextResponse = NextResponse.json(data);
+
+  nextResponse.cookies.set("token", data.token, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+    path: "/",
+    maxAge: 60 * 60 * 24 * 7, // 7 dias
+  });
+
+  return nextResponse;
 }
