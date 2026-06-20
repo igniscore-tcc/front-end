@@ -22,6 +22,7 @@ export async function GET(req: NextRequest) {
       products(page: $page, size: $size) {
         products {
           id
+          numberProduct
           name
           type
           validity

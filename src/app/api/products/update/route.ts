@@ -18,6 +18,7 @@ export async function POST(req: NextRequest) {
     mutation UpdateProduct($input: ProductUpdateInput!) {
       updateProduct(input: $input) {
         id
+        numberProduct
         name
         type
         validity
