@@ -9,9 +9,9 @@ interface Params {
 }
 
 export async function DELETE(req: NextRequest, { params }: Params) {
-  const authorization = req.headers.get("authorization");
+  const token = req.cookies.get("token")?.value;
 
-  if (!authorization) {
+  if (!token) {
     return NextResponse.json(
       { error: "Token não informado." },
       { status: 401 },
@@ -49,7 +49,7 @@ export async function DELETE(req: NextRequest, { params }: Params) {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      Authorization: authorization,
+      Authorization: `Bearer ${token}`,
       "ngrok-skip-browser-warning": "true",
     },
     body: JSON.stringify({
