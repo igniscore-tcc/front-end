@@ -241,10 +241,8 @@ export function useSales() {
   };
 
   const pageData = useMemo(() => {
-    const start = (page - 1) * perPage;
-    const end = start + perPage;
-    return sales.slice(start, end);
-  }, [sales, page, perPage]);
+    return sales;
+  }, [sales]);
 
   const from = useMemo(() => {
     return totalSales === 0 ? 0 : (page - 1) * perPage + 1;
