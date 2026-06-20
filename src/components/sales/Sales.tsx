@@ -17,7 +17,11 @@ import { ListPageHeader } from "@/components/shared/ListPageHeader";
 import { SaleStatus, Sale } from "@/types/sale";
 import { useSales } from "@/hooks/useSales";
 import NewSale from "@/components/sales/NewSale";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
 import { format, parseISO } from "date-fns";
 import { ptBR } from "date-fns/locale";
@@ -187,7 +191,9 @@ export default function Sales() {
                 <div className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-gray-200 bg-gray-50 hover:bg-gray-100 transition-colors cursor-pointer text-sm text-gray-700 min-w-[140px]">
                   <CalendarIcon size={16} className="text-gray-400 shrink-0" />
                   <span className={!dateFrom ? "text-gray-400" : ""}>
-                    {dateFrom ? format(parseISO(dateFrom), "dd/MM/yyyy") : "Data inicial"}
+                    {dateFrom
+                      ? format(parseISO(dateFrom), "dd/MM/yyyy")
+                      : "Data inicial"}
                   </span>
                 </div>
               </PopoverTrigger>
@@ -212,7 +218,9 @@ export default function Sales() {
                 <div className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-gray-200 bg-gray-50 hover:bg-gray-100 transition-colors cursor-pointer text-sm text-gray-700 min-w-[140px]">
                   <CalendarIcon size={16} className="text-gray-400 shrink-0" />
                   <span className={!dateTo ? "text-gray-400" : ""}>
-                    {dateTo ? format(parseISO(dateTo), "dd/MM/yyyy") : "Data final"}
+                    {dateTo
+                      ? format(parseISO(dateTo), "dd/MM/yyyy")
+                      : "Data final"}
                   </span>
                 </div>
               </PopoverTrigger>
@@ -240,7 +248,10 @@ export default function Sales() {
                 }}
                 className="group flex items-center gap-1.5 px-3 py-2 ml-1 rounded-xl bg-gray-100 hover:bg-red-50 text-gray-500 hover:text-red-500 transition-all cursor-pointer text-sm font-medium"
               >
-                <X size={14} className="group-hover:rotate-90 transition-transform duration-200" />
+                <X
+                  size={14}
+                  className="group-hover:rotate-90 transition-transform duration-200"
+                />
                 <span>Limpar</span>
               </button>
             )}
@@ -310,7 +321,7 @@ export default function Sales() {
                       className="group hover:bg-gray-50/80 transition-colors cursor-pointer"
                     >
                       <td className="px-6 py-3.5 text-sm text-gray-500 font-semibold text-center">
-                        {sale.id}
+                        {sale.numberSale}
                       </td>
                       <td className="px-6 py-3.5 text-sm font-bold text-gray-800 text-right">
                         {sale.total}
@@ -423,11 +434,11 @@ export default function Sales() {
       </footer>
 
       {selectedSale && (
-        <div 
+        <div
           className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-6"
           onClick={() => setSelectedSale(null)}
         >
-          <div 
+          <div
             className="bg-white w-full max-w-[980px] rounded-[28px] shadow-2xl overflow-hidden"
             onClick={(e) => e.stopPropagation()}
           >
