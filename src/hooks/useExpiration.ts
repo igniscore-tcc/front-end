@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
 
 export interface Expiration {
+  expirationId: number;
   saleId: number;
+  expirationNumber: number;
   clientName: string;
   saleDate: string;
   dueDate: string;
@@ -52,7 +54,6 @@ export function useExpiration() {
         setExpirations(data.items ?? []);
         setTotal(data.totalItems ?? 0);
         setTotalPages(data.totalPages ?? 0);
-        
       } catch (error) {
         console.error("Erro ao carregar vencimentos:", error);
       } finally {

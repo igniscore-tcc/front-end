@@ -29,25 +29,34 @@ export default function MaturityDate() {
 
   const getStatusLabel = (status: string) => {
     switch (status) {
-      case "EXPIRED": return "Vencido";
-      case "NEXT": return "Próximo";
-      case "NORMAL": return "Normal";
-      default: return status;
+      case "EXPIRED":
+        return "Vencido";
+      case "NEXT":
+        return "Próximo";
+      case "NORMAL":
+        return "Normal";
+      default:
+        return status;
     }
   };
 
   const getStatusClasses = (status: string) => {
     switch (status) {
-      case "EXPIRED": return "bg-red-100 text-red-700";
-      case "NEXT": return "bg-yellow-100 text-yellow-700";
-      case "NORMAL": return "bg-green-100 text-green-700";
-      default: return "bg-gray-100 text-gray-700";
+      case "EXPIRED":
+        return "bg-red-100 text-red-700";
+      case "NEXT":
+        return "bg-yellow-100 text-yellow-700";
+      case "NORMAL":
+        return "bg-green-100 text-green-700";
+      default:
+        return "bg-gray-100 text-gray-700";
     }
   };
 
-  const filteredData = expirations.filter((item) =>
-    item.clientName.toLowerCase().includes(search.toLowerCase()) ||
-    String(item.saleId).includes(search)
+  const filteredData = expirations.filter(
+    (item) =>
+      item.clientName.toLowerCase().includes(search.toLowerCase()) ||
+      String(item.saleId).includes(search),
   );
 
   if (loading) {
@@ -103,14 +112,17 @@ export default function MaturityDate() {
                 {filteredData.length > 0 ? (
                   filteredData.map((item) => (
                     <tr
-                      key={item.saleId}
+                      key={item.expirationId}
                       className="group hover:bg-gray-50/80 transition-colors cursor-pointer"
                     >
                       <td className="px-6 py-3.5 text-sm text-gray-500">
-                        {item.saleId}
+                        {item.expirationNumber}
                       </td>
 
-                      <td className="px-6 py-3.5 text-sm font-bold text-gray-800 truncate" title={item.clientName}>
+                      <td
+                        className="px-6 py-3.5 text-sm font-bold text-gray-800 truncate"
+                        title={item.clientName}
+                      >
                         {item.clientName}
                       </td>
 
@@ -127,7 +139,9 @@ export default function MaturityDate() {
                       </td>
 
                       <td className="px-6 py-3.5">
-                        <span className={`inline-flex px-2.5 py-1 text-xs font-bold rounded-full ${getStatusClasses(item.status)}`}>
+                        <span
+                          className={`inline-flex px-2.5 py-1 text-xs font-bold rounded-full ${getStatusClasses(item.status)}`}
+                        >
                           {getStatusLabel(item.status)}
                         </span>
                       </td>
