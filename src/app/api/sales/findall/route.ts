@@ -77,6 +77,7 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({
       sales: salesList,
       totalSales: totalSales,
+      totalPages: salesDTO?.totalPages ?? 0,
     });
   } catch (err) {
     console.error("Erro na rota findall:", err);

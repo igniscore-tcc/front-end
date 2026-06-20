@@ -37,8 +37,8 @@ interface NewSaleProps {
   setUnitsInput: (v: number) => void;
   paymentMethod: string;
   setPaymentMethod: (v: string) => void;
-  discountInput: string;
-  setDiscountInput: (v: string) => void;
+  discountInput: number;
+  setDiscountInput: (v: number) => void;
   filteredClientSuggestions: Cliente[];
   filteredProductSuggestions: Product[];
   handleSelectProduct: (p: Product) => void;
@@ -90,12 +90,16 @@ export default function NewSale({
   );
 
   const discountValue = useMemo(() => {
-    if (!discountInput.trim()) return 0;
-    if (discountInput.endsWith("%")) {
-      const pct = parseFloat(discountInput.replace("%", "")) || 0;
+    const discountStr = String(discountInput ?? "");
+
+    if (!discountStr.trim()) return 0;
+
+    if (discountStr.endsWith("%")) {
+      const pct = parseFloat(discountStr.replace("%", "")) || 0;
       return (subtotal * pct) / 100;
     }
-    return parseFloat(discountInput.replace(/[^0-9.]/g, "")) || 0;
+
+    return parseFloat(discountStr.replace(/[^0-9.]/g, "")) || 0;
   }, [discountInput, subtotal]);
 
   const finalTotal = useMemo(
@@ -406,9 +410,9 @@ export default function NewSale({
               />
 
               <Input
-                placeholder="Desconto (ex: 10% ou 50)"
+                placeholder="Desconto (ex: 10)"
                 value={discountInput}
-                onChange={(e) => setDiscountInput(e.target.value)}
+                onChange={(e) => setDiscountInput(Number(e.target.value) || 0)}
               />
             </div>
           </section>

@@ -58,6 +58,7 @@ export async function POST(req: NextRequest) {
           input: {
             clientId: Number(body.clientId),
             paymentMethod: body.paymentMethod,
+            discount: body.discount,
             items: body.items.map((item: any) => ({
               productId: Number(item.productId),
               quantity: Number(item.quantity),

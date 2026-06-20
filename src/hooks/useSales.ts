@@ -69,21 +69,23 @@ export function useSales() {
   const [unitsInput, setUnitsInput] = useState<number>(1);
 
   const [paymentMethod, setPaymentMethod] = useState("Dinheiro");
-  const [discountInput, setDiscountInput] = useState("0%");
+  const [discountInput, setDiscountInput] = useState<number>(0);
 
   // Listas de Clientes e Produtos do Banco de Dados via API
   const [dbClients, setDbClients] = useState<Cliente[]>([]);
   const [dbProducts, setDbProducts] = useState<Product[]>([]);
   const [loadingSuggestions, setLoadingSuggestions] = useState(false);
 
+  const [totalSales, setTotalSales] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
+
   // 2. Criar fetchSales()
   const fetchSales = useCallback(async () => {
     try {
       setLoading(true);
 
-      // Busca todas as vendas (ou um limite alto) para que o filtro e paginação no front-end funcionem
       const response = await fetch(
-        `${INTERNAL_API}/sales/findall?page=0&size=1000`,
+        `${INTERNAL_API}/sales/findall?page=${page - 1}&size=${perPage}`,
         {
           method: "GET",
           headers: getAuthHeaders(),
@@ -101,21 +103,12 @@ export function useSales() {
       const formattedSales: Sale[] = data.map((sale: any) => ({
         id: Number(sale.id),
         numberSale: Number(sale.numberSale ?? 0),
-
-        total: new Intl.NumberFormat("pt-BR", {
-          style: "currency",
-          currency: "BRL",
-        }).format(Number(sale.total ?? 0)),
-
-        desconto: sale.discount ? `${sale.discount}%` : "0%",
-
+        total: Number(sale.total ?? 0),
+        desconto: sale.discount ? `${sale.discount}` : "0",
         data: sale.date ? new Date(sale.date).toLocaleDateString("pt-BR") : "-",
         rawDate: sale.date || undefined,
-
         tipo: sale.paymentMethod ?? "-",
-
         status: sale.status ?? SaleStatus.PENDING,
-
         cliente: sale.client
           ? {
               id: Number(sale.client.id),
@@ -130,28 +123,27 @@ export function useSales() {
               observacao: sale.client.obs || "",
             }
           : undefined,
-
         items:
           sale.items?.map((item: any) => ({
             id: Number(item.id),
             nome: item.product?.name ?? "Produto",
             units: Number(item.quantity ?? 1),
             price: Number(item.unitPrice ?? 0),
-            total: new Intl.NumberFormat("pt-BR", {
-              style: "currency",
-              currency: "BRL",
-            }).format(Number(item.total ?? 0)),
+            total: Number(item.total ?? 0),
           })) ?? [],
       }));
 
       setSales(formattedSales);
+
+      setTotalSales(result.totalSales ?? 0);
+      setTotalPages(result.totalPages ?? 0);
     } catch (err) {
       console.error("Erro ao carregar vendas:", err);
       toast.error("Erro ao carregar vendas");
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [page, perPage]);
 
   // Função auxiliar para resetar o fluxo de vendas no front após concluir
   const clearCart = useCallback(() => {
@@ -162,7 +154,7 @@ export function useSales() {
     setProductSearch("");
     setPriceInput(0);
     setUnitsInput(1);
-    setDiscountInput("0%");
+    setDiscountInput(0);
   }, []);
 
   const loadSuggestions = useCallback(async () => {
@@ -228,101 +220,17 @@ export function useSales() {
   }, []);
 
   useEffect(() => {
-    fetchSales();
     loadSuggestions();
-  }, [fetchSales, loadSuggestions]);
+  }, [loadSuggestions]);
+
+  useEffect(() => {
+    fetchSales();
+  }, [fetchSales]);
 
   // Debounce da busca de vendas
   const debouncedSearch = useDebounce(search, 300);
 
-  const filtered = useMemo(() => {
-    const term = debouncedSearch.toLowerCase();
-    let result = sales;
-
-    if (filterStatus !== "ALL") {
-      result = result.filter((sale) => {
-        if (filterStatus === "CONCLUDED")
-          return sale.status === SaleStatus.COMPLETED;
-        if (filterStatus === "PENDING")
-          return sale.status === SaleStatus.PENDING;
-        if (filterStatus === "CANCELLED")
-          return sale.status === SaleStatus.CANCELLED;
-        return true;
-      });
-    }
-
-    if (dateFrom || dateTo) {
-      result = result.filter((sale) => {
-        if (!sale.rawDate) return false;
-
-        // Formatar para comparar no fuso horário local sem horas
-        const saleDate = new Date(sale.rawDate);
-        saleDate.setHours(0, 0, 0, 0);
-
-        if (dateFrom) {
-          // dataFrom vem como YYYY-MM-DD
-          const [year, month, day] = dateFrom.split("-").map(Number);
-          const fromDate = new Date(year, month - 1, day);
-          if (saleDate < fromDate) return false;
-        }
-
-        if (dateTo) {
-          const [year, month, day] = dateTo.split("-").map(Number);
-          const toDate = new Date(year, month - 1, day);
-          if (saleDate > toDate) return false;
-        }
-
-        return true;
-      });
-    }
-
-    return result.filter((sale) => {
-      return (
-        sale.id.toString().includes(term) ||
-        sale.tipo.toLowerCase().includes(term) ||
-        sale.status.toLowerCase().includes(term)
-      );
-    });
-  }, [debouncedSearch, sales, filterStatus, dateFrom, dateTo]);
-
-  const sorted = useMemo(() => {
-    return [...filtered].sort((a, b) => {
-      const va = a[sort.key];
-      const vb = b[sort.key];
-
-      if (sort.key === "total") {
-        const numA =
-          parseFloat(
-            String(va)
-              .replace(/[^0-9,-]/g, "")
-              .replace(",", "."),
-          ) || 0;
-
-        const numB =
-          parseFloat(
-            String(vb)
-              .replace(/[^0-9,-]/g, "")
-              .replace(",", "."),
-          ) || 0;
-
-        return sort.dir === "asc" ? numA - numB : numB - numA;
-      }
-
-      const valueA = String(va ?? "");
-      const valueB = String(vb ?? "");
-
-      if (valueA < valueB) return sort.dir === "asc" ? -1 : 1;
-      if (valueA > valueB) return sort.dir === "asc" ? 1 : -1;
-      return 0;
-    });
-  }, [filtered, sort]);
-
-  const effectiveTotal = sorted.length;
-  const pageData = sorted.slice((page - 1) * perPage, page * perPage);
-  const totalPages = Math.ceil(effectiveTotal / perPage);
   const hasNextPage = page < totalPages;
-  const from = effectiveTotal === 0 ? 0 : (page - 1) * perPage + 1;
-  const to = Math.min(page * perPage, effectiveTotal);
 
   const handleSort = (key: keyof Sale) => {
     setSort((prev) => ({
@@ -331,6 +239,20 @@ export function useSales() {
     }));
     setPage(1);
   };
+
+  const pageData = useMemo(() => {
+    const start = (page - 1) * perPage;
+    const end = start + perPage;
+    return sales.slice(start, end);
+  }, [sales, page, perPage]);
+
+  const from = useMemo(() => {
+    return totalSales === 0 ? 0 : (page - 1) * perPage + 1;
+  }, [page, perPage, totalSales]);
+
+  const to = useMemo(() => {
+    return Math.min(page * perPage, totalSales);
+  }, [page, perPage, totalSales]);
 
   // Autocomplete Clientes
   const filteredClientSuggestions = useMemo(() => {
@@ -434,6 +356,7 @@ export function useSales() {
       const payload = {
         clientId: Number(selectedClient.id),
         paymentMethod: mappedPayment,
+        discount: Number(discountInput) || 0,
         items: cart.map((item) => ({
           productId: Number(item.product.id),
           quantity: Number(item.units),
@@ -468,7 +391,7 @@ export function useSales() {
     sales,
     pageData,
     loading,
-    total: effectiveTotal,
+    total: totalSales,
     totalPages,
     hasNextPage,
     from,
