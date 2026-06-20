@@ -32,25 +32,26 @@ export async function middleware(req: NextRequest) {
       },
       body: JSON.stringify({
         query: `
-    query {
-      dashboard {
-        totalClients
-      }
-    }
-  `,
+          query {
+            me {
+              id
+              email
+              role
+            }
+          }
+        `,
       }),
     });
 
     const result = await response.json();
 
-    if (!response.ok || result.errors) {
+    if (!response.ok || result.errors || !result.data?.me) {
       return NextResponse.redirect(new URL("/login", req.url));
     }
 
     return NextResponse.next();
   } catch (error) {
     console.error(error);
-
     return NextResponse.redirect(new URL("/login", req.url));
   }
 }
