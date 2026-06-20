@@ -103,106 +103,109 @@ export default function Products() {
           <div className="flex-1 overflow-y-auto overflow-x-hidden custom-scrollbar">
             <table className="w-full text-left border-collapse table-fixed">
               <thead className="sticky top-0 z-10 bg-gray-50">
-              <tr className="bg-gray-50 border-b border-gray-100">
-                <th className="w-[80px] px-6 py-3 text-sm font-bold text-gray-500 uppercase tracking-wider">
-                  ID
-                </th>
-                <th className="px-6 py-3 text-sm font-bold text-gray-500 uppercase tracking-wider">
-                  Nome
-                </th>
-                <th className="w-[150px] px-6 py-3 text-sm font-bold text-gray-500 uppercase tracking-wider">
-                  Tipo
-                </th>
-                <th className="w-[120px] px-6 py-3 text-sm font-bold text-gray-500 uppercase tracking-wider">
-                  Validade
-                </th>
-                <th className="w-[120px] px-6 py-3 text-sm font-bold text-gray-500 uppercase tracking-wider">
-                  Lote
-                </th>
-                <th className="w-[150px] px-6 py-3 text-sm font-bold text-gray-500 uppercase tracking-wider text-right">
-                  Preço
-                </th>
-                <th className="w-[100px] px-6 py-3 text-sm font-bold text-gray-500 uppercase tracking-wider text-center">
-                  Ações
-                </th>
-              </tr>
-            </thead>
+                <tr className="bg-gray-50 border-b border-gray-100">
+                  <th className="w-[80px] px-6 py-3 text-sm font-bold text-gray-500 uppercase tracking-wider">
+                    ID
+                  </th>
+                  <th className="px-6 py-3 text-sm font-bold text-gray-500 uppercase tracking-wider">
+                    Nome
+                  </th>
+                  <th className="w-[150px] px-6 py-3 text-sm font-bold text-gray-500 uppercase tracking-wider">
+                    Tipo
+                  </th>
+                  <th className="w-[120px] px-6 py-3 text-sm font-bold text-gray-500 uppercase tracking-wider">
+                    Validade
+                  </th>
+                  <th className="w-[120px] px-6 py-3 text-sm font-bold text-gray-500 uppercase tracking-wider">
+                    Lote
+                  </th>
+                  <th className="w-[150px] px-6 py-3 text-sm font-bold text-gray-500 uppercase tracking-wider text-right">
+                    Preço
+                  </th>
+                  <th className="w-[100px] px-6 py-3 text-sm font-bold text-gray-500 uppercase tracking-wider text-center">
+                    Ações
+                  </th>
+                </tr>
+              </thead>
 
-            <tbody className="divide-y divide-gray-50">
-              {pageData.length > 0 ? (
-                pageData.map((product) => (
-                  <tr
-                    key={product.id}
-                    className="group hover:bg-gray-50/80 transition-colors cursor-pointer"
-                  >
-                    <td className="px-6 py-3.5 text-sm text-gray-500">
-                      {product.id}
-                    </td>
+              <tbody className="divide-y divide-gray-50">
+                {pageData.length > 0 ? (
+                  pageData.map((product) => (
+                    <tr
+                      key={product.id}
+                      className="group hover:bg-gray-50/80 transition-colors cursor-pointer"
+                    >
+                      <td className="px-6 py-3.5 text-sm text-gray-500">
+                        {product.numberProduct}
+                      </td>
 
-                    <td className="px-6 py-3.5 text-sm font-bold text-gray-800 truncate" title={product.nome}>
-                      {product.nome}
-                    </td>
+                      <td
+                        className="px-6 py-3.5 text-sm font-bold text-gray-800 truncate"
+                        title={product.nome}
+                      >
+                        {product.nome}
+                      </td>
 
-                    <td className="px-6 py-3.5">
-                      <span className="px-2.5 py-1 text-xs font-semibold rounded-full bg-gray-100 text-gray-600">
-                        {PRODUCT_TYPE_OPTIONS.find(
-                          (opt) => opt.value === product.tipo,
-                        )?.label || product.tipo}
-                      </span>
-                    </td>
+                      <td className="px-6 py-3.5">
+                        <span className="px-2.5 py-1 text-xs font-semibold rounded-full bg-gray-100 text-gray-600">
+                          {PRODUCT_TYPE_OPTIONS.find(
+                            (opt) => opt.value === product.tipo,
+                          )?.label || product.tipo}
+                        </span>
+                      </td>
 
-                    <td className="px-6 py-3.5 text-sm text-gray-600 whitespace-nowrap">
-                      {product.validade.split("-").reverse().join("/")}
-                    </td>
+                      <td className="px-6 py-3.5 text-sm text-gray-600 whitespace-nowrap">
+                        {product.validade.split("-").reverse().join("/")}
+                      </td>
 
-                    <td className="px-6 py-3.5 text-sm text-gray-600 whitespace-nowrap">
-                      {product.lote}
-                    </td>
+                      <td className="px-6 py-3.5 text-sm text-gray-600 whitespace-nowrap">
+                        {product.lote}
+                      </td>
 
-                    <td className="px-6 py-3.5 text-sm font-bold text-gray-800 text-right tabular-nums whitespace-nowrap">
-                      {formatCurrency(product.preco)}
-                    </td>
+                      <td className="px-6 py-3.5 text-sm font-bold text-gray-800 text-right tabular-nums whitespace-nowrap">
+                        {formatCurrency(product.preco)}
+                      </td>
 
-                    <td className="px-6 py-3.5 text-center">
-                      <div className="flex items-center justify-center gap-4 opacity-0 group-hover:opacity-100 transition-opacity">
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setEditing(product);
-                          }}
-                          className="text-[#FF5A1F] hover:text-[#E64D17] p-1.5 hover:bg-[#FF5A1F]/10 rounded-lg cursor-pointer"
-                        >
-                          <Pencil size={18} />
-                        </button>
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            removeProduct(product.id);
-                          }}
-                          className="text-[#FF5A1F] hover:text-[#E64D17] p-1.5 hover:bg-[#FF5A1F]/10 rounded-lg cursor-pointer"
-                        >
-                          <Trash2 size={18} />
-                        </button>
-                      </div>
+                      <td className="px-6 py-3.5 text-center">
+                        <div className="flex items-center justify-center gap-4 opacity-0 group-hover:opacity-100 transition-opacity">
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setEditing(product);
+                            }}
+                            className="text-[#FF5A1F] hover:text-[#E64D17] p-1.5 hover:bg-[#FF5A1F]/10 rounded-lg cursor-pointer"
+                          >
+                            <Pencil size={18} />
+                          </button>
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              removeProduct(product.id);
+                            }}
+                            className="text-[#FF5A1F] hover:text-[#E64D17] p-1.5 hover:bg-[#FF5A1F]/10 rounded-lg cursor-pointer"
+                          >
+                            <Trash2 size={18} />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td
+                      colSpan={7}
+                      className="px-6 py-12 text-center text-gray-400"
+                    >
+                      Nenhum produto encontrado
                     </td>
                   </tr>
-                ))
-              ) : (
-                <tr>
-                  <td
-                    colSpan={7}
-                    className="px-6 py-12 text-center text-gray-400"
-                  >
-                    Nenhum produto encontrado
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
+                )}
+              </tbody>
+            </table>
+          </div>
         </div>
+        <div className="flex-1 min-h-[20px]" />
       </div>
-      <div className="flex-1 min-h-[20px]" />
-    </div>
 
       {/* FOOTER */}
       <footer className="mt-auto flex flex-col md:flex-row items-center justify-center gap-8 text-sm font-medium text-gray-500 shrink-0 py-6">

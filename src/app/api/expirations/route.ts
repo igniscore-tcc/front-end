@@ -21,7 +21,9 @@ export async function GET(req: NextRequest) {
     query Expirations($page: Int!, $size: Int!) {
       expirations(page: $page, size: $size) {
         items {
+          expirationId
           saleId
+          expirationNumber
           clientName
           saleDate
           dueDate

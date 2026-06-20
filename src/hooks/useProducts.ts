@@ -58,12 +58,11 @@ export function useProducts() {
         throw new Error(result.error || "Erro ao buscar produtos");
       }
 
-      const data = Array.isArray(result?.products)
-        ? result.products
-        : [];
+      const data = Array.isArray(result?.products) ? result.products : [];
 
       const formattedProducts: Product[] = data.map((product: any) => ({
         id: Number(product.id),
+        numberProduct: Number(product.numberProduct),
         nome: product.name,
         tipo: product.type,
         lote: product.lot,
@@ -74,7 +73,7 @@ export function useProducts() {
       setProducts(formattedProducts);
 
       setTotal(Number(result?.totalProducts ?? 0));
-      
+
       const totalFromApi =
         typeof result?.totalProducts === "number"
           ? result.totalProducts
@@ -83,7 +82,6 @@ export function useProducts() {
             : formattedProducts.length;
 
       setTotal(totalFromApi);
-
     } catch (error) {
       console.error("Erro ao carregar produtos:", error);
       toast.error(
@@ -213,6 +211,7 @@ export function useProducts() {
 
       const updatedProduct: Product = {
         id: Number(result.id),
+        numberProduct: Number(result.numberProduct),
         nome: result.name,
         tipo: result.type,
         lote: result.lot,

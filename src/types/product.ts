@@ -14,6 +14,7 @@ export enum ProductType {
 
 export interface Product {
   id: number;
+  numberProduct: number;
   nome: string;
   tipo: ProductType;
   validade: string;
@@ -40,8 +41,6 @@ export type ProductSortKey =
 export interface ProductModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSave: (
-    data: ProductFormData & { id?: number }
-  ) => Promise<void>;
+  onSave: (data: ProductFormData & { id?: number }) => Promise<void>;
   productToEdit?: Product | null;
 }
