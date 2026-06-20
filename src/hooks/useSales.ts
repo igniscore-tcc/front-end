@@ -100,6 +100,7 @@ export function useSales() {
 
       const formattedSales: Sale[] = data.map((sale: any) => ({
         id: Number(sale.id),
+        numberSale: Number(sale.numberSale ?? 0),
 
         total: new Intl.NumberFormat("pt-BR", {
           style: "currency",
@@ -253,7 +254,7 @@ export function useSales() {
     if (dateFrom || dateTo) {
       result = result.filter((sale) => {
         if (!sale.rawDate) return false;
-        
+
         // Formatar para comparar no fuso horário local sem horas
         const saleDate = new Date(sale.rawDate);
         saleDate.setHours(0, 0, 0, 0);

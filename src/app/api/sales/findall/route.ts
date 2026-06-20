@@ -21,6 +21,7 @@ export async function GET(req: NextRequest) {
       sales(page: $page, size: $size) {
         sales {
           id
+          numberSale
           total
           discount
           date

@@ -16,6 +16,7 @@ export interface SaleItem {
 
 export interface Sale {
   id: number;
+  numberSale: number;
   total: string;
   desconto: string;
   data: string;
