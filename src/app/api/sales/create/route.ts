@@ -3,22 +3,30 @@ import { NextRequest, NextResponse } from "next/server";
 const API_URL = process.env.API_URL!;
 
 export async function POST(req: NextRequest) {
-  const authorization = req.headers.get("authorization");
+  const token = req.cookies.get("token")?.value;
 
-  if (!authorization) {
+  if (!token) {
     return NextResponse.json(
       { error: "Token não informado." },
-      { status: 401 }
+      { status: 401 },
     );
   }
 
   try {
     const body = await req.json();
 
-    if (!body.clientId || !body.paymentMethod || !body.items || !Array.isArray(body.items)) {
+    if (
+      !body.clientId ||
+      !body.paymentMethod ||
+      !body.items ||
+      !Array.isArray(body.items)
+    ) {
       return NextResponse.json(
-        { error: "Campos obrigatórios ausentes ou inválidos (clientId, paymentMethod, items)." },
-        { status: 400 }
+        {
+          error:
+            "Campos obrigatórios ausentes ou inválidos (clientId, paymentMethod, items).",
+        },
+        { status: 400 },
       );
     }
 
@@ -41,7 +49,7 @@ export async function POST(req: NextRequest) {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: authorization,
+        Authorization: `Bearer: ${token}`,
         "ngrok-skip-browser-warning": "true",
       },
       body: JSON.stringify({
@@ -64,8 +72,11 @@ export async function POST(req: NextRequest) {
 
     if (!response.ok || result.errors) {
       return NextResponse.json(
-        { error: result.errors?.[0]?.message || "Erro ao criar venda no servidor" },
-        { status: 400 }
+        {
+          error:
+            result.errors?.[0]?.message || "Erro ao criar venda no servidor",
+        },
+        { status: 400 },
       );
     }
 
@@ -74,7 +85,7 @@ export async function POST(req: NextRequest) {
     console.error("Erro na rota de criação de venda:", err);
     return NextResponse.json(
       { error: "Erro interno no servidor de API." },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

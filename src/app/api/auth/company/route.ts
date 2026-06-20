@@ -11,9 +11,9 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Email inválido" }, { status: 400 });
   }
 
-  const authorization = req.headers.get("authorization");
+  const token = req.cookies.get("token")?.value;
 
-  if (!authorization) {
+  if (!token) {
     return NextResponse.json(
       { error: "Token não encontrado." },
       { status: 401 },
@@ -38,7 +38,7 @@ export async function POST(req: NextRequest) {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      Authorization: authorization,
+      Authorization: `Bearer ${token}`,
       "ngrok-skip-browser-warning": "true",
     },
     body: JSON.stringify({
