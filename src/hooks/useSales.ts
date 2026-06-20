@@ -69,7 +69,7 @@ export function useSales() {
   const [unitsInput, setUnitsInput] = useState<number>(1);
 
   const [paymentMethod, setPaymentMethod] = useState("Dinheiro");
-  const [discountInput, setDiscountInput] = useState("0%");
+  const [discountInput, setDiscountInput] = useState<number>(0);
 
   // Listas de Clientes e Produtos do Banco de Dados via API
   const [dbClients, setDbClients] = useState<Cliente[]>([]);
@@ -107,7 +107,7 @@ export function useSales() {
           currency: "BRL",
         }).format(Number(sale.total ?? 0)),
 
-        desconto: sale.discount ? `${sale.discount}%` : "0%",
+        desconto: sale.discount ? `${sale.discount}` : "0",
 
         data: sale.date ? new Date(sale.date).toLocaleDateString("pt-BR") : "-",
         rawDate: sale.date || undefined,
@@ -162,7 +162,7 @@ export function useSales() {
     setProductSearch("");
     setPriceInput(0);
     setUnitsInput(1);
-    setDiscountInput("0%");
+    setDiscountInput(0);
   }, []);
 
   const loadSuggestions = useCallback(async () => {
@@ -434,6 +434,7 @@ export function useSales() {
       const payload = {
         clientId: Number(selectedClient.id),
         paymentMethod: mappedPayment,
+        discount: Number(discountInput) || 0,
         items: cart.map((item) => ({
           productId: Number(item.product.id),
           quantity: Number(item.units),
