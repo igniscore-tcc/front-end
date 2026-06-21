@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { Button } from "../ui/button";
 import { Input } from "../ui/Input";
 import { FileInput, Label } from "flowbite-react";
@@ -8,16 +9,20 @@ export default function Settings() {
   return (
     <div className="">
       <div className="">
-        <img
+        <Image
           src="/bannerProfile.png"
-          alt=""
-          className="w-full h-[128px] object-cover"
+          alt="IgnisCore Logo"
+          width={1200}
+          height={128}
+          className="w-full object-cover"
         />
 
         <div className="flex gap-8 h-[144px] items-end border-b border-gray-300 mx-16">
-          <img
+          <Image
             src="/imgProfile.png"
-            alt=""
+            alt="IgnisCore Logo"
+            width={144}
+            height={144}
             className="relative -top-16 shadow-xl rounded-xl"
           />
 
@@ -49,7 +54,13 @@ export default function Settings() {
         <h5>Informações da empresa</h5>
 
         <div className="flex gap-8">
-          <img src="/imgProfile.png" alt="" className="shadow-xl rounded-xl" />
+          <Image
+            src="/imgProfile.png"
+            alt="IgnisCore Logo"
+            width={144}
+            height={144}
+            className="shadow-xl rounded-xl"
+          />
 
           <div className="flex w-2xl items-center justify-center">
             <Label
