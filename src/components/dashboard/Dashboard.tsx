@@ -10,16 +10,7 @@ import {
   YAxis,
   ResponsiveContainer,
 } from "recharts";
-import {
-  ArrowDown,
-  ArrowUp,
-  AlertTriangle,
-  CheckCircle,
-  Clock,
-  Wrench,
-  CheckCircle2,
-  User,
-} from "lucide-react";
+import { ArrowDown, ArrowUp, AlertTriangle, Clock } from "lucide-react";
 import { useDashboard } from "@/hooks/useDashboard";
 
 interface CustomTooltipProps {
@@ -34,7 +25,10 @@ const CustomTooltip = ({ active, payload, label }: CustomTooltipProps) => {
       <div className="bg-white border border-gray-200 rounded-xl shadow-[0_4px_12px_rgba(0,0,0,0.08)] p-3 outline-none">
         <p className="text-gray-500 text-sm font-medium mb-1">{label}</p>
         <p className="text-[#FF5A1F] font-medium text-base">
-          R$ {Number(payload[0].value).toLocaleString("pt-BR")}
+          R${" "}
+          {Number(payload[0].value).toLocaleString("pt-BR", {
+            minimumFractionDigits: 2,
+          })}
         </p>
       </div>
     );
@@ -44,9 +38,11 @@ const CustomTooltip = ({ active, payload, label }: CustomTooltipProps) => {
 
 export default function Dashboard() {
   const [periodo, setPeriodo] = useState("3");
-  const { dashboard, loading } = useDashboard();
+  const { dashboard, salesHistory, upcomingExpirations, loading } =
+    useDashboard();
 
-  const dataDinamica = useMemo(() => {
+  // Mapeia o histórico real de vendas vindo do hook para o formato do gráfico
+  const dadosGraficoFiltrados = useMemo(() => {
     const mesesLabels = [
       "Jan",
       "Fev",
@@ -61,88 +57,40 @@ export default function Dashboard() {
       "Nov",
       "Dez",
     ];
-    const dadosDinamicos = [];
-    const dataAtual = new Date();
-    const valoresFicticios = [
-      12000, 18000, 14000, 22000, 28000, 25000, 5000, 9000, 17000, 8500, 23000,
-      35000,
-    ];
 
-    for (let i = 11; i >= 0; i--) {
-      const d = new Date(dataAtual.getFullYear(), dataAtual.getMonth() - i, 1);
-      const nomeMes = mesesLabels[d.getMonth()];
-      const valorIndex = Math.abs(
-        (d.getMonth() + d.getFullYear()) % valoresFicticios.length,
-      );
+    const dadosOrdenados = [...salesHistory].sort((a, b) => {
+      if (a.year !== b.year) return a.year - b.year;
+      return a.month - b.month;
+    });
 
-      dadosDinamicos.push({
-        mes: nomeMes,
-        vendas: valoresFicticios[valorIndex],
-      });
-    }
-    return dadosDinamicos;
-  }, []);
+    const formatados = dadosOrdenados.map((item) => ({
+      mes: `${mesesLabels[item.month - 1]} / ${String(item.year).slice(-2)}`,
+      vendas: item.total,
+    }));
 
-  const dadosFiltrados = dataDinamica.slice(-Number(periodo));
+    return formatados.slice(-Number(periodo));
+  }, [salesHistory, periodo]);
 
-  const proximosVencimentos = [
-    {
-      id: 1,
-      item: "Extintor ABC 4kg",
-      local: "Bloco A - Corredor",
-      data: "25/06/2026",
-      status: "critico",
-      dias: "4 dias",
-    },
-    {
-      id: 2,
-      item: "Mangueira de Incêndio T2",
-      local: "Almoxarifado",
-      data: "09/07/2026",
-      status: "atencao",
-      dias: "18 dias",
-    },
-    {
-      id: 3,
-      item: "Extintor CO2 6kg",
-      local: "Sala de TI",
-      data: "22/07/2026",
-      status: "atencao",
-      dias: "31 dias",
-    },
-    {
-      id: 4,
-      item: "Splinklers (Inspeção)",
-      local: "Galpão Principal",
-      data: "15/08/2026",
-      status: "normal",
-      dias: "55 dias",
-    },
-  ];
+  // Mapeia e define dinamicamente os badges de criticidade do equipamento baseado nos dias restantes
+  const listaVencimentosFormatada = useMemo(() => {
+    return upcomingExpirations.map((item, index) => {
+      let status = "normal";
+      if (item.daysRemaining <= 7) {
+        status = "critico";
+      } else if (item.daysRemaining <= 30) {
+        status = "atencao";
+      }
 
-  const atividadesRecentes = [
-    {
-      id: 1,
-      tipo: "sucesso",
-      texto: "Recarga concluída: 5 Extintores PQS",
-      responsavel: "Carlos M.",
-      hora: "Há 10 min",
-    },
-    {
-      id: 2,
-      tipo: "manutencao",
-      texto: "Nova OS aberta para testes de hidrante",
-      responsavel: "Sistema",
-      hora: "Há 2 horas",
-    },
-    {
-      id: 3,
-      tipo: "sucesso",
-      texto: "Visita técnica agendada com Cliente Alfa",
-      responsavel: "Mariana S.",
-      hora: "Ontem",
-    },
-  ];
+      return {
+        id: index,
+        item: item.equipmentName,
+        local: item.location || "Local não informado",
+        data: item.expirationDate, // Adapte formatação de data se necessário
+        status,
+        dias: `${item.daysRemaining} ${item.daysRemaining === 1 ? "dia" : "dias"}`,
+      };
+    });
+  }, [upcomingExpirations]);
 
   if (loading) {
     return (
@@ -165,7 +113,7 @@ export default function Dashboard() {
     }).format(value);
 
   const formatarMoedaK = (valor: number) => {
-    if (valor >= 1000) return `${valor / 1000}k`;
+    if (valor >= 1000) return `${(valor / 1000).toFixed(0)}k`;
     return valor.toString();
   };
 
@@ -184,8 +132,19 @@ export default function Dashboard() {
         <div className="bg-white p-5 border border-gray-100 shadow-sm rounded-xl flex flex-col justify-between">
           <div className="flex justify-between items-start text-sm font-medium text-gray-500">
             Faturamento Mensal
-            <span className="bg-green-100 text-green-800 text-xs font-medium px-2 py-0.5 rounded-lg flex items-center gap-0.5">
-              <ArrowUp width={12} height={12} /> 30%
+            <span
+              className={`text-xs font-medium px-2 py-0.5 rounded-lg flex items-center gap-0.5 ${
+                dashboard.revenueGrowthPercentage >= 0
+                  ? "bg-green-100 text-green-800"
+                  : "bg-red-100 text-red-800"
+              }`}
+            >
+              {dashboard.revenueGrowthPercentage >= 0 ? (
+                <ArrowUp width={12} height={12} />
+              ) : (
+                <ArrowDown width={12} height={12} />
+              )}
+              {Math.abs(dashboard.revenueGrowthPercentage)}%
             </span>
           </div>
           <div className="mt-4">
@@ -201,43 +160,40 @@ export default function Dashboard() {
         <div className="bg-white p-5 border border-gray-100 shadow-sm rounded-xl flex flex-col justify-between">
           <div className="flex justify-between items-start text-sm font-medium text-gray-500">
             Clientes Ativos
-            <span className="bg-green-100 text-green-800 text-xs font-medium px-2 py-0.5 rounded-lg flex items-center gap-0.5">
-              <ArrowUp width={12} height={12} /> 20%
-            </span>
           </div>
           <div className="mt-4">
             <div className="text-gray-700 font-medium text-3xl tracking-tight">
               {dashboard.totalClients}
             </div>
-            <p className="mt-2 text-xs text-gray-400">24 novos esta semana</p>
+            <p className="mt-2 text-xs text-gray-400">
+              {dashboard.newClientsThisWeek} novos esta semana
+            </p>
           </div>
         </div>
 
         <div className="bg-white p-5 border border-gray-100 shadow-sm rounded-xl flex flex-col justify-between">
           <div className="flex justify-between items-start text-sm font-medium text-gray-500">
-            Ordens em Aberto
-            <span className="bg-gray-100 text-gray-600 text-xs font-medium px-2 py-0.5 rounded-lg">
-              Estável
-            </span>
+            Vendas em Aberto
           </div>
           <div className="mt-4">
             <div className="text-gray-700 font-medium text-3xl tracking-tight">
               {dashboard.pendingOrders}
             </div>
-            <p className="mt-2 text-xs text-gray-400">Nenhuma ordem pendente</p>
+            <p className="mt-2 text-xs text-gray-400">
+              {dashboard.pendingOrders === 0
+                ? "Nenhuma ordem pendente"
+                : "Ordens aguardando processamento"}
+            </p>
           </div>
         </div>
 
         <div className="bg-white p-5 border border-gray-100 shadow-sm rounded-xl flex flex-col justify-between">
           <div className="flex justify-between items-start text-sm font-medium text-gray-500">
             Vencerão em Breve
-            <span className="bg-amber-100 text-amber-800 text-xs font-medium px-2 py-0.5 rounded-lg flex items-center gap-0.5">
-              <ArrowDown width={12} height={12} /> 20%
-            </span>
           </div>
           <div className="mt-4">
             <div className="text-gray-700 font-medium text-3xl tracking-tight">
-              {dashboard.upcomingExpirations}
+              {dashboard.itemsExpiringSoon}
             </div>
             <p className="mt-2 text-xs text-amber-600 font-medium flex items-center gap-1">
               <Clock width={12} height={12} /> Próximos 30 dias
@@ -248,16 +204,20 @@ export default function Dashboard() {
         <div className="bg-white p-5 border border-gray-100 shadow-sm rounded-xl flex flex-col justify-between">
           <div className="flex justify-between items-start text-sm font-medium text-gray-500">
             Itens Vencidos
-            <span className="bg-red-100 text-red-800 text-xs font-medium px-2 py-0.5 rounded-lg flex items-center gap-0.5">
-              +2
-            </span>
           </div>
           <div className="mt-4">
-            <div className="text-red-600 font-medium text-3xl tracking-tight">
-              {dashboard.expiredExpirations}
+            <div
+              className={`${dashboard.expiredItems > 0 ? "text-red-600" : "text-gray-700"} font-medium text-3xl tracking-tight`}
+            >
+              {dashboard.expiredItems}
             </div>
-            <p className="mt-2 text-xs text-red-500 font-medium flex items-center gap-1">
-              <AlertTriangle width={12} height={12} /> Ação necessária urgente
+            <p
+              className={`mt-2 text-xs font-medium flex items-center gap-1 ${dashboard.expiredItems > 0 ? "text-red-500" : "text-gray-400"}`}
+            >
+              <AlertTriangle width={12} height={12} />
+              {dashboard.expiredItems > 0
+                ? "Ação necessária urgente"
+                : "Nenhum item vencido"}
             </p>
           </div>
         </div>
@@ -271,7 +231,7 @@ export default function Dashboard() {
                 Desempenho de Vendas
               </h2>
               <p className="text-xs text-gray-400">
-                Visão retroativa de faturamento de contratos
+                Visão faturamento real dos contratos baseado no backend
               </p>
             </div>
             <select
@@ -287,39 +247,45 @@ export default function Dashboard() {
           </div>
 
           <div className="w-full h-[80%]">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart
-                data={dadosFiltrados}
-                margin={{ top: 10, right: 5, left: -15, bottom: 0 }}
-              >
-                <CartesianGrid vertical={false} stroke="#F3F4F6" />
-                <XAxis
-                  dataKey="mes"
-                  tickLine={false}
-                  axisLine={false}
-                  tick={{ fill: "#9CA3AF", fontSize: 12, fontWeight: 500 }}
-                  padding={{ left: 15, right: 15 }}
-                />
-                <YAxis
-                  tickLine={false}
-                  axisLine={false}
-                  tickFormatter={formatarMoedaK}
-                  tick={{ fill: "#9CA3AF", fontSize: 12 }}
-                  domain={[0, "dataMax + 5000"]}
-                />
-                <Tooltip
-                  cursor={{ fill: "#F9FAFB" }}
-                  content={<CustomTooltip />}
-                />
-                <Bar
-                  dataKey="vendas"
-                  radius={[8, 8, 0, 0]}
-                  maxBarSize={45}
-                  fill="#FF5A1F"
-                  animationDuration={400}
-                />
-              </BarChart>
-            </ResponsiveContainer>
+            {dadosGraficoFiltrados.length === 0 ? (
+              <div className="w-full h-full flex items-center justify-center text-sm text-gray-400">
+                Nenhum dado de venda encontrado para o período.
+              </div>
+            ) : (
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart
+                  data={dadosGraficoFiltrados}
+                  margin={{ top: 10, right: 5, left: -15, bottom: 0 }}
+                >
+                  <CartesianGrid vertical={false} stroke="#F3F4F6" />
+                  <XAxis
+                    dataKey="mes"
+                    tickLine={false}
+                    axisLine={false}
+                    tick={{ fill: "#9CA3AF", fontSize: 11, fontWeight: 500 }}
+                    padding={{ left: 15, right: 15 }}
+                  />
+                  <YAxis
+                    tickLine={false}
+                    axisLine={false}
+                    tickFormatter={formatarMoedaK}
+                    tick={{ fill: "#9CA3AF", fontSize: 12 }}
+                    domain={[0, "dataMax + 2000"]}
+                  />
+                  <Tooltip
+                    cursor={{ fill: "#F9FAFB" }}
+                    content={<CustomTooltip />}
+                  />
+                  <Bar
+                    dataKey="vendas"
+                    radius={[8, 8, 0, 0]}
+                    maxBarSize={45}
+                    fill="#FF5A1F"
+                    animationDuration={400}
+                  />
+                </BarChart>
+              </ResponsiveContainer>
+            )}
           </div>
         </div>
 
@@ -334,41 +300,49 @@ export default function Dashboard() {
           </div>
 
           <div className="space-y-4 overflow-y-auto flex-1 pr-1 scrollbar-thin">
-            {proximosVencimentos.map((item) => (
-              <div
-                key={item.id}
-                className="flex justify-between items-center border-b border-gray-100 pb-3 last:border-none"
-              >
-                <div>
-                  <p className="font-semibold text-sm text-gray-700">
-                    {item.item}
-                  </p>
-                  <p className="text-xs text-gray-400">{item.local}</p>
-                </div>
-                <div className="text-right">
-                  <span
-                    className={`inline-block text-[11px] font-medium px-2 py-0.5 rounded-md mb-1 ${
-                      item.status === "critico"
-                        ? "bg-red-50 text-red-700"
-                        : item.status === "atencao"
-                          ? "bg-amber-50 text-amber-700"
-                          : "bg-gray-100 text-gray-700"
-                    }`}
-                  >
-                    {item.dias}
-                  </span>
-                  <p className="text-xs text-gray-400 font-medium">
-                    {item.data}
-                  </p>
-                </div>
+            {listaVencimentosFormatada.length === 0 ? (
+              <div className="w-full h-full flex items-center justify-center text-sm text-gray-400 text-center">
+                Nenhum equipamento próximo do vencimento mapeado.
               </div>
-            ))}
+            ) : (
+              listaVencimentosFormatada.map((item) => (
+                <div
+                  key={item.id}
+                  className="flex justify-between items-center border-b border-gray-100 pb-3 last:border-none"
+                >
+                  <div className="max-w-[65%]">
+                    <p className="font-semibold text-sm text-gray-700 truncate">
+                      {item.item}
+                    </p>
+                    <p className="text-xs text-gray-400 truncate">
+                      {item.local}
+                    </p>
+                  </div>
+                  <div className="text-right whitespace-nowrap">
+                    <span
+                      className={`inline-block text-[11px] font-medium px-2 py-0.5 rounded-md mb-1 ${
+                        item.status === "critico"
+                          ? "bg-red-50 text-red-700"
+                          : item.status === "atencao"
+                            ? "bg-amber-50 text-amber-700"
+                            : "bg-gray-100 text-gray-700"
+                      }`}
+                    >
+                      {item.dias}
+                    </span>
+                    <p className="text-xs text-gray-400 font-medium">
+                      {item.data}
+                    </p>
+                  </div>
+                </div>
+              ))
+            )}
           </div>
         </div>
       </div>
 
       <div className="">
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 grid-rows-1 h-[250px]">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 grid-rows-1 h-auto sm:h-[180px]">
           <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100 flex flex-col justify-between transition-all hover:shadow-md">
             <div className="flex justify-between items-start">
               <div>
@@ -379,24 +353,32 @@ export default function Dashboard() {
                   Cilindros ativos dentro do prazo
                 </p>
               </div>
-              <span className="bg-green-50 text-green-700 text-[10px] font-semibold px-2 py-0.5 rounded">
-                Excelente
+              <span
+                className={`text-[10px] font-semibold px-2 py-0.5 rounded ${
+                  dashboard.compliancePercentage >= 90
+                    ? "bg-green-50 text-green-700"
+                    : "bg-amber-50 text-amber-700"
+                }`}
+              >
+                {dashboard.compliancePercentage >= 90 ? "Excelente" : "Regular"}
               </span>
             </div>
 
             <div className="mt-2">
               <div className="flex justify-between items-end mb-1">
                 <span className="text-2xl font-semibold text-gray-700 tracking-tight">
-                  94.2%
+                  {dashboard.compliancePercentage.toFixed(2)}%
                 </span>
                 <span className="text-[10px] text-gray-400 font-medium">
-                  342 / 363 itens
+                  {dashboard.compliantItems} / {dashboard.totalItems} itens
                 </span>
               </div>
               <div className="w-full bg-gray-100 h-1.5 rounded-full overflow-hidden">
                 <div
                   className="bg-green-500 h-full rounded-full transition-all duration-500"
-                  style={{ width: "94.2%" }}
+                  style={{
+                    width: `${dashboard.compliancePercentage.toFixed(2)}%`,
+                  }}
                 ></div>
               </div>
             </div>
@@ -409,20 +391,17 @@ export default function Dashboard() {
                   Previsão de Recargas
                 </h2>
                 <p className="text-[11px] text-gray-400">
-                  A vencer nos próximos 90 dias
+                  Próximos faturamentos mapeados
                 </p>
               </div>
-              <span className="bg-blue-50 text-blue-700 text-[10px] font-medium px-2 py-0.5 rounded flex items-center gap-0.5">
-                <ArrowUp width={10} height={10} /> 12%
-              </span>
             </div>
 
             <div className="mt-2">
               <div className="text-2xl font-semibold text-gray-700 tracking-tight">
-                R$ 14.850
+                {formatCurrency(dashboard.forecastRecharges)}
               </div>
-              <p className="text-[11px] text-gray-400 mt-1 line-clamp-1">
-                Receita prevista em ordens mapeadas.
+              <p className="text-[11px] text-gray-400 mt-1 line-clamp-2">
+                Receita prevista em ordens futuras.
               </p>
             </div>
           </div>
@@ -431,32 +410,19 @@ export default function Dashboard() {
             <div className="flex justify-between items-start">
               <div>
                 <h2 className="text-sm font-medium text-gray-700 tracking-tight">
-                  Resolução de OS
+                  Total de Equipamentos
                 </h2>
-                <p className="text-[11px] text-gray-400">
-                  Vistorias técnicas concluídas
-                </p>
+                <p className="text-[11px] text-gray-400">Items vendidos</p>
               </div>
-              <div className="w-2 h-2 rounded-full bg-orange-500 animate-pulse mt-1"></div>
             </div>
 
-            <div className="mt-1 flex gap-4 items-center">
-              <div>
-                <div className="text-xl font-semibold text-gray-700 tracking-tight">
-                  88%
-                </div>
-                <p className="text-[10px] text-gray-400 font-medium">
-                  Conclusão
-                </p>
+            <div className="mt-2">
+              <div className="text-2xl font-semibold text-gray-700 tracking-tight">
+                {dashboard.totalItems}
               </div>
-              <div className="border-l border-gray-100 pl-4">
-                <div className="text-sm font-semibold text-gray-800">
-                  4.2 dias
-                </div>
-                <p className="text-[10px] text-gray-400 font-medium">
-                  Tempo de rota
-                </p>
-              </div>
+              <p className="text-[11px] text-gray-400 mt-1">
+                Total de items vendidos.
+              </p>
             </div>
           </div>
 
@@ -470,17 +436,21 @@ export default function Dashboard() {
                   Faturamento com atraso
                 </p>
               </div>
-              <span className="bg-red-50 text-red-700 text-[10px] font-semibold px-2 py-0.5 rounded">
-                Atenção
-              </span>
+              {dashboard.overdueRevenue > 0 && (
+                <span className="bg-red-50 text-red-700 text-[10px] font-semibold px-2 py-0.5 rounded">
+                  Atenção
+                </span>
+              )}
             </div>
 
             <div className="mt-2">
-              <div className="text-2xl font-semibold text-red-600 tracking-tight">
-                R$ 3.240
+              <div
+                className={`text-2xl font-semibold tracking-tight ${dashboard.overdueRevenue > 0 ? "text-red-600" : "text-gray-700"}`}
+              >
+                {formatCurrency(dashboard.overdueRevenue)}
               </div>
               <p className="text-[11px] text-gray-400 mt-1">
-                7 clientes com faturas pendentes.
+                {dashboard.overdueClientsCount} clientes inadimplentes.
               </p>
             </div>
           </div>
@@ -495,24 +465,28 @@ export default function Dashboard() {
                   Cilindros condenados no mês
                 </p>
               </div>
-              <span className="bg-gray-100 text-gray-700 text-[10px] font-medium px-2 py-0.5 rounded">
-                Normal
-              </span>
             </div>
 
             <div className="mt-2">
               <div className="flex justify-between items-end mb-1">
                 <span className="text-2xl font-semibold text-gray-700 tracking-tight">
-                  1.8%
+                  {dashboard.condemnedItemsThisMonth}
                 </span>
                 <span className="text-[10px] text-gray-400 font-medium">
-                  4 extintores descartados
+                  {dashboard.condemnedItemsThisMonth === 1
+                    ? "1 descarte"
+                    : `${dashboard.condemnedItemsThisMonth} descartes`}
                 </span>
               </div>
               <div className="w-full bg-gray-100 h-1.5 rounded-full overflow-hidden">
                 <div
                   className="bg-orange-500 h-full rounded-full transition-all duration-500"
-                  style={{ width: "1.8%" }}
+                  style={{
+                    width:
+                      dashboard.totalItems > 0
+                        ? `${(dashboard.condemnedItemsThisMonth / dashboard.totalItems) * 100}%`
+                        : "0%",
+                  }}
                 ></div>
               </div>
             </div>

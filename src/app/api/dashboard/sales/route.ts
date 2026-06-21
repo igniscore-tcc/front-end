@@ -13,22 +13,11 @@ export async function GET(req: NextRequest) {
   }
 
   const query = `
-    query Dashboard {
-      dashboard {
-        totalClients
-        newClientsThisWeek
-        monthlyRevenue
-        revenueGrowthPercentage
-        pendingOrders
-        itemsExpiringSoon
-        expiredItems
-        compliantItems
-        totalItems
-        compliancePercentage
-        forecastRecharges
-        overdueRevenue
-        overdueClientsCount
-        condemnedItemsThisMonth
+    query GetSalesLast12Months {
+      salesLast12Months {
+        month
+        year
+        total
       }
     }
   `;
@@ -50,7 +39,9 @@ export async function GET(req: NextRequest) {
   if (!response.ok || result.errors) {
     return NextResponse.json(
       {
-        error: result.errors?.[0]?.message || "Erro ao buscar dashboard",
+        error:
+          result.errors?.[0]?.message ||
+          "Erro ao buscar vendas dos últimos 12 meses",
       },
       {
         status: response.status || 400,
@@ -58,5 +49,5 @@ export async function GET(req: NextRequest) {
     );
   }
 
-  return NextResponse.json(result.data.dashboard);
+  return NextResponse.json(result.data.salesLast12Months);
 }

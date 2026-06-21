@@ -13,22 +13,12 @@ export async function GET(req: NextRequest) {
   }
 
   const query = `
-    query Dashboard {
-      dashboard {
-        totalClients
-        newClientsThisWeek
-        monthlyRevenue
-        revenueGrowthPercentage
-        pendingOrders
-        itemsExpiringSoon
-        expiredItems
-        compliantItems
-        totalItems
-        compliancePercentage
-        forecastRecharges
-        overdueRevenue
-        overdueClientsCount
-        condemnedItemsThisMonth
+    query GetUpcomingEquipmentExpirations {
+      upcomingEquipmentExpirations {
+        equipmentName
+        location
+        daysRemaining
+        expirationDate
       }
     }
   `;
@@ -50,7 +40,9 @@ export async function GET(req: NextRequest) {
   if (!response.ok || result.errors) {
     return NextResponse.json(
       {
-        error: result.errors?.[0]?.message || "Erro ao buscar dashboard",
+        error:
+          result.errors?.[0]?.message ||
+          "Erro ao buscar vencimentos de equipamentos",
       },
       {
         status: response.status || 400,
@@ -58,5 +50,5 @@ export async function GET(req: NextRequest) {
     );
   }
 
-  return NextResponse.json(result.data.dashboard);
+  return NextResponse.json(result.data.upcomingEquipmentExpirations);
 }
