@@ -40,7 +40,7 @@ export default function Sidebar({ isExpanded, onToggle }: SidebarProps) {
 
   const navItems = [
     { href: "/dashboard", icon: LayoutDashboard, label: "Dashboard" },
-    { href: "/servicos", icon: NotebookText, label: "Ordem de Serviços" },
+    /* { href: "/servicos", icon: NotebookText, label: "Ordem de Serviços" }, */
     { href: "/clientes", icon: Users, label: "Clientes" },
     { href: "/produtos", icon: Package, label: "Produtos" },
     { href: "/vendas", icon: ShoppingCart, label: "Vendas" },
