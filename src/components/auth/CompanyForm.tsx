@@ -159,7 +159,7 @@ export default function CompanyForm() {
 
       <div className="w-full border-t border-gray-100 mb-6"></div>
       <div className="mb-8">
-        <h2 className="text-[25px] font-semibold text-[#  ] mb-3">
+        <h2 className="text-[25px] font-semibold text-[#FF5A1F] mb-3">
           Cadastrar sua empresa
         </h2>
         <div className="flex w-full h-1.5 bg-[#F0F0F0] rounded-full overflow-hidden">
