@@ -11,6 +11,8 @@ import {
 } from "recharts";
 import { useState, useEffect } from "react";
 import {
+  ArrowDown,
+  ArrowUp,
   CalendarClock,
   CalendarX2,
   NotebookText,
@@ -85,64 +87,123 @@ export default function Dashboard() {
       </div>
 
       <div className="p-6 grid grid-cols-5 gap-8">
-        <div className="bg-white p-5 border border-gray-100 shadow-sm rounded-2xl min-h-[150px] text-[#6B7280] flex justify-between items-center">
+        <div className="bg-white p-5 border border-gray-100 shadow-sm rounded-2xl text-[#6B7280]">
           <div>
-            Vendas do mês
-            <div className="text-black mt-4 font-semibold text-4xl">
-              {formatCurrency(dashboard.monthlyRevenue)}
+            <div className="flex justify-between">
+              Vendas do mês
+              <div className="bg-green-400/20 text-green-800 text-[13px] font-semibold px-2 py-1 rounded-2xl">
+                +30%
+              </div>
             </div>
-          </div>
-          <div className="w-14 h-14 rounded-2xl bg-orange-100 flex items-center justify-center">
-            <ShoppingCart className="text-[#FF5A1F]" width={28} height={28} />
+            <div className="flex gap-2 items-center mt-4 ">
+              <div className="text-black font-semibold text-4xl">
+                {formatCurrency(dashboard.monthlyRevenue)}
+              </div>
+              <div className="bg-green-400/20 text-green-800 w-5 h-5 flex items-center justify-center rounded-2xl">
+                <ArrowUp width={13} height={13} />
+              </div>
+            </div>
+            <p className="mt-4 text-[13px]">Aumentou 30% esse mês</p>
           </div>
         </div>
 
-        <div className="bg-white p-5 border border-gray-100 shadow-sm rounded-2xl min-h-[150px] text-[#6B7280] flex justify-between items-center">
+        <div className="bg-white p-5 border border-gray-100 shadow-sm rounded-2xl text-[#6B7280]">
           <div>
-            Clientes ativos
-            <div className="text-black mt-4 font-semibold text-4xl">
-              {dashboard.totalClients}
+            <div className="flex justify-between">
+              Clientes ativos
+              <div className="bg-green-400/20 text-green-800 text-[13px] font-semibold px-2 py-1 rounded-2xl">
+                +20%
+              </div>
             </div>
-          </div>
-          <div className="w-14 h-14 rounded-2xl bg-blue-100 flex items-center justify-center">
-            <User className="text-blue-600" width={28} height={28} />
+
+            <div className="flex gap-2 items-center mt-4">
+              <div className="text-black font-semibold text-4xl">
+                {dashboard.totalClients}
+              </div>
+
+              <div className="bg-green-400/20 text-green-800 w-5 h-5 flex items-center justify-center rounded-2xl">
+                <ArrowUp width={13} height={13} />
+              </div>
+            </div>
+
+            <p className="mt-4 text-[13px]">Aumento de 20% na ultima semana</p>
           </div>
         </div>
 
-        <div className="bg-white p-5 border border-gray-100 shadow-sm rounded-2xl min-h-[150px] text-[#6B7280] flex justify-between items-center">
+        <div className="bg-white p-5 border border-gray-100 shadow-sm rounded-2xl text-[#6B7280]">
           <div>
-            Ordens em aberto
-            <div className="text-black mt-4 font-semibold text-4xl">
-              {dashboard.pendingOrders}
+            <div className="flex justify-between">
+              Ordens em aberto
+              <div className="bg-gray-400/20 text-gray-800 text-[13px] font-semibold px-2 py-1 rounded-2xl">
+                +0
+              </div>
             </div>
-          </div>
-          <div className="w-14 h-14 rounded-2xl bg-purple-100 flex items-center justify-center">
-            <NotebookText className="text-purple-600" width={28} height={28} />
+
+            <div className="flex gap-2 items-center mt-4">
+              <div className="text-black font-semibold text-4xl">
+                {dashboard.pendingOrders}
+              </div>
+
+              {/*
+                <div className="bg-gray-400/20 text-gray-800 w-5 h-5 flex items-center justify-center rounded-2xl">
+                <NotebookText width={13} height={13} />
+              </div>
+              */}
+            </div>
+
+            <p className="mt-4 text-[13px]">
+              Nenhuma orden de servicos recentemente
+            </p>
           </div>
         </div>
 
-        <div className="bg-white p-5 border border-gray-100 shadow-sm rounded-2xl min-h-[150px] text-[#6B7280] flex justify-between items-center">
+        <div className="bg-white p-5 border border-gray-100 shadow-sm rounded-2xl text-[#6B7280]">
           <div>
-            Vencimentos próximos
-            <div className="text-black mt-4 font-semibold text-4xl">
-              {dashboard.upcomingExpirations}
+            <div className="flex justify-between">
+              Vencimentos próximos
+              <div className="bg-green-400/20 text-green-800 text-[13px] font-semibold px-2 py-1 rounded-2xl">
+                -20%
+              </div>
             </div>
-          </div>
-          <div className="w-14 h-14 rounded-2xl bg-yellow-100 flex items-center justify-center">
-            <CalendarClock className="text-yellow-600" width={28} height={28} />
+
+            <div className="flex gap-2 items-center mt-4">
+              <div className="text-black font-semibold text-4xl">
+                {dashboard.upcomingExpirations}
+              </div>
+
+              <div className="bg-green-400/20 text-green-800 w-5 h-5 flex items-center justify-center rounded-2xl">
+                <ArrowDown width={13} height={13} />
+              </div>
+            </div>
+
+            <p className="mt-4 text-[13px]">
+              Redução de itens com vencimento próximo
+            </p>
           </div>
         </div>
 
-        <div className="bg-white p-5 border border-gray-100 shadow-sm rounded-2xl min-h-[150px] text-[#6B7280] flex justify-between items-center">
+        <div className="bg-white p-5 border border-gray-100 shadow-sm rounded-2xl text-[#6B7280]">
           <div>
-            Vencidos
-            <div className="text-black mt-4 font-semibold text-4xl">
-              {dashboard.expiredExpirations}
+            <div className="flex justify-between">
+              Vencidos
+              <div className="bg-red-400/20 text-red-800 text-[13px] font-semibold px-2 py-1 rounded-2xl">
+                +2
+              </div>
             </div>
-          </div>
 
-          <div className="w-14 h-14 rounded-2xl bg-red-100 flex items-center justify-center">
-            <CalendarX2 className="text-red-600" width={28} height={28} />
+            <div className="flex gap-2 items-center mt-4">
+              <div className="text-black font-semibold text-4xl">
+                {dashboard.expiredExpirations}
+              </div>
+
+              <div className="bg-red-400/20 text-red-800 w-5 h-5 flex items-center justify-center rounded-2xl">
+                <ArrowUp width={13} height={13} />
+              </div>
+            </div>
+
+            <p className="mt-4 text-[13px]">
+              Aumento de itens já expirados no sistema
+            </p>
           </div>
         </div>
       </div>
