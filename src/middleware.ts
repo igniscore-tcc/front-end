@@ -24,34 +24,18 @@ export async function middleware(req: NextRequest) {
   }
 
   try {
-    const response = await fetch(`${process.env.API_URL}/graphql`, {
-      method: "POST",
+    const response = await fetch(new URL("/api/auth/me", req.url), {
       headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        Cookie: req.headers.get("cookie") ?? "",
       },
-      body: JSON.stringify({
-        query: `
-          query {
-            me {
-              id
-              email
-              role
-            }
-          }
-        `,
-      }),
     });
 
-    const result = await response.json();
-
-    if (!response.ok || result.errors || !result.data?.me) {
+    if (!response.ok) {
       return NextResponse.redirect(new URL("/login", req.url));
     }
 
     return NextResponse.next();
-  } catch (error) {
-    console.error(error);
+  } catch {
     return NextResponse.redirect(new URL("/login", req.url));
   }
 }
