@@ -15,6 +15,8 @@ import { useProducts } from "@/hooks/useProducts";
 import { Product, ProductFormData } from "@/types/product";
 import { PRODUCT_TYPE_OPTIONS } from "@/lib/constants";
 import { ProductModal } from "./ProductModal";
+import { useAuth } from "@/contexts/AuthContext";
+import { UserRole } from "@/types/me";
 
 export default function Products() {
   const {
@@ -39,6 +41,8 @@ export default function Products() {
     saveEdit,
     removeProduct,
   } = useProducts();
+
+  const { user } = useAuth();
 
   const handleSave = async (data: ProductFormData & { id?: number }) => {
     if (data.id) {
@@ -177,15 +181,17 @@ export default function Products() {
                           >
                             <Pencil size={18} />
                           </button>
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              removeProduct(product.id);
-                            }}
-                            className="text-[#FF5A1F] hover:text-[#E64D17] p-1.5 hover:bg-[#FF5A1F]/10 rounded-lg cursor-pointer"
-                          >
-                            <Trash2 size={18} />
-                          </button>
+                          {user?.role === UserRole.OWNER && (
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                removeProduct(product.id);
+                              }}
+                              className="text-[#FF5A1F] hover:text-[#E64D17] p-1.5 hover:bg-[#FF5A1F]/10 rounded-lg cursor-pointer"
+                            >
+                              <Trash2 size={18} />
+                            </button>
+                          )}
                         </div>
                       </td>
                     </tr>
