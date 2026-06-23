@@ -16,6 +16,8 @@ import { DeleteConfirmModal } from "./DeleteConfirmModal";
 import { formatCnpj, formatPhone, formatCpf } from "@/lib/validators";
 import { useClients } from "@/hooks/useClients";
 import { useRouter } from "next/navigation";
+import { useAuth } from "@/contexts/AuthContext";
+import { UserRole } from "@/types/me";
 
 export default function Clients() {
   const router = useRouter();
@@ -48,6 +50,10 @@ export default function Clients() {
     filterTipo,
     setFilterTipo,
   } = useClients();
+
+  const { user } = useAuth();
+
+  console.log("USER:", user);
 
   const sortIcon = (key: "id" | "nome") => {
     if (sort.key !== key) return <ArrowUpDown size={14} />;
@@ -112,8 +118,8 @@ export default function Clients() {
               {t === "ALL"
                 ? "Todos"
                 : t === "PF"
-                ? "Pessoa Física"
-                : "Pessoa Jurídica"}
+                  ? "Pessoa Física"
+                  : "Pessoa Jurídica"}
             </button>
           ))}
         </div>
@@ -125,110 +131,117 @@ export default function Clients() {
           <div className="flex-1 overflow-y-auto overflow-x-hidden custom-scrollbar">
             <table className="w-full text-left border-collapse table-fixed">
               <thead className="sticky top-0 z-10 bg-gray-50">
-              <tr className="bg-gray-50 border-b border-gray-100">
-                <th className="w-[80px] px-6 py-3 text-sm font-bold text-gray-500 uppercase tracking-wider">
-                  ID
-                </th>
-                <th className="px-6 py-3 text-sm font-bold text-gray-500 uppercase tracking-wider">
-                  Nome
-                </th>
-                <th className="w-[210px] px-6 py-3 text-sm font-bold text-gray-500 uppercase tracking-wider">
-                  CNPJ/CPF
-                </th>
-                <th className="w-[150px] px-6 py-3 text-sm font-bold text-gray-500 uppercase tracking-wider">
-                  Inscrição
-                </th>
-                <th className="px-6 py-3 text-sm font-bold text-gray-500 uppercase tracking-wider">
-                  Email
-                </th>
-                <th className="w-[180px] px-6 py-3 text-sm font-bold text-gray-500 uppercase tracking-wider">
-                  Telefone
-                </th>
-                <th className="w-[100px] px-6 py-3 text-sm font-bold text-gray-500 uppercase tracking-wider text-center">
-                  Ações
-                </th>
-              </tr>
-            </thead>
+                <tr className="bg-gray-50 border-b border-gray-100">
+                  <th className="w-[80px] px-6 py-3 text-sm font-bold text-gray-500 uppercase tracking-wider">
+                    ID
+                  </th>
+                  <th className="px-6 py-3 text-sm font-bold text-gray-500 uppercase tracking-wider">
+                    Nome
+                  </th>
+                  <th className="w-[210px] px-6 py-3 text-sm font-bold text-gray-500 uppercase tracking-wider">
+                    CNPJ/CPF
+                  </th>
+                  <th className="w-[150px] px-6 py-3 text-sm font-bold text-gray-500 uppercase tracking-wider">
+                    Inscrição
+                  </th>
+                  <th className="px-6 py-3 text-sm font-bold text-gray-500 uppercase tracking-wider">
+                    Email
+                  </th>
+                  <th className="w-[180px] px-6 py-3 text-sm font-bold text-gray-500 uppercase tracking-wider">
+                    Telefone
+                  </th>
+                  <th className="w-[100px] px-6 py-3 text-sm font-bold text-gray-500 uppercase tracking-wider text-center">
+                    Ações
+                  </th>
+                </tr>
+              </thead>
 
-            <tbody className="divide-y divide-gray-50">
-              {pageData.length > 0 ? (
-                pageData.map((client) => (
-                  <tr
-                    key={client.id}
-                    className="group hover:bg-gray-50/80 transition-colors"
-                  >
-                    <td className="px-6 py-3.5 text-sm text-gray-500">
-                      {client.number}
-                    </td>
+              <tbody className="divide-y divide-gray-50">
+                {pageData.length > 0 ? (
+                  pageData.map((client) => (
+                    <tr
+                      key={client.id}
+                      className="group hover:bg-gray-50/80 transition-colors"
+                    >
+                      <td className="px-6 py-3.5 text-sm text-gray-500">
+                        {client.number}
+                      </td>
 
-                    <td className="px-6 py-3.5 text-sm min-w-0">
-                      <div className="flex items-center gap-2 overflow-hidden">
-                        <button
-                          onClick={() => router.push(`/clientes/${client.id}`)}
-                          className="font-semibold text-gray-800 hover:underline truncate cursor-pointer text-left"
-                          title={client.nome}
-                        >
-                          {client.nome}
-                        </button>
-                        <span className="px-2 py-0.5 text-[10px] rounded-full bg-gray-100 text-gray-600 shrink-0">
-                          {client.tipo}
-                        </span>
-                      </div>
-                    </td>
+                      <td className="px-6 py-3.5 text-sm min-w-0">
+                        <div className="flex items-center gap-2 overflow-hidden">
+                          <button
+                            onClick={() =>
+                              router.push(`/clientes/${client.id}`)
+                            }
+                            className="font-semibold text-gray-800 hover:underline truncate cursor-pointer text-left"
+                            title={client.nome}
+                          >
+                            {client.nome}
+                          </button>
+                          <span className="px-2 py-0.5 text-[10px] rounded-full bg-gray-100 text-gray-600 shrink-0">
+                            {client.tipo}
+                          </span>
+                        </div>
+                      </td>
 
-                    <td className="px-6 py-3.5 text-sm text-gray-600 tabular-nums whitespace-nowrap">
-                      {client.tipo === "PF"
-                        ? formatCpf(client.cpf)
-                        : formatCnpj(client.cnpj)}
-                    </td>
+                      <td className="px-6 py-3.5 text-sm text-gray-600 tabular-nums whitespace-nowrap">
+                        {client.tipo === "PF"
+                          ? formatCpf(client.cpf)
+                          : formatCnpj(client.cnpj)}
+                      </td>
 
-                    <td className="px-6 py-3.5 text-sm text-gray-600">
-                      {client.tipo === "PJ" ? client.inscricao : "-"}
-                    </td>
+                      <td className="px-6 py-3.5 text-sm text-gray-600">
+                        {client.tipo === "PJ" ? client.inscricao : "-"}
+                      </td>
 
-                    <td className="px-6 py-3.5 text-sm text-gray-600 truncate" title={client.email}>
-                      {client.email}
-                    </td>
+                      <td
+                        className="px-6 py-3.5 text-sm text-gray-600 truncate"
+                        title={client.email}
+                      >
+                        {client.email}
+                      </td>
 
-                    <td className="px-6 py-3.5 text-sm text-gray-700 tabular-nums whitespace-nowrap">
-                      {formatPhone(client.telefone)}
-                    </td>
+                      <td className="px-6 py-3.5 text-sm text-gray-700 tabular-nums whitespace-nowrap">
+                        {formatPhone(client.telefone)}
+                      </td>
 
-                    <td className="px-6 py-3.5 text-center">
-                      <div className="flex items-center justify-center gap-4 opacity-0 group-hover:opacity-100 transition-opacity">
-                        <button
-                          onClick={() => setEditing(client)}
-                          className="text-[#FF5A1F] hover:text-[#E64D17] p-1.5 hover:bg-[#FF5A1F]/10 rounded-lg cursor-pointer"
-                        >
-                          <Pencil size={18} />
-                        </button>
+                      <td className="px-6 py-3.5 text-center">
+                        <div className="flex items-center justify-center gap-4 opacity-0 group-hover:opacity-100 transition-opacity">
+                          <button
+                            onClick={() => setEditing(client)}
+                            className="text-[#FF5A1F] hover:text-[#E64D17] p-1.5 hover:bg-[#FF5A1F]/10 rounded-lg cursor-pointer"
+                          >
+                            <Pencil size={18} />
+                          </button>
 
-                        <button
-                          onClick={() => setDeleting(client)}
-                          className="text-[#FF5A1F] hover:text-[#E64D17] p-1.5 hover:bg-[#FF5A1F]/10 rounded-lg cursor-pointer"
-                        >
-                          <Trash2 size={18} />
-                        </button>
-                      </div>
+                          {user?.role === UserRole.OWNER && (
+                            <button
+                              onClick={() => setDeleting(client)}
+                              className="text-[#FF5A1F] hover:text-[#E64D17] p-1.5 hover:bg-[#FF5A1F]/10 rounded-lg cursor-pointer"
+                            >
+                              <Trash2 size={18} />
+                            </button>
+                          )}
+                        </div>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td
+                      colSpan={7}
+                      className="px-6 py-12 text-center text-gray-400"
+                    >
+                      Nenhum cliente encontrado
                     </td>
                   </tr>
-                ))
-              ) : (
-                <tr>
-                  <td
-                    colSpan={7}
-                    className="px-6 py-12 text-center text-gray-400"
-                  >
-                    Nenhum cliente encontrado
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
+                )}
+              </tbody>
+            </table>
+          </div>
         </div>
+        <div className="flex-1 min-h-[20px]" />
       </div>
-      <div className="flex-1 min-h-[20px]" />
-    </div>
 
       {/* PAGINAÇÃO */}
       <footer className="mt-auto flex flex-col md:flex-row items-center justify-center gap-8 text-sm font-medium text-gray-500 shrink-0 py-6">

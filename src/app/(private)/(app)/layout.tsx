@@ -15,7 +15,7 @@ export default function DashboardLayout({
   return (
     <div className="min-h-screen">
       <Sidebar isExpanded={isExpanded} onToggle={toggleSidebar} />
-      <main 
+      <main
         className={`pb-16 md:pb-0 min-h-screen transition-all duration-300 ease-in-out ${
           isExpanded ? "md:pl-64" : "md:pl-20"
         }`}
