@@ -1,11 +1,18 @@
 "use client";
 
+import { useCompanyProfile } from "@/hooks/useCompanyProfile";
 import Image from "next/image";
 import { Button } from "../ui/button";
 import { Input } from "../ui/Input";
 import { FileInput, Label } from "flowbite-react";
 
 export default function Settings() {
+  const { company, loading, error } = useCompanyProfile();
+
+  if (loading) return <p>Carregando...</p>;
+  if (error) return <p>{error}</p>;
+  if (!company) return null;
+
   return (
     <div className="">
       <div className="">
@@ -26,7 +33,7 @@ export default function Settings() {
             className="relative -top-16 shadow-xl rounded-xl"
           />
 
-          <h3 className="relative -top-16 text-2xl font-semibold">AXIA</h3>
+          <h3 className="relative -top-16 text-2xl font-semibold">{company.name}</h3>
         </div>
       </div>
 
@@ -35,16 +42,16 @@ export default function Settings() {
 
         <div className="flex justify-between gap-6">
           <Input
-            placeholder="CNPJ"
+            placeholder="Email"
             autoComplete="organization"
-            value={"22.128.376/0001-19"}
+            value={company.email}
             disabled
           />
 
           <Input
             placeholder="CNPJ"
             autoComplete="organization"
-            value={"22.128.376/0001-19"}
+            value={company.cnpj}
             disabled
           />
         </div>
