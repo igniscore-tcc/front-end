@@ -81,7 +81,7 @@ export function AddClientModal({
                 {(["PJ", "PF"] as TipoCliente[]).map((t) => (
                   <button
                     key={t}
-                    id="buttonTypePerson"
+                    data-testid="buttonTypePerson"
                     type="button"
                     onClick={() => setTipo(t)}
                     className={`px-6 py-2 rounded-lg text-sm font-bold transition-all cursor-pointer ${
@@ -99,7 +99,7 @@ export function AddClientModal({
             <div className="grid grid-cols-1 gap-4">
               <Input
                 placeholder="Nome"
-                id="inputName"
+                data-testid="inputName"
                 value={form.nome}
                 onChange={(e) => setField("nome", e.target.value)}
                 error={errors.nome}
@@ -113,7 +113,7 @@ export function AddClientModal({
                 {tipo === "PJ" ? (
                   <Input
                     placeholder="CNPJ"
-                    id="inputCNPJ"
+                    data-testid="inputCNPJ"
                     value={formatCnpj(form.cnpj)}
                     onChange={(e) =>
                       setField("cnpj", cleanCnpj(e.target.value))
@@ -131,7 +131,7 @@ export function AddClientModal({
                 ) : (
                   <Input
                     placeholder="CPF"
-                    id="inputCPF"
+                    data-testid="inputCPF"
                     value={formatCpf(form.cpf)}
                     onChange={(e) => setField("cpf", cleanCpf(e.target.value))}
                     error={errors.cpf}
@@ -151,7 +151,7 @@ export function AddClientModal({
                 <div className="col-span-12 md:col-span-5">
                   <Input
                     placeholder="Inscrição estadual"
-                    id="inputIE"
+                    data-testid="inputIE"
                     value={form.inscricao}
                     onChange={(e) => setField("inscricao", e.target.value)}
                     suffixIcon={<MapPin size={18} className="text-gray-400" />}
@@ -162,7 +162,7 @@ export function AddClientModal({
               <div className="col-span-12 md:col-span-2">
                 <Select
                   placeholder="UF"
-                  id="selectUF"
+                  data-testid="selectUF"
                   value={form.uf}
                   onChange={(e) => setField("uf", e.target.value)}
                   options={UF_OPTIONS}
@@ -173,7 +173,7 @@ export function AddClientModal({
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <Input
                 placeholder="Email"
-                id="inputEmail"
+                data-testid="inputEmail"
                 type="email"
                 value={form.email}
                 onChange={(e) => setField("email", e.target.value)}
@@ -187,7 +187,7 @@ export function AddClientModal({
               />
               <Input
                 placeholder="Telefone"
-                id="inputTelefone"
+                data-testid="inputTelefone"
                 value={formatPhone(form.telefone)}
                 onChange={(e) =>
                   setField("telefone", cleanPhone(e.target.value))
@@ -206,7 +206,7 @@ export function AddClientModal({
 
             <Input
               placeholder="Observação"
-              id="inputObs"
+              data-testid="inputObs"
               isTextarea
               value={form.observacao}
               onChange={(e) => setField("observacao", e.target.value)}
@@ -216,7 +216,7 @@ export function AddClientModal({
           <div className="p-6 bg-gray-50/50 border-t border-dashed border-gray-200 flex items-center justify-end gap-4">
             <Button
               type="button"
-              id="buttonCancelar"
+              data-testid="buttonCancelar"
               variant="outline"
               onClick={onClose}
               className="px-8 py-2.5 h-auto text-sm font-bold rounded-lg bg-[#E5E7EB] text-gray-700 hover:bg-gray-300 border-none transition-colors cursor-pointer"
@@ -225,7 +225,7 @@ export function AddClientModal({
             </Button>
             <Button
               type="submit"
-              id="buttonSalvar"
+              data-testid="buttonSalvar"
               disabled={submitting}
               className="px-8 py-2.5 h-auto text-sm font-bold rounded-lg bg-[#FF5A1F] text-white hover:bg-[#E64D17] transition-colors shadow-sm cursor-pointer"
             >
