@@ -5,19 +5,40 @@ import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/Input";
 import { Select } from "@/components/ui/Select";
-import { formatCnpj, cleanCnpj, formatPhone, cleanPhone, formatCpf, cleanCpf } from "@/lib/validators";
+import {
+  formatCnpj,
+  cleanCnpj,
+  formatPhone,
+  cleanPhone,
+  formatCpf,
+  cleanCpf,
+} from "@/lib/validators";
 import { useClientForm } from "@/hooks/useClientForm";
 import type { TipoCliente, ClienteModalProps } from "@/types/cliente";
 import { UF_OPTIONS } from "@/lib/constants";
 
-export function AddClientModal({ isOpen, onClose, onSave, clientToEdit }: ClienteModalProps) {
-  const { tipo, setTipo, form, setField, errors, isEditing, submitting, handleSubmit } = useClientForm({
+export function AddClientModal({
+  isOpen,
+  onClose,
+  onSave,
+  clientToEdit,
+}: ClienteModalProps) {
+  const {
+    tipo,
+    setTipo,
+    form,
+    setField,
+    errors,
+    isEditing,
+    submitting,
+    handleSubmit,
+  } = useClientForm({
     isOpen,
     clientToEdit,
     onSave,
     onClose,
   });
-  
+
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = "hidden";
@@ -32,15 +53,14 @@ export function AddClientModal({ isOpen, onClose, onSave, clientToEdit }: Client
   if (!isOpen) return null;
 
   return (
-    <div 
+    <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4 animate-in fade-in duration-200"
       onClick={onClose}
     >
-      <div 
+      <div
         className="bg-white rounded-xl shadow-lg w-full max-w-2xl flex flex-col overflow-hidden animate-in zoom-in-95 duration-200"
         onClick={(e) => e.stopPropagation()}
       >
-
         <div className="flex items-center justify-between p-5 border-b border-gray-100">
           <h2 className="text-xl font-semibold text-gray-900">
             {isEditing ? "Editar cliente" : "Adicionar cliente"}
@@ -55,17 +75,19 @@ export function AddClientModal({ isOpen, onClose, onSave, clientToEdit }: Client
 
         <form onSubmit={handleSubmit} className="flex flex-col">
           <div className="p-8 space-y-6">
-
             {/* escolha entre PJ | PF */}
             <div className="flex justify-center">
               <div className="inline-flex p-1 bg-gray-100 rounded-xl">
                 {(["PJ", "PF"] as TipoCliente[]).map((t) => (
                   <button
                     key={t}
+                    id="buttonTypePerson"
                     type="button"
                     onClick={() => setTipo(t)}
                     className={`px-6 py-2 rounded-lg text-sm font-bold transition-all cursor-pointer ${
-                      tipo === t ? "bg-white text-[#FF5A1F] shadow-sm" : "text-gray-500 hover:text-gray-700"
+                      tipo === t
+                        ? "bg-white text-[#FF5A1F] shadow-sm"
+                        : "text-gray-500 hover:text-gray-700"
                     }`}
                   >
                     {t === "PJ" ? "Pessoa Jurídica" : "Pessoa Física"}
@@ -77,6 +99,7 @@ export function AddClientModal({ isOpen, onClose, onSave, clientToEdit }: Client
             <div className="grid grid-cols-1 gap-4">
               <Input
                 placeholder="Nome"
+                id="inputName"
                 value={form.nome}
                 onChange={(e) => setField("nome", e.target.value)}
                 error={errors.nome}
@@ -84,22 +107,42 @@ export function AddClientModal({ isOpen, onClose, onSave, clientToEdit }: Client
             </div>
 
             <div className="grid grid-cols-12 gap-4">
-              <div className={`col-span-12 ${tipo === "PJ" ? "md:col-span-5" : "md:col-span-10"}`}>
+              <div
+                className={`col-span-12 ${tipo === "PJ" ? "md:col-span-5" : "md:col-span-10"}`}
+              >
                 {tipo === "PJ" ? (
                   <Input
                     placeholder="CNPJ"
+                    id="inputCNPJ"
                     value={formatCnpj(form.cnpj)}
-                    onChange={(e) => setField("cnpj", cleanCnpj(e.target.value))}
+                    onChange={(e) =>
+                      setField("cnpj", cleanCnpj(e.target.value))
+                    }
                     error={errors.cnpj}
-                    suffixIcon={<CheckCircle2 size={18} className={errors.cnpj ? "text-red-400" : "text-gray-400"} />}
+                    suffixIcon={
+                      <CheckCircle2
+                        size={18}
+                        className={
+                          errors.cnpj ? "text-red-400" : "text-gray-400"
+                        }
+                      />
+                    }
                   />
                 ) : (
                   <Input
                     placeholder="CPF"
+                    id="inputCPF"
                     value={formatCpf(form.cpf)}
                     onChange={(e) => setField("cpf", cleanCpf(e.target.value))}
                     error={errors.cpf}
-                    suffixIcon={<CheckCircle2 size={18} className={errors.cpf ? "text-red-400" : "text-gray-400"} />}
+                    suffixIcon={
+                      <CheckCircle2
+                        size={18}
+                        className={
+                          errors.cpf ? "text-red-400" : "text-gray-400"
+                        }
+                      />
+                    }
                   />
                 )}
               </div>
@@ -108,6 +151,7 @@ export function AddClientModal({ isOpen, onClose, onSave, clientToEdit }: Client
                 <div className="col-span-12 md:col-span-5">
                   <Input
                     placeholder="Inscrição estadual"
+                    id="inputIE"
                     value={form.inscricao}
                     onChange={(e) => setField("inscricao", e.target.value)}
                     suffixIcon={<MapPin size={18} className="text-gray-400" />}
@@ -118,6 +162,7 @@ export function AddClientModal({ isOpen, onClose, onSave, clientToEdit }: Client
               <div className="col-span-12 md:col-span-2">
                 <Select
                   placeholder="UF"
+                  id="selectUF"
                   value={form.uf}
                   onChange={(e) => setField("uf", e.target.value)}
                   options={UF_OPTIONS}
@@ -128,23 +173,40 @@ export function AddClientModal({ isOpen, onClose, onSave, clientToEdit }: Client
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <Input
                 placeholder="Email"
+                id="inputEmail"
                 type="email"
                 value={form.email}
                 onChange={(e) => setField("email", e.target.value)}
                 error={errors.email}
-                suffixIcon={<Mail size={18} className={errors.email ? "text-red-400" : "text-gray-400"} />}
+                suffixIcon={
+                  <Mail
+                    size={18}
+                    className={errors.email ? "text-red-400" : "text-gray-400"}
+                  />
+                }
               />
               <Input
                 placeholder="Telefone"
+                id="inputTelefone"
                 value={formatPhone(form.telefone)}
-                onChange={(e) => setField("telefone", cleanPhone(e.target.value))}
+                onChange={(e) =>
+                  setField("telefone", cleanPhone(e.target.value))
+                }
                 error={errors.telefone}
-                suffixIcon={<Phone size={18} className={errors.telefone ? "text-red-400" : "text-gray-400"} />}
+                suffixIcon={
+                  <Phone
+                    size={18}
+                    className={
+                      errors.telefone ? "text-red-400" : "text-gray-400"
+                    }
+                  />
+                }
               />
             </div>
 
             <Input
               placeholder="Observação"
+              id="inputObs"
               isTextarea
               value={form.observacao}
               onChange={(e) => setField("observacao", e.target.value)}
@@ -154,6 +216,7 @@ export function AddClientModal({ isOpen, onClose, onSave, clientToEdit }: Client
           <div className="p-6 bg-gray-50/50 border-t border-dashed border-gray-200 flex items-center justify-end gap-4">
             <Button
               type="button"
+              id="buttonCancelar"
               variant="outline"
               onClick={onClose}
               className="px-8 py-2.5 h-auto text-sm font-bold rounded-lg bg-[#E5E7EB] text-gray-700 hover:bg-gray-300 border-none transition-colors cursor-pointer"
@@ -162,6 +225,7 @@ export function AddClientModal({ isOpen, onClose, onSave, clientToEdit }: Client
             </Button>
             <Button
               type="submit"
+              id="buttonSalvar"
               disabled={submitting}
               className="px-8 py-2.5 h-auto text-sm font-bold rounded-lg bg-[#FF5A1F] text-white hover:bg-[#E64D17] transition-colors shadow-sm cursor-pointer"
             >
