@@ -45,7 +45,7 @@ export function ListPageHeader({
 
       <div className="shrink-0 w-12 flex justify-end relative z-10">
         {onAddClick && (
-          <Button onClick={onAddClick} className={addButtonClassName}>
+          <Button onClick={onAddClick} className={addButtonClassName} id="buttonAdd">
             <Plus size={24} />
           </Button>
         )}
