@@ -17,12 +17,13 @@ export function ProductModal({
   onSave,
   productToEdit,
 }: ProductModalProps) {
-  const { form, setField, errors, isEditing, submitting, handleSubmit } = useProductForm({
-    isOpen,
-    productToEdit,
-    onSave,
-    onClose,
-  });
+  const { form, setField, errors, isEditing, submitting, handleSubmit } =
+    useProductForm({
+      isOpen,
+      productToEdit,
+      onSave,
+      onClose,
+    });
 
   useEffect(() => {
     if (isOpen) {
@@ -38,11 +39,11 @@ export function ProductModal({
   if (!isOpen) return null;
 
   return (
-    <div 
+    <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4 animate-in fade-in duration-200"
       onClick={onClose}
     >
-      <div 
+      <div
         className="bg-white rounded-xl shadow-lg w-full max-w-2xl flex flex-col overflow-hidden animate-in zoom-in-95 duration-200"
         onClick={(e) => e.stopPropagation()}
       >
@@ -63,6 +64,7 @@ export function ProductModal({
             <div className="grid grid-cols-1 gap-4">
               <Input
                 placeholder="Nome"
+                data-testid="inputName"
                 value={form.nome}
                 onChange={(e) => setField("nome", e.target.value)}
                 error={errors.nome}
@@ -72,6 +74,7 @@ export function ProductModal({
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <Select
                 placeholder="Tipo"
+                data-testid="selectType"
                 value={form.tipo}
                 onChange={(e) =>
                   setField("tipo", e.target.value as ProductType)
@@ -81,12 +84,14 @@ export function ProductModal({
               />
               <DatePicker
                 placeholder="Validade"
+                data-testid="datePickerValidity"
                 date={form.validade}
                 setDate={(date) => setField("validade", date)}
                 error={errors.validade}
               />
               <Input
                 placeholder="Lote"
+                data-testid="inputLot"
                 value={form.lote}
                 onChange={(e) => setField("lote", e.target.value)}
                 error={errors.lote}
@@ -97,13 +102,20 @@ export function ProductModal({
             <div className="grid grid-cols-1 gap-4">
               <Input
                 placeholder="Preço"
+                data-testid="inputPrice"
                 type="text"
-                value={form.preco === 0 ? "" : maskCurrency(form.preco.toFixed(2).replace(".", ""))}
+                value={
+                  form.preco === 0
+                    ? ""
+                    : maskCurrency(form.preco.toFixed(2).replace(".", ""))
+                }
                 onChange={(e) =>
                   setField("preco", parseCurrencyToNumber(e.target.value))
                 }
                 error={errors.preco}
-                suffixIcon={<span className="text-sm font-bold text-gray-400">R$</span>}
+                suffixIcon={
+                  <span className="text-sm font-bold text-gray-400">R$</span>
+                }
               />
             </div>
           </div>
@@ -111,6 +123,7 @@ export function ProductModal({
           <div className="p-6 bg-gray-50/50 border-t border-dashed border-gray-200 flex items-center justify-end gap-4">
             <Button
               type="button"
+              data-testid="buttonCancelar"
               variant="outline"
               onClick={onClose}
               className="px-8 py-2.5 h-auto text-sm font-bold rounded-lg bg-[#E5E7EB] text-gray-700 hover:bg-gray-300 border-none transition-colors cursor-pointer"
@@ -119,6 +132,7 @@ export function ProductModal({
             </Button>
             <Button
               type="submit"
+              data-testid="buttonSalvar"
               disabled={submitting}
               className="px-8 py-2.5 h-auto text-sm font-bold rounded-lg bg-[#FF5A1F] text-white hover:bg-[#E64D17] transition-colors shadow-sm cursor-pointer"
             >
