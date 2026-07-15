@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
@@ -9,6 +10,7 @@ import { Loader2 } from "lucide-react";
 import { normalizeEmail, validateEmail } from "@/lib/validators";
 
 export default function ForgotPassword() {
+  const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
     email: "",
@@ -57,12 +59,23 @@ export default function ForgotPassword() {
         }),
       });
 
+      const data = await response.json();
+
       if (!response.ok) {
-        setErrors((prev) => ({ ...prev, email: "Email não encontrado" }));
+        setErrors((prev) => ({
+          ...prev,
+          email: data.error || "Email não encontrado",
+        }));
         return;
       }
 
-      setSuccessMessage("Link de recuperação enviado com sucesso!");
+      setSuccessMessage(
+        data.requestPasswordRecovery || "Link de recuperação enviado com sucesso!",
+      );
+
+      setTimeout(() => {
+        router.push("/login");
+      }, 3000);
     } catch {
       setErrors((prev) => ({
         ...prev,
@@ -113,17 +126,18 @@ export default function ForgotPassword() {
             removeError("email");
           }}
           error={errors.email}
+          disabled={isLoading || !!successMessage}
         />
 
         {successMessage && (
           <p className="text-xs font-semibold text-green-600 px-1">
-            {successMessage}
+            {successMessage} Redirecionando...
           </p>
         )}
 
         <Button
           type="submit"
-          disabled={isLoading}
+          disabled={isLoading || !!successMessage}
           className="w-full mt-2 h-12 bg-[#FF5A1F] text-white rounded-lg font-semibold hover:bg-[#FF5A1F]/80 transition-all duration-200 cursor-pointer disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2"
         >
           {isLoading ? (

@@ -12,45 +12,33 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Email inválido" }, { status: 400 });
     }
 
-    const response = await fetch(`${API_URL}/graphql`, {
+    const response = await fetch(`${API_URL}/auth/forgot-password`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         "ngrok-skip-browser-warning": "true",
       },
-      body: JSON.stringify({
-        query: `
-          mutation RequestRecovery($email: String!) {
-            requestPasswordRecovery(email: $email)
-          }
-        `,
-        variables: { email },
-      }),
+      body: JSON.stringify({ email }),
     });
 
     const result = await response.json();
 
     if (!response.ok) {
-      return NextResponse.json(result, { status: response.status });
-    }
-
-    if (result.errors) {
       return NextResponse.json(
-        { error: result.errors[0].message }, 
-        { status: 400 }
+        { error: result.error || "Ocorreu um erro no servidor" }, 
+        { status: response.status }
       );
     }
 
-    console.log(result.data);
+    console.log(result);
 
-    // Retorna a mensagem de sucesso tratada pelo Spring
-    return NextResponse.json({ 
-      message: result.data.requestPasswordRecovery 
+    return NextResponse.json({
+      message: result.message,
     });
-
+    
   } catch (error) {
     return NextResponse.json(
-      { error: "Erro interno no servidor de autenticação" }, 
+      { error: "Erro interno no servidor de autenticação" },
       { status: 500 }
     );
   }
