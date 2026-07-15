@@ -72,7 +72,7 @@ function ResetPasswordForm() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           token,
-          password: formData.senha,
+          newPassword: formData.senha,
         }),
       });
 
