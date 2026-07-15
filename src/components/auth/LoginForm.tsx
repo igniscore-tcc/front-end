@@ -43,9 +43,9 @@ export default function LoginForm() {
     return isValid;
   };
 
-    const removeError = (field: keyof typeof errors) => {
-      setErrors((prev) => ({ ...prev, [field]: "" }));
-    };
+  const removeError = (field: keyof typeof errors) => {
+    setErrors((prev) => ({ ...prev, [field]: "" }));
+  };
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -104,16 +104,26 @@ export default function LoginForm() {
           error={errors.email}
         />
 
-        <Input
-          type="password"
-          placeholder="Senha"
-          value={formData.senha}
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-            setFormData({ ...formData, senha: e.target.value });
-            removeError("senha");
-          }}
-          error={errors.senha}
-        />
+        <div>
+          <Input
+            type="password"
+            placeholder="Senha"
+            value={formData.senha}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+              setFormData({ ...formData, senha: e.target.value });
+              removeError("senha");
+            }}
+            error={errors.senha}
+          />
+          <div className="flex justify-end mt-1.5">
+            <Link 
+              href="/forgot-password" 
+              className="text-xs font-medium text-[#4A4A4A] hover:text-[#FF5A1F] hover:underline transition-colors"
+            >
+              Esqueceu a senha?
+            </Link>
+          </div>
+        </div>
 
         <Button
           type="submit"
