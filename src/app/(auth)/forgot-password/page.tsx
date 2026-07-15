@@ -2,27 +2,28 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { LoginFormData } from "@/types/auth";
+import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { Loader2 } from "lucide-react";
 import { normalizeEmail, validateEmail } from "@/lib/validators";
 
-export default function LoginForm() {
+export default function ForgotPassword() {
+  const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
-  const [formData, setFormData] = useState<LoginFormData>({
+  const [formData, setFormData] = useState({
     email: "",
-    senha: "",
   });
 
   const [errors, setErrors] = useState({
     email: "",
-    senha: "",
   });
 
+  const [successMessage, setSuccessMessage] = useState("");
+
   const validate = () => {
-    const newErrors = { email: "", senha: "" };
+    const newErrors = { email: "" };
     let isValid = true;
     const email = normalizeEmail(formData.email);
 
@@ -31,11 +32,6 @@ export default function LoginForm() {
       isValid = false;
     } else if (!validateEmail(email)) {
       newErrors.email = "Email inválido";
-      isValid = false;
-    }
-
-    if (!formData.senha.trim()) {
-      newErrors.senha = "Senha obrigatória";
       isValid = false;
     }
 
@@ -52,36 +48,58 @@ export default function LoginForm() {
     if (!validate()) return;
 
     setIsLoading(true);
+    setSuccessMessage("");
+
     try {
-      const response = await fetch("/api/auth/login", {
+      const response = await fetch("/api/auth/forgot-password", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           email: normalizeEmail(formData.email),
-          password: formData.senha,
         }),
       });
 
+      const data = await response.json();
+
       if (!response.ok) {
-        setErrors((prev) => ({ ...prev, senha: "Email ou senha inválidos" }));
+        setErrors((prev) => ({
+          ...prev,
+          email: data.error || "Email não encontrado",
+        }));
         return;
       }
 
-      const data = await response.json();
-      localStorage.setItem("token", data.token);
-      window.location.href = "/dashboard";
+      setSuccessMessage(
+        data.requestPasswordRecovery || "Link de recuperação enviado com sucesso!",
+      );
+
+      setTimeout(() => {
+        router.push("/login");
+      }, 3000);
     } catch {
-      setErrors((prev) => ({ ...prev, senha: "Erro ao conectar com o servidor" }));
+      setErrors((prev) => ({
+        ...prev,
+        email: "Erro ao conectar com o servidor",
+      }));
     } finally {
       setIsLoading(false);
     }
   }
 
   return (
-    <div className="w-full max-w-sm mx-auto flex flex-col min-h-[600px] px-4 sm:px-0">
+    <div className="w-full max-w-sm mx-auto flex flex-col justify-center min-h-screen px-4 sm:px-0">
       <div className="flex items-center justify-center gap-2 mb-8">
-        <Image src="/igniscore.png" alt="IgnisCore Logo" width={38} height={52} className="object-contain" />
-        <span className="text-[35px] font-bold text-[#FF5A1F]" style={{ fontFamily: "var(--font-space-grotesk)" }}>
+        <Image
+          src="/igniscore.png"
+          alt="IgnisCore Logo"
+          width={38}
+          height={52}
+          className="object-contain"
+        />
+        <span
+          className="text-[35px] font-bold text-[#FF5A1F]"
+          style={{ fontFamily: "var(--font-space-grotesk)" }}
+        >
           IgnisCore
         </span>
       </div>
@@ -89,10 +107,16 @@ export default function LoginForm() {
       <div className="w-full border-t border-gray-100 mb-6"></div>
 
       <div className="mb-8">
-        <h2 className="text-[25px] font-semibold text-[#FF5A1F] mb-3">Login</h2>
+        <h2 className="text-[25px] font-semibold text-[#FF5A1F] mb-3">
+          Recuperar Senha
+        </h2>
       </div>
 
-      <form className="w-full flex flex-col gap-4" onSubmit={handleSubmit} noValidate>
+      <form
+        className="w-full flex flex-col gap-4"
+        onSubmit={handleSubmit}
+        noValidate
+      >
         <Input
           type="email"
           placeholder="Email"
@@ -102,49 +126,38 @@ export default function LoginForm() {
             removeError("email");
           }}
           error={errors.email}
+          disabled={isLoading || !!successMessage}
         />
 
-        <div>
-          <Input
-            type="password"
-            placeholder="Senha"
-            value={formData.senha}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-              setFormData({ ...formData, senha: e.target.value });
-              removeError("senha");
-            }}
-            error={errors.senha}
-          />
-          <div className="flex justify-end mt-1.5">
-            <Link 
-              href="/forgot-password" 
-              className="text-xs font-medium text-[#4A4A4A] hover:text-[#FF5A1F] hover:underline transition-colors"
-            >
-              Esqueceu a senha?
-            </Link>
-          </div>
-        </div>
+        {successMessage && (
+          <p className="text-xs font-semibold text-green-600 px-1">
+            {successMessage} Redirecionando...
+          </p>
+        )}
 
         <Button
           type="submit"
-          disabled={isLoading}
+          disabled={isLoading || !!successMessage}
           className="w-full mt-2 h-12 bg-[#FF5A1F] text-white rounded-lg font-semibold hover:bg-[#FF5A1F]/80 transition-all duration-200 cursor-pointer disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2"
         >
           {isLoading ? (
             <>
               <Loader2 className="h-5 w-5 animate-spin" />
-              <span>Entrando...</span>
+              <span>Enviando...</span>
             </>
           ) : (
-            "Entrar"
+            "Enviar Link"
           )}
         </Button>
 
         <div className="mt-4 text-center">
           <p className="text-xs font-medium text-[#4A4A4A]">
-            Não possui uma conta?{" "}
-            <Link href="/register" className="hover:text-[#FF5A1F] hover:underline transition-colors">
-              Crie uma
+            Lembrou sua senha?{" "}
+            <Link
+              href="/login"
+              className="hover:text-[#FF5A1F] hover:underline transition-colors"
+            >
+              Voltar para o Login
             </Link>
           </p>
         </div>
