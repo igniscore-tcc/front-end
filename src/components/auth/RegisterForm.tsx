@@ -122,8 +122,8 @@ export default function RegisterForm() {
       }
 
       const data = await response.json();
-      localStorage.setItem("token", data.token);
-      window.location.href = "/company";
+      localStorage.setItem("email", data.email);
+      window.location.href = "/verify-email";
     } catch {
       setErrors((prev) => ({
         ...prev,
