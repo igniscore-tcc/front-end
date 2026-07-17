@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useState, useEffect, Suspense } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { Loader2 } from "lucide-react";
@@ -15,9 +15,8 @@ import {
 
 function VerifyEmailForm() {
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const email = searchParams.get("email") || "";
 
+  const [email, setEmail] = useState("");
   const [code, setCode] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isResending, setIsResending] = useState(false);
@@ -28,6 +27,13 @@ function VerifyEmailForm() {
     code: "",
     geral: "",
   });
+
+  useEffect(() => {
+    const storedEmail = localStorage.getItem("email");
+    if (storedEmail) {
+      setEmail(storedEmail);
+    }
+  }, []);
 
   useEffect(() => {
     if (resendCountdown <= 0) return;
@@ -82,7 +88,7 @@ function VerifyEmailForm() {
       setSuccessMessage("E-mail verificado com sucesso!");
 
       setTimeout(() => {
-        router.push("/dashboard");
+        router.push("/company");
       }, 3000);
     } catch {
       setErrors((prev) => ({

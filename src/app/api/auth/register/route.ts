@@ -29,6 +29,16 @@ export async function POST(req: NextRequest) {
     });
   }
 
+  const nextResponse = NextResponse.json(data);
+
+  nextResponse.cookies.set("token", data.token, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+    path: "/",
+    maxAge: 60 * 60 * 24 * 7,
+  });
+
   return NextResponse.json({
     ...data,
     email,
