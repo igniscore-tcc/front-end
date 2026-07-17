@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { Loader2 } from "lucide-react";
 import { REGEXP_ONLY_DIGITS } from "input-otp";
+import { toast } from "sonner";
 import {
   InputOTP,
   InputOTPGroup,
@@ -20,12 +21,10 @@ function VerifyEmailForm() {
   const [code, setCode] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isResending, setIsResending] = useState(false);
-  const [successMessage, setSuccessMessage] = useState("");
   const [resendCountdown, setResendCountdown] = useState(0);
 
   const [errors, setErrors] = useState({
     code: "",
-    geral: "",
   });
 
   useEffect(() => {
@@ -45,7 +44,7 @@ function VerifyEmailForm() {
   }, [resendCountdown]);
 
   const validate = () => {
-    const newErrors = { code: "", geral: "" };
+    const newErrors = { code: "" };
     let isValid = true;
 
     if (!code) {
@@ -65,8 +64,7 @@ function VerifyEmailForm() {
     if (!validate()) return;
 
     setIsLoading(true);
-    setSuccessMessage("");
-    setErrors({ code: "", geral: "" });
+    setErrors({ code: "" });
 
     try {
       const response = await fetch("/api/auth/verify-email", {
@@ -78,23 +76,17 @@ function VerifyEmailForm() {
       const data = await response.json();
 
       if (!response.ok) {
-        setErrors((prev) => ({
-          ...prev,
-          geral: data.error || "Código inválido ou expirado",
-        }));
+        toast.error(data.error || "Código inválido ou expirado");
         return;
       }
 
-      setSuccessMessage("E-mail verificado com sucesso!");
+      toast.success("E-mail verificado com sucesso! Redirecionando...");
 
       setTimeout(() => {
         router.push("/company");
-      }, 3000);
+      }, 2000);
     } catch {
-      setErrors((prev) => ({
-        ...prev,
-        geral: "Erro ao conectar com o servidor",
-      }));
+      toast.error("Erro ao conectar com o servidor");
     } finally {
       setIsLoading(false);
     }
@@ -104,7 +96,7 @@ function VerifyEmailForm() {
     if (resendCountdown > 0 || isResending) return;
 
     setIsResending(true);
-    setErrors({ code: "", geral: "" });
+    setErrors({ code: "" });
 
     try {
       const response = await fetch("/api/auth/resend-code", {
@@ -115,20 +107,14 @@ function VerifyEmailForm() {
 
       if (!response.ok) {
         const data = await response.json();
-        setErrors((prev) => ({
-          ...prev,
-          geral: data.error || "Erro ao reenviar o código",
-        }));
+        toast.error(data.error || "Erro ao reenviar o código");
         return;
       }
 
-      setSuccessMessage("Novo código enviado para seu e-mail!");
+      toast.success("Novo código enviado para seu e-mail!");
       setResendCountdown(60);
     } catch {
-      setErrors((prev) => ({
-        ...prev,
-        geral: "Erro ao conectar com o servidor",
-      }));
+      toast.error("Erro ao conectar com o servidor");
     } finally {
       setIsResending(false);
     }
@@ -172,12 +158,6 @@ function VerifyEmailForm() {
         onSubmit={handleSubmit}
         noValidate
       >
-        {errors.geral && (
-          <p className="text-xs font-semibold text-red-500 px-1">
-            {errors.geral}
-          </p>
-        )}
-
         <div className="flex flex-col items-center justify-center my-2 gap-2">
           <InputOTP
             maxLength={6}
@@ -187,13 +167,12 @@ function VerifyEmailForm() {
               setCode(value);
               setErrors((prev) => ({ ...prev, code: "" }));
             }}
-            disabled={isLoading || !!successMessage}
+            disabled={isLoading}
           >
-            <InputOTPGroup className="">
+            <InputOTPGroup>
               <InputOTPSlot index={0} className="w-16 h-16 text-lg" />
               <InputOTPSlot index={1} className="w-16 h-16 text-lg" />
               <InputOTPSlot index={2} className="w-16 h-16 text-lg" />
-
               <InputOTPSlot index={3} className="w-16 h-16 text-lg" />
               <InputOTPSlot index={4} className="w-16 h-16 text-lg" />
               <InputOTPSlot index={5} className="w-16 h-16 text-lg" />
@@ -207,15 +186,9 @@ function VerifyEmailForm() {
           )}
         </div>
 
-        {successMessage && (
-          <p className="text-xs font-semibold text-green-600 px-1 text-center">
-            {successMessage} {resendCountdown === 60 ? "" : "Redirecionando..."}
-          </p>
-        )}
-
         <Button
           type="submit"
-          disabled={isLoading || !!successMessage}
+          disabled={isLoading}
           className="w-full mt-2 h-12 bg-[#FF5A1F] text-white rounded-lg font-semibold hover:bg-[#FF5A1F]/80 transition-all duration-200 cursor-pointer disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2"
         >
           {isLoading ? (
@@ -234,7 +207,7 @@ function VerifyEmailForm() {
             <button
               type="button"
               onClick={handleResendCode}
-              disabled={resendCountdown > 0 || isResending || !!successMessage}
+              disabled={resendCountdown > 0 || isResending}
               className="text-[#FF5A1F] font-semibold hover:underline transition-all disabled:opacity-50 disabled:no-underline cursor-pointer disabled:cursor-not-allowed"
             >
               {isResending
