@@ -77,7 +77,6 @@ export function DatePicker({ date, setDate, placeholder, error }: DatePickerProp
               selected={selectedDate}
               onSelect={handleSelect}
               disabled={{ before: today }}
-              initialFocus
               locale={ptBR}
             />
           </PopoverContent>
