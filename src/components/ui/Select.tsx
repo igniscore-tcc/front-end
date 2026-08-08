@@ -7,7 +7,7 @@ export interface SelectProps extends React.SelectHTMLAttributes<HTMLSelectElemen
   options: { value: string; label: string }[];
 }
 
-import { INPUT_FIELD_HEIGHT_CLASS } from "@/components/ui/Input";
+import { INPUT_FIELD_HEIGHT_CLASS } from "@/components/ui/input";
 
 const fieldBaseClass =
   `peer w-full px-4 pt-[24px] pb-2 ${INPUT_FIELD_HEIGHT_CLASS} box-border bg-[#E5E7EB] border-2 border-transparent rounded-lg text-gray-800 appearance-none focus:outline-none transition-all duration-300`;

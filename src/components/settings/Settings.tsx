@@ -3,7 +3,7 @@
 import { useCompanyProfile } from "@/hooks/useCompanyProfile";
 import Image from "next/image";
 import { Button } from "../ui/button";
-import { Input } from "../ui/Input";
+import { Input } from "../ui/input";
 import { FileInput, Label } from "flowbite-react";
 
 export default function Settings() {

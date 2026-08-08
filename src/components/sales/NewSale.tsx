@@ -3,7 +3,7 @@
 import { useMemo } from "react";
 import { Search, Plus, ArrowLeft, X, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input, INPUT_FIELD_HEIGHT_CLASS } from "@/components/ui/Input";
+import { Input, INPUT_FIELD_HEIGHT_CLASS } from "@/components/ui/input";
 import { toast } from "sonner";
 import { Select } from "@/components/ui/Select";
 import { Cliente } from "@/types/cliente";

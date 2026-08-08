@@ -3,7 +3,7 @@
 import { X, CheckCircle2, MapPin, Mail, Phone } from "lucide-react";
 import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/Input";
+import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/Select";
 import {
   formatCnpj,

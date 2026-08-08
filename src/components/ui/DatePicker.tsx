@@ -6,7 +6,7 @@ import { ptBR } from "date-fns/locale"
 import { Calendar as CalendarIcon } from "lucide-react"
 
 import { cn } from "@/lib/utils"
-import { INPUT_FIELD_HEIGHT_CLASS } from "@/components/ui/Input"
+import { INPUT_FIELD_HEIGHT_CLASS } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Calendar } from "@/components/ui/calendar"
 import {
