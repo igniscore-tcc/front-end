@@ -205,7 +205,6 @@ export default function Sales() {
                     setDateFrom(date ? format(date, "yyyy-MM-dd") : "");
                     setPage(1);
                   }}
-                  initialFocus
                   locale={ptBR}
                 />
               </PopoverContent>
@@ -232,7 +231,6 @@ export default function Sales() {
                     setDateTo(date ? format(date, "yyyy-MM-dd") : "");
                     setPage(1);
                   }}
-                  initialFocus
                   locale={ptBR}
                 />
               </PopoverContent>
