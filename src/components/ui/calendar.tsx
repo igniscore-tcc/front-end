@@ -16,7 +16,7 @@ function Calendar({
   className,
   classNames,
   showOutsideDays = true,
-  captionLayout = "dropdown",
+  captionLayout = "label",
   buttonVariant = "ghost",
   locale,
   formatters,
@@ -31,14 +31,12 @@ function Calendar({
     <DayPicker
       showOutsideDays={showOutsideDays}
       className={cn(
-        "group/calendar bg-background p-2 [--cell-radius:var(--radius-md)] [--cell-size:--spacing(7)] in-data-[slot=card-content]:bg-transparent in-data-[slot=popover-content]:bg-transparent",
+        "group/calendar bg-background p-3 [--cell-radius:var(--radius-2xl)] [--cell-size:--spacing(8)] in-data-[slot=card-content]:bg-transparent in-data-[slot=popover-content]:bg-transparent",
         String.raw`rtl:**:[.rdp-button\_next>svg]:rotate-180`,
         String.raw`rtl:**:[.rdp-button\_previous>svg]:rotate-180`,
         className
       )}
       captionLayout={captionLayout}
-      startMonth={props.startMonth || new Date(1900, 0)}
-      endMonth={props.endMonth || new Date(new Date().getFullYear() + 10, 11)}
       locale={locale}
       formatters={{
         formatMonthDropdown: (date) =>
@@ -58,12 +56,12 @@ function Calendar({
         ),
         button_previous: cn(
           buttonVariants({ variant: buttonVariant }),
-          "size-(--cell-size) p-0 select-none aria-disabled:opacity-50 !border-transparent !ring-0 focus:!ring-0 focus:!border-transparent focus-visible:!ring-0 focus-visible:!border-transparent",
+          "size-(--cell-size) p-0 select-none aria-disabled:opacity-50",
           defaultClassNames.button_previous
         ),
         button_next: cn(
           buttonVariants({ variant: buttonVariant }),
-          "size-(--cell-size) p-0 select-none aria-disabled:opacity-50 !border-transparent !ring-0 focus:!ring-0 focus:!border-transparent focus-visible:!ring-0 focus-visible:!border-transparent",
+          "size-(--cell-size) p-0 select-none aria-disabled:opacity-50",
           defaultClassNames.button_next
         ),
         month_caption: cn(
@@ -89,7 +87,7 @@ function Calendar({
             : "flex items-center gap-1 rounded-(--cell-radius) text-sm [&>svg]:size-3.5 [&>svg]:text-muted-foreground",
           defaultClassNames.caption_label
         ),
-        table: "w-full border-collapse",
+        month_grid: cn("w-full border-collapse", defaultClassNames.month_grid),
         weekdays: cn("flex", defaultClassNames.weekdays),
         weekday: cn(
           "flex-1 rounded-(--cell-radius) text-[0.8rem] font-normal text-muted-foreground select-none",
