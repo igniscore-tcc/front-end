@@ -18,6 +18,8 @@ import { useClients } from "@/hooks/useClients";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import { UserRole } from "@/types/me";
+import { Button } from "../ui/button";
+import { ToggleGroup, ToggleGroupItem } from "../ui/toggle-group";
 
 export default function Clients() {
   const router = useRouter();
@@ -69,7 +71,7 @@ export default function Clients() {
   }
 
   return (
-    <div className="h-screen max-h-screen p-6 flex flex-col bg-white text-base overflow-hidden">
+    <div className="max-h-screen p-6 flex flex-col text-base overflow-hidden">
       <ListPageHeader
         title="Clientes"
         search={search}
@@ -81,53 +83,44 @@ export default function Clients() {
       />
 
       {/* FILTROS */}
-      <div className="flex flex-wrap items-center gap-4 mb-4">
-        <button
+      <div className="flex flex-wrap items-center gap-2 mb-4">
+        <Button
+          variant={sort.key === "id" ? "default" : "outline"}
           onClick={() => handleSort("id")}
-          className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold border transition-colors cursor-pointer ${
-            sort.key === "id"
-              ? "bg-[#FF5A1F]/10 text-[#FF5A1F] border-[#FF5A1F]/20 shadow-sm"
-              : "bg-gray-100/50 text-gray-500 hover:bg-gray-100 hover:text-gray-700"
-          }`}
         >
-          ID {sortIcon("id")}
-        </button>
+          ID
+          {sortIcon("id")}
+        </Button>
 
-        <button
+        <Button
+          variant={sort.key === "nome" ? "default" : "outline"}
           onClick={() => handleSort("nome")}
-          className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold border transition-colors cursor-pointer ${
-            sort.key === "nome"
-              ? "bg-[#FF5A1F]/10 text-[#FF5A1F] border-[#FF5A1F]/20 shadow-sm"
-              : "bg-gray-100/50 text-gray-500 hover:bg-gray-100 hover:text-gray-700"
-          }`}
         >
-          Nome {sortIcon("nome")}
-        </button>
+          Nome
+          {sortIcon("nome")}
+        </Button>
 
-        <div className="flex bg-gray-100/50 rounded-full p-1 border border-gray-100 ml-auto">
-          {(["ALL", "PF", "PJ"] as const).map((t) => (
-            <button
-              key={t}
-              onClick={() => setFilterTipo(t)}
-              className={`px-4 py-1.5 rounded-full text-sm font-bold transition-all cursor-pointer ${
-                filterTipo === t
-                  ? "bg-white text-[#FF5A1F] shadow-sm"
-                  : "text-gray-500 hover:text-gray-700"
-              }`}
-            >
-              {t === "ALL"
-                ? "Todos"
-                : t === "PF"
-                  ? "Pessoa Física"
-                  : "Pessoa Jurídica"}
-            </button>
-          ))}
-        </div>
+        <ToggleGroup
+          type="single"
+          value={filterTipo}
+          onValueChange={(value) => {
+            if (value) {
+              setFilterTipo(value as "ALL" | "PF" | "PJ");
+            }
+          }}
+          className="ml-auto"
+        >
+          <ToggleGroupItem value="ALL">Todos</ToggleGroupItem>
+
+          <ToggleGroupItem value="PF">Pessoa Física</ToggleGroupItem>
+
+          <ToggleGroupItem value="PJ">Pessoa Jurídica</ToggleGroupItem>
+        </ToggleGroup>
       </div>
 
       {/* TABELA */}
       <div className="flex-1 min-h-0 flex flex-col">
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden h-fit max-h-full flex flex-col">
+        <div className="shadow-sm border border-gray-100 overflow-hidden h-fit max-h-full flex flex-col">
           <div className="flex-1 overflow-y-auto overflow-x-hidden custom-scrollbar">
             <table className="w-full text-left border-collapse table-fixed">
               <thead className="sticky top-0 z-10 bg-gray-50">
