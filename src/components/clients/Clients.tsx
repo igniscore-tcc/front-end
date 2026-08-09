@@ -20,6 +20,15 @@ import { useAuth } from "@/contexts/AuthContext";
 import { UserRole } from "@/types/me";
 import { Button } from "../ui/button";
 import { ToggleGroup, ToggleGroupItem } from "../ui/toggle-group";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "../ui/table";
+import { Badge } from "../ui/badge";
 
 export default function Clients() {
   const router = useRouter();
@@ -119,121 +128,98 @@ export default function Clients() {
       </div>
 
       {/* TABELA */}
-      <div className="flex-1 min-h-0 flex flex-col">
-        <div className="shadow-sm border border-gray-100 overflow-hidden h-fit max-h-full flex flex-col">
-          <div className="flex-1 overflow-y-auto overflow-x-hidden custom-scrollbar">
-            <table className="w-full text-left border-collapse table-fixed">
-              <thead className="sticky top-0 z-10 bg-gray-50">
-                <tr className="bg-gray-50 border-b border-gray-100">
-                  <th className="w-[80px] px-6 py-3 text-sm font-bold text-gray-500 uppercase tracking-wider">
-                    ID
-                  </th>
-                  <th className="px-6 py-3 text-sm font-bold text-gray-500 uppercase tracking-wider">
-                    Nome
-                  </th>
-                  <th className="w-[210px] px-6 py-3 text-sm font-bold text-gray-500 uppercase tracking-wider">
-                    CNPJ/CPF
-                  </th>
-                  <th className="w-[150px] px-6 py-3 text-sm font-bold text-gray-500 uppercase tracking-wider">
-                    Inscrição
-                  </th>
-                  <th className="px-6 py-3 text-sm font-bold text-gray-500 uppercase tracking-wider">
-                    Email
-                  </th>
-                  <th className="w-[180px] px-6 py-3 text-sm font-bold text-gray-500 uppercase tracking-wider">
-                    Telefone
-                  </th>
-                  <th className="w-[100px] px-6 py-3 text-sm font-bold text-gray-500 uppercase tracking-wider text-center">
-                    Ações
-                  </th>
-                </tr>
-              </thead>
+      <div className="overflow-x-auto">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Nº</TableHead>
+              <TableHead>Nome</TableHead>
+              <TableHead>CPF / CNPJ</TableHead>
+              <TableHead>Inscrição</TableHead>
+              <TableHead>E-mail</TableHead>
+              <TableHead>Telefone</TableHead>
+              <TableHead className="text-right">Ações</TableHead>
+            </TableRow>
+          </TableHeader>
 
-              <tbody className="divide-y divide-gray-50">
-                {pageData.length > 0 ? (
-                  pageData.map((client) => (
-                    <tr
-                      key={client.id}
-                      className="group hover:bg-gray-50/80 transition-colors"
-                    >
-                      <td className="px-6 py-3.5 text-sm text-gray-500">
-                        {client.number}
-                      </td>
+          <TableBody>
+            {pageData.length > 0 ? (
+              pageData.map((client) => (
+                <TableRow key={client.id}>
+                  <TableCell className="tabular-nums">
+                    {client.number}
+                  </TableCell>
 
-                      <td className="px-6 py-3.5 text-sm min-w-0">
-                        <div className="flex items-center gap-2 overflow-hidden">
-                          <button
-                            onClick={() =>
-                              router.push(`/clientes/${client.id}`)
-                            }
-                            className="font-semibold text-gray-800 hover:underline truncate cursor-pointer text-left"
-                            title={client.nome}
-                          >
-                            {client.nome}
-                          </button>
-                          <span className="px-2 py-0.5 text-[10px] rounded-full bg-gray-100 text-gray-600 shrink-0">
-                            {client.tipo}
-                          </span>
-                        </div>
-                      </td>
-
-                      <td className="px-6 py-3.5 text-sm text-gray-600 tabular-nums whitespace-nowrap">
-                        {client.tipo === "PF"
-                          ? formatCpf(client.cpf)
-                          : formatCnpj(client.cnpj)}
-                      </td>
-
-                      <td className="px-6 py-3.5 text-sm text-gray-600">
-                        {client.tipo === "PJ" ? client.inscricao : "-"}
-                      </td>
-
-                      <td
-                        className="px-6 py-3.5 text-sm text-gray-600 truncate"
-                        title={client.email}
+                  <TableCell>
+                    <div className="flex min-w-0 items-center gap-2">
+                      <Button
+                        variant="link"
+                        className="h-auto min-w-0 truncate p-0 text-left font-semibold"
+                        onClick={() => router.push(`/clientes/${client.id}`)}
+                        title={client.nome}
                       >
-                        {client.email}
-                      </td>
+                        {client.nome}
+                      </Button>
 
-                      <td className="px-6 py-3.5 text-sm text-gray-700 tabular-nums whitespace-nowrap">
-                        {formatPhone(client.telefone)}
-                      </td>
+                      <Badge variant="secondary">{client.tipo}</Badge>
+                    </div>
+                  </TableCell>
 
-                      <td className="px-6 py-3.5 text-center">
-                        <div className="flex items-center justify-center gap-4 opacity-0 group-hover:opacity-100 transition-opacity">
-                          <button
-                            onClick={() => setEditing(client)}
-                            className="text-[#FF5A1F] hover:text-[#E64D17] p-1.5 hover:bg-[#FF5A1F]/10 rounded-lg cursor-pointer"
-                          >
-                            <Pencil size={18} />
-                          </button>
+                  <TableCell className="whitespace-nowrap tabular-nums">
+                    {client.tipo === "PF"
+                      ? formatCpf(client.cpf)
+                      : formatCnpj(client.cnpj)}
+                  </TableCell>
 
-                          {user?.role === UserRole.OWNER && (
-                            <button
-                              onClick={() => setDeleting(client)}
-                              className="text-[#FF5A1F] hover:text-[#E64D17] p-1.5 hover:bg-[#FF5A1F]/10 rounded-lg cursor-pointer"
-                            >
-                              <Trash2 size={18} />
-                            </button>
-                          )}
-                        </div>
-                      </td>
-                    </tr>
-                  ))
-                ) : (
-                  <tr>
-                    <td
-                      colSpan={7}
-                      className="px-6 py-12 text-center text-gray-400"
-                    >
-                      Nenhum cliente encontrado
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
-          </div>
-        </div>
-        <div className="flex-1 min-h-[20px]" />
+                  <TableCell>
+                    {client.tipo === "PJ" ? client.inscricao : "-"}
+                  </TableCell>
+
+                  <TableCell
+                    className="truncate"
+                    title={client.email}
+                  >
+                    {client.email}
+                  </TableCell>
+
+                  <TableCell className="whitespace-nowrap tabular-nums">
+                    {formatPhone(client.telefone)}
+                  </TableCell>
+
+                  <TableCell>
+                    <div className="flex items-center justify-end gap-1">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => setEditing(client)}
+                        aria-label={`Editar ${client.nome}`}
+                      >
+                        <Pencil />
+                      </Button>
+
+                      {user?.role === UserRole.OWNER && (
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => setDeleting(client)}
+                          aria-label={`Excluir ${client.nome}`}
+                        >
+                          <Trash2 />
+                        </Button>
+                      )}
+                    </div>
+                  </TableCell>
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell colSpan={7} className="h-24 text-center">
+                  Nenhum cliente encontrado
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
       </div>
 
       {/* PAGINAÇÃO */}
