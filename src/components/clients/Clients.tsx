@@ -29,6 +29,7 @@ import {
   TableRow,
 } from "../ui/table";
 import { Badge } from "../ui/badge";
+import { DataPagination } from "../layout/pagination/pagination";
 
 export default function Clients() {
   const router = useRouter();
@@ -175,10 +176,7 @@ export default function Clients() {
                     {client.tipo === "PJ" ? client.inscricao : "-"}
                   </TableCell>
 
-                  <TableCell
-                    className="truncate"
-                    title={client.email}
-                  >
+                  <TableCell className="truncate" title={client.email}>
                     {client.email}
                   </TableCell>
 
@@ -223,54 +221,16 @@ export default function Clients() {
       </div>
 
       {/* PAGINAÇÃO */}
-      <footer className="mt-auto flex flex-col md:flex-row items-center justify-center gap-8 text-sm font-medium text-gray-500 shrink-0 py-6">
-        <div className="flex items-center gap-2">
-          <span>Linhas por página</span>
-          <div className="relative">
-            <select
-              value={perPage}
-              onChange={(e) => {
-                setPerPage(Number(e.target.value));
-                setPage(1);
-              }}
-              className="bg-transparent font-bold text-gray-800 outline-none pr-4 appearance-none cursor-pointer"
-            >
-              <option value={5}>5</option>
-              <option value={10}>10</option>
-              <option value={20}>20</option>
-              <option value={50}>50</option>
-            </select>
-            <ChevronDown
-              size={14}
-              className="absolute right-0 top-1/2 -translate-y-1/2 pointer-events-none"
-            />
-          </div>
-        </div>
-
-        <div className="flex items-center gap-4">
-          <span>
-            {from}-{to} de {total}
-          </span>
-
-          <div className="flex items-center gap-3">
-            <button
-              onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
-              disabled={page === 1}
-              className="p-1.5 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-400 disabled:opacity-30 cursor-pointer disabled:cursor-not-allowed"
-            >
-              <ChevronLeft size={20} />
-            </button>
-
-            <button
-              onClick={() => setPage((prev) => Math.min(prev + 1, totalPages))}
-              disabled={!hasNextPage}
-              className="p-1.5 rounded-lg bg-[#FF5A1F] hover:bg-[#E64D17] text-white disabled:opacity-30 cursor-pointer disabled:cursor-not-allowed"
-            >
-              <ChevronRight size={20} />
-            </button>
-          </div>
-        </div>
-      </footer>
+      <DataPagination
+        page={page}
+        totalPages={totalPages}
+        from={from}
+        to={to}
+        total={total}
+        pageSize={perPage}
+        onPageChange={setPage}
+        onPageSizeChange={setPerPage}
+      />
 
       {/* MODAIS */}
       <AddClientModal
