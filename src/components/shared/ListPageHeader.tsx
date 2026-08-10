@@ -32,7 +32,7 @@ export function ListPageHeader({
       </div>
 
       {onAddClick && (
-        <Button type="button" onClick={onAddClick} data-testid="buttonAdd">
+        <Button type="button" onClick={onAddClick} data-testid="buttonAdd" className="rounded-full w-10 h-10">
           <Plus />
           <span className="sr-only">Adicionar</span>
         </Button>
