@@ -3,9 +3,9 @@
 import { useMemo } from "react";
 import { Search, Plus, ArrowLeft, X, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input, INPUT_FIELD_HEIGHT_CLASS } from "@/components/ui/input";
+import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
-import { Select } from "@/components/ui/select";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Cliente } from "@/types/cliente";
 import { Product } from "@/types/product";
 
@@ -196,7 +196,6 @@ export default function NewSale({
                   onBlur={() =>
                     setTimeout(() => setShowClientSuggestions(false), 200)
                   }
-                  suffixIcon={<Search size={18} />}
                 />
                 {showClientSuggestions &&
                   filteredClientSuggestions.length > 0 && (
@@ -397,17 +396,21 @@ export default function NewSale({
 
             <div className="w-[320px] shrink-0 flex flex-col gap-5">
               <Select
-                placeholder="Pagamento"
-                value={paymentMethod}
-                onChange={(e) => setPaymentMethod(e.target.value)}
-                options={[
-                  { value: "cash", label: "Dinheiro" },
-                  { value: "pix", label: "PIX" },
-                  { value: "credit_card", label: "Cartão de Crédito" },
-                  { value: "debit_card", label: "Cartão de Débito" },
-                  { value: "bank_slip", label: "Boleto" },
-                ]}
-              />
+                value={paymentMethod || undefined}
+                onValueChange={(value) => setPaymentMethod(value)}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Pagamento" />
+                </SelectTrigger>
+
+                <SelectContent>
+                  <SelectItem value="cash">Dinheiro</SelectItem>
+                  <SelectItem value="pix">PIX</SelectItem>
+                  <SelectItem value="credit_card">Cartão de Crédito</SelectItem>
+                  <SelectItem value="debit_card">Cartão de Débito</SelectItem>
+                  <SelectItem value="bank_slip">Boleto</SelectItem>
+                </SelectContent>
+              </Select>
 
               <Input
                 placeholder="Desconto (ex: 10)"
