@@ -1,10 +1,28 @@
 "use client";
 
-import { X, CheckCircle2, MapPin, Mail, Phone } from "lucide-react";
-import { useEffect } from "react";
+import { CheckCircle2, MapPin, Mail, Phone } from "lucide-react";
+
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Select } from "@/components/ui/Select";
+
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+
+import { Textarea } from "@/components/ui/textarea";
+
 import {
   formatCnpj,
   cleanCnpj,
@@ -13,8 +31,11 @@ import {
   formatCpf,
   cleanCpf,
 } from "@/lib/validators";
+
 import { useClientForm } from "@/hooks/useClientForm";
+
 import type { TipoCliente, ClienteModalProps } from "@/types/cliente";
+
 import { UF_OPTIONS } from "@/lib/constants";
 
 export function AddClientModal({
@@ -39,205 +60,252 @@ export function AddClientModal({
     onClose,
   });
 
-  useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "unset";
-    }
-    return () => {
-      document.body.style.overflow = "unset";
-    };
-  }, [isOpen]);
-
-  if (!isOpen) return null;
-
   return (
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4 animate-in fade-in duration-200"
-      onClick={onClose}
+    <Dialog
+      open={isOpen}
+      onOpenChange={(open) => {
+        if (!open) {
+          onClose();
+        }
+      }}
     >
-      <div
-        className="bg-white rounded-xl shadow-lg w-full max-w-2xl flex flex-col overflow-hidden animate-in zoom-in-95 duration-200"
-        onClick={(e) => e.stopPropagation()}
+      <DialogContent
+        className="
+          w-[calc(100%-1.5rem)]
+          max-w-2xl
+          max-h-[90vh]
+          overflow-y-auto
+          p-0
+          gap-0
+          rounded-xl
+        "
       >
-        <div className="flex items-center justify-between p-5 border-b border-gray-100">
-          <h2 className="text-xl font-semibold text-gray-900">
+        {/* Header */}
+        <DialogHeader className="border-b px-6 py-5 sm:px-8">
+          <DialogTitle className="text-xl font-semibold">
             {isEditing ? "Editar cliente" : "Adicionar cliente"}
-          </h2>
-          <button
-            onClick={onClose}
-            className="w-8 h-8 flex items-center justify-center rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-500 transition-colors cursor-pointer"
-          >
-            <X className="w-5 h-5" strokeWidth={2.5} />
-          </button>
-        </div>
+          </DialogTitle>
 
-        <form onSubmit={handleSubmit} className="flex flex-col">
-          <div className="p-8 space-y-6">
-            {/* escolha entre PJ | PF */}
-            <div className="flex justify-center">
-              <div className="inline-flex p-1 bg-gray-100 rounded-xl">
-                {(["PJ", "PF"] as TipoCliente[]).map((t) => (
-                  <button
-                    key={t}
-                    data-testid="buttonTypePerson"
-                    type="button"
-                    onClick={() => setTipo(t)}
-                    className={`px-6 py-2 rounded-lg text-sm font-bold transition-all cursor-pointer ${
-                      tipo === t
-                        ? "bg-white text-[#FF5A1F] shadow-sm"
-                        : "text-gray-500 hover:text-gray-700"
-                    }`}
-                  >
-                    {t === "PJ" ? "Pessoa Jurídica" : "Pessoa Física"}
-                  </button>
-                ))}
+          <DialogDescription>
+            {isEditing
+              ? "Atualize as informações do cliente."
+              : "Preencha os dados abaixo para cadastrar um novo cliente."}
+          </DialogDescription>
+        </DialogHeader>
+
+        <form onSubmit={handleSubmit}>
+          {/* Conteúdo */}
+          <div className="space-y-6 px-6 py-6 sm:px-8 sm:py-8">
+            {/* Tipo de cliente */}
+            <div className="space-y-3">
+              <div>
+                <p className="text-sm font-medium">Tipo de cliente</p>
+
+                <p className="text-xs text-muted-foreground">
+                  Selecione se o cliente é pessoa física ou jurídica.
+                </p>
+              </div>
+
+              <div className="grid grid-cols-2 gap-2 rounded-lg bg-muted p-1">
+                {(["PJ", "PF"] as TipoCliente[]).map((t) => {
+                  const active = tipo === t;
+
+                  return (
+                    <Button
+                      key={t}
+                      data-testid="buttonTypePerson"
+                      type="button"
+                      variant={active ? "default" : "ghost"}
+                      onClick={() => setTipo(t)}
+                      className={
+                        active
+                          ? "bg-background text-foreground shadow-sm hover:bg-background"
+                          : "text-muted-foreground"
+                      }
+                    >
+                      {t === "PJ" ? "Pessoa Jurídica" : "Pessoa Física"}
+                    </Button>
+                  );
+                })}
               </div>
             </div>
 
-            <div className="grid grid-cols-1 gap-4">
+            {/* Nome */}
+            <div className="space-y-2">
+              <label htmlFor="client-name" className="text-sm font-medium">
+                Nome
+              </label>
+
               <Input
-                placeholder="Nome"
+                id="client-name"
+                placeholder={tipo === "PJ" ? "Razão social" : "Nome completo"}
                 data-testid="inputName"
                 value={form.nome}
                 onChange={(e) => setField("nome", e.target.value)}
-                error={errors.nome}
               />
             </div>
 
-            <div className="grid grid-cols-12 gap-4">
-              <div
-                className={`col-span-12 ${tipo === "PJ" ? "md:col-span-5" : "md:col-span-10"}`}
-              >
+            {/* Documento */}
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+              <div className="space-y-2">
+                <label
+                  htmlFor="client-document"
+                  className="text-sm font-medium"
+                >
+                  {tipo === "PJ" ? "CNPJ" : "CPF"}
+                </label>
+
                 {tipo === "PJ" ? (
                   <Input
-                    placeholder="CNPJ"
+                    id="client-document"
+                    placeholder="00.000.000/0000-00"
                     data-testid="inputCNPJ"
                     value={formatCnpj(form.cnpj)}
                     onChange={(e) =>
                       setField("cnpj", cleanCnpj(e.target.value))
                     }
-                    error={errors.cnpj}
-                    suffixIcon={
-                      <CheckCircle2
-                        size={18}
-                        className={
-                          errors.cnpj ? "text-red-400" : "text-gray-400"
-                        }
-                      />
-                    }
                   />
                 ) : (
                   <Input
-                    placeholder="CPF"
+                    id="client-document"
+                    placeholder="000.000.000-00"
                     data-testid="inputCPF"
                     value={formatCpf(form.cpf)}
                     onChange={(e) => setField("cpf", cleanCpf(e.target.value))}
-                    error={errors.cpf}
-                    suffixIcon={
-                      <CheckCircle2
-                        size={18}
-                        className={
-                          errors.cpf ? "text-red-400" : "text-gray-400"
-                        }
-                      />
-                    }
                   />
                 )}
               </div>
 
+              {/* UF */}
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Estado</label>
+
+                <Select
+                  value={form.uf || undefined}
+                  onValueChange={(value) => setField("uf", value)}
+                >
+                  <SelectTrigger
+                    data-testid="selectUF"
+                    className={`w-full ${
+                      errors.uf ? "border-destructive" : ""
+                    }`}
+                  >
+                    <SelectValue placeholder="Selecione o estado" />
+                  </SelectTrigger>
+
+                  <SelectContent className="w-[var(--radix-select-trigger-width)]">
+                    {UF_OPTIONS.map((uf) => (
+                      <SelectItem key={uf.value} value={uf.value}>
+                        {uf.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+
+                {errors.uf && (
+                  <p className="text-xs text-destructive">{errors.uf}</p>
+                )}
+              </div>
+            </div>
+
+            {/* Contato */}
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+              {/* Inscrição estadual */}
               {tipo === "PJ" && (
-                <div className="col-span-12 md:col-span-5">
+                <div className="space-y-2">
+                  <label htmlFor="client-ie" className="text-sm font-medium">
+                    Inscrição estadual
+                  </label>
+
                   <Input
-                    placeholder="Inscrição estadual"
+                    id="client-ie"
+                    placeholder="Digite a inscrição estadual"
                     data-testid="inputIE"
                     value={form.inscricao}
                     onChange={(e) => setField("inscricao", e.target.value)}
-                    suffixIcon={<MapPin size={18} className="text-gray-400" />}
                   />
                 </div>
               )}
+              <div className="space-y-2">
+                <label htmlFor="client-phone" className="text-sm font-medium">
+                  Telefone
+                </label>
 
-              <div className="col-span-12 md:col-span-2">
-                <Select
-                  placeholder="UF"
-                  data-testid="selectUF"
-                  value={form.uf}
-                  onChange={(e) => setField("uf", e.target.value)}
-                  options={UF_OPTIONS}
+                <Input
+                  id="client-phone"
+                  placeholder="(00) 00000-0000"
+                  data-testid="inputTelefone"
+                  value={formatPhone(form.telefone)}
+                  onChange={(e) =>
+                    setField("telefone", cleanPhone(e.target.value))
+                  }
                 />
               </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <label htmlFor="client-email" className="text-sm font-medium">
+                E-mail
+              </label>
+
               <Input
-                placeholder="Email"
+                id="client-email"
+                placeholder="email@exemplo.com"
                 data-testid="inputEmail"
                 type="email"
                 value={form.email}
                 onChange={(e) => setField("email", e.target.value)}
-                error={errors.email}
-                suffixIcon={
-                  <Mail
-                    size={18}
-                    className={errors.email ? "text-red-400" : "text-gray-400"}
-                  />
-                }
-              />
-              <Input
-                placeholder="Telefone"
-                data-testid="inputTelefone"
-                value={formatPhone(form.telefone)}
-                onChange={(e) =>
-                  setField("telefone", cleanPhone(e.target.value))
-                }
-                error={errors.telefone}
-                suffixIcon={
-                  <Phone
-                    size={18}
-                    className={
-                      errors.telefone ? "text-red-400" : "text-gray-400"
-                    }
-                  />
-                }
               />
             </div>
 
-            <Input
-              placeholder="Observação"
-              data-testid="inputObs"
-              isTextarea
-              value={form.observacao}
-              onChange={(e) => setField("observacao", e.target.value)}
-            />
+            {/* Observação */}
+            <div className="space-y-2">
+              <label
+                htmlFor="client-observation"
+                className="text-sm font-medium"
+              >
+                Observação
+              </label>
+
+              <Textarea
+                id="client-observation"
+                placeholder="Adicione alguma observação sobre o cliente..."
+                data-testid="inputObs"
+                value={form.observacao}
+                onChange={(e) => setField("observacao", e.target.value)}
+                className="min-h-28 resize-y"
+              />
+            </div>
           </div>
 
-          <div className="p-6 bg-gray-50/50 border-t border-dashed border-gray-200 flex items-center justify-end gap-4">
+          {/* Footer */}
+          <div className="flex flex-col-reverse gap-2 border-t bg-muted/30 px-6 py-4 sm:flex-row sm:justify-end sm:px-8">
             <Button
               type="button"
               data-testid="buttonCancelar"
               variant="outline"
               onClick={onClose}
-              className="px-8 py-2.5 h-auto text-sm font-bold rounded-lg bg-[#E5E7EB] text-gray-700 hover:bg-gray-300 border-none transition-colors cursor-pointer"
+              disabled={submitting}
+              className="w-full sm:w-auto"
             >
               Cancelar
             </Button>
+
             <Button
               type="submit"
               data-testid="buttonSalvar"
               disabled={submitting}
-              className="px-8 py-2.5 h-auto text-sm font-bold rounded-lg bg-[#FF5A1F] text-white hover:bg-[#E64D17] transition-colors shadow-sm cursor-pointer"
+              className="w-full sm:w-auto"
             >
               {submitting
                 ? "Salvando..."
                 : isEditing
                   ? "Salvar alterações"
-                  : "Adicionar"}
+                  : "Adicionar cliente"}
             </Button>
           </div>
         </form>
-      </div>
-    </div>
+      </DialogContent>
+    </Dialog>
   );
 }

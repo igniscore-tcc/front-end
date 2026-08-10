@@ -4,7 +4,7 @@ import { X, Hash, DollarSign } from "lucide-react";
 import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Select } from "@/components/ui/Select";
+import { Select } from "@/components/ui/select";
 import { DatePicker } from "@/components/ui/DatePicker";
 import { PRODUCT_TYPE_OPTIONS } from "@/lib/constants";
 import { useProductForm } from "@/hooks/useProductForm";
