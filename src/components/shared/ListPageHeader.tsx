@@ -3,6 +3,12 @@
 import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 interface ListPageHeaderProps {
   title: string;
@@ -32,10 +38,25 @@ export function ListPageHeader({
       </div>
 
       {onAddClick && (
-        <Button type="button" onClick={onAddClick} data-testid="buttonAdd" className="rounded-full w-10 h-10">
-          <Plus />
-          <span className="sr-only">Adicionar</span>
-        </Button>
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                type="button"
+                onClick={onAddClick}
+                data-testid="buttonAdd"
+                className="h-10 w-10 rounded-full"
+              >
+                <Plus />
+                <span className="sr-only">Adicionar</span>
+              </Button>
+            </TooltipTrigger>
+
+            <TooltipContent>
+              Adicionar
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
       )}
     </header>
   );
