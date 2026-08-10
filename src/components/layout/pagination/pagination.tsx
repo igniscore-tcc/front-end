@@ -13,7 +13,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/Select";
+} from "@/components/ui/select";
 
 interface DataPaginationProps {
   page: number;
@@ -57,6 +57,7 @@ export function DataPagination({
             <SelectTrigger
               className="w-20"
               id="select-rows-per-page"
+              variant="pagination"
             >
               <SelectValue />
             </SelectTrigger>
@@ -90,9 +91,7 @@ export function DataPagination({
                 }
               }}
               className={
-                !hasPreviousPage
-                  ? "pointer-events-none opacity-50"
-                  : ""
+                !hasPreviousPage ? "pointer-events-none opacity-50" : ""
               }
             />
           </PaginationItem>
@@ -107,11 +106,7 @@ export function DataPagination({
                   onPageChange(page + 1);
                 }
               }}
-              className={
-                !hasNextPage
-                  ? "pointer-events-none opacity-50"
-                  : ""
-              }
+              className={!hasNextPage ? "pointer-events-none opacity-50" : ""}
             />
           </PaginationItem>
         </PaginationContent>
