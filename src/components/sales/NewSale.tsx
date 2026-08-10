@@ -3,7 +3,7 @@
 import { useMemo } from "react";
 import { Search, Plus, ArrowLeft, X, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input, INPUT_FIELD_HEIGHT_CLASS } from "@/components/ui/input";
+import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { Select } from "@/components/ui/select";
 import { Cliente } from "@/types/cliente";
@@ -196,7 +196,6 @@ export default function NewSale({
                   onBlur={() =>
                     setTimeout(() => setShowClientSuggestions(false), 200)
                   }
-                  suffixIcon={<Search size={18} />}
                 />
                 {showClientSuggestions &&
                   filteredClientSuggestions.length > 0 && (
