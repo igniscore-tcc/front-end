@@ -159,7 +159,6 @@ export default function Sales() {
           setPage(1);
         }}
         onAddClick={() => setView("create")}
-        addButtonClassName="bg-[#FF5A1F] hover:bg-[#E64D17] text-white rounded-full w-12 h-12 flex items-center justify-center transition-colors p-0 shrink-0 cursor-pointer shadow-none"
       />
 
       <div className="flex flex-wrap items-center justify-between gap-4 mb-4 shrink-0">

@@ -10,7 +10,7 @@ import {
   Trash2,
   ChevronDown,
 } from "lucide-react";
-import { ListPageHeader } from "@/components/shared/ListPageHeader";
+import { ListPageHeader } from "../shared/ListPageHeader";
 import { AddClientModal } from "./AddClientModal";
 import { DeleteConfirmModal } from "./DeleteConfirmModal";
 import { formatCnpj, formatPhone, formatCpf } from "@/lib/validators";
