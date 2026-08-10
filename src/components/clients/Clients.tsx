@@ -18,6 +18,18 @@ import { useClients } from "@/hooks/useClients";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import { UserRole } from "@/types/me";
+import { Button } from "../ui/button";
+import { ToggleGroup, ToggleGroupItem } from "../ui/toggle-group";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "../ui/table";
+import { Badge } from "../ui/badge";
+import { DataPagination } from "../layout/pagination/pagination";
 
 export default function Clients() {
   const router = useRouter();
@@ -69,7 +81,7 @@ export default function Clients() {
   }
 
   return (
-    <div className="h-screen max-h-screen p-6 flex flex-col bg-white text-base overflow-hidden">
+    <div className="max-h-screen p-6 flex flex-col text-base overflow-hidden">
       <ListPageHeader
         title="Clientes"
         search={search}
@@ -81,217 +93,144 @@ export default function Clients() {
       />
 
       {/* FILTROS */}
-      <div className="flex flex-wrap items-center gap-4 mb-4">
-        <button
+      <div className="flex flex-wrap items-center gap-2 mb-4">
+        <Button
+          variant={sort.key === "id" ? "default" : "outline"}
           onClick={() => handleSort("id")}
-          className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold border transition-colors cursor-pointer ${
-            sort.key === "id"
-              ? "bg-[#FF5A1F]/10 text-[#FF5A1F] border-[#FF5A1F]/20 shadow-sm"
-              : "bg-gray-100/50 text-gray-500 hover:bg-gray-100 hover:text-gray-700"
-          }`}
         >
-          ID {sortIcon("id")}
-        </button>
+          ID
+          {sortIcon("id")}
+        </Button>
 
-        <button
+        <Button
+          variant={sort.key === "nome" ? "default" : "outline"}
           onClick={() => handleSort("nome")}
-          className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold border transition-colors cursor-pointer ${
-            sort.key === "nome"
-              ? "bg-[#FF5A1F]/10 text-[#FF5A1F] border-[#FF5A1F]/20 shadow-sm"
-              : "bg-gray-100/50 text-gray-500 hover:bg-gray-100 hover:text-gray-700"
-          }`}
         >
-          Nome {sortIcon("nome")}
-        </button>
+          Nome
+          {sortIcon("nome")}
+        </Button>
 
-        <div className="flex bg-gray-100/50 rounded-full p-1 border border-gray-100 ml-auto">
-          {(["ALL", "PF", "PJ"] as const).map((t) => (
-            <button
-              key={t}
-              onClick={() => setFilterTipo(t)}
-              className={`px-4 py-1.5 rounded-full text-sm font-bold transition-all cursor-pointer ${
-                filterTipo === t
-                  ? "bg-white text-[#FF5A1F] shadow-sm"
-                  : "text-gray-500 hover:text-gray-700"
-              }`}
-            >
-              {t === "ALL"
-                ? "Todos"
-                : t === "PF"
-                  ? "Pessoa Física"
-                  : "Pessoa Jurídica"}
-            </button>
-          ))}
-        </div>
+        <ToggleGroup
+          type="single"
+          value={filterTipo}
+          onValueChange={(value) => {
+            if (value) {
+              setFilterTipo(value as "ALL" | "PF" | "PJ");
+            }
+          }}
+          className="ml-auto"
+        >
+          <ToggleGroupItem value="ALL">Todos</ToggleGroupItem>
+
+          <ToggleGroupItem value="PF">Pessoa Física</ToggleGroupItem>
+
+          <ToggleGroupItem value="PJ">Pessoa Jurídica</ToggleGroupItem>
+        </ToggleGroup>
       </div>
 
       {/* TABELA */}
-      <div className="flex-1 min-h-0 flex flex-col">
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden h-fit max-h-full flex flex-col">
-          <div className="flex-1 overflow-y-auto overflow-x-hidden custom-scrollbar">
-            <table className="w-full text-left border-collapse table-fixed">
-              <thead className="sticky top-0 z-10 bg-gray-50">
-                <tr className="bg-gray-50 border-b border-gray-100">
-                  <th className="w-[80px] px-6 py-3 text-sm font-bold text-gray-500 uppercase tracking-wider">
-                    ID
-                  </th>
-                  <th className="px-6 py-3 text-sm font-bold text-gray-500 uppercase tracking-wider">
-                    Nome
-                  </th>
-                  <th className="w-[210px] px-6 py-3 text-sm font-bold text-gray-500 uppercase tracking-wider">
-                    CNPJ/CPF
-                  </th>
-                  <th className="w-[150px] px-6 py-3 text-sm font-bold text-gray-500 uppercase tracking-wider">
-                    Inscrição
-                  </th>
-                  <th className="px-6 py-3 text-sm font-bold text-gray-500 uppercase tracking-wider">
-                    Email
-                  </th>
-                  <th className="w-[180px] px-6 py-3 text-sm font-bold text-gray-500 uppercase tracking-wider">
-                    Telefone
-                  </th>
-                  <th className="w-[100px] px-6 py-3 text-sm font-bold text-gray-500 uppercase tracking-wider text-center">
-                    Ações
-                  </th>
-                </tr>
-              </thead>
+      <div className="overflow-x-auto">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Nº</TableHead>
+              <TableHead>Nome</TableHead>
+              <TableHead>CPF / CNPJ</TableHead>
+              <TableHead>Inscrição</TableHead>
+              <TableHead>E-mail</TableHead>
+              <TableHead>Telefone</TableHead>
+              <TableHead className="text-right">Ações</TableHead>
+            </TableRow>
+          </TableHeader>
 
-              <tbody className="divide-y divide-gray-50">
-                {pageData.length > 0 ? (
-                  pageData.map((client) => (
-                    <tr
-                      key={client.id}
-                      className="group hover:bg-gray-50/80 transition-colors"
-                    >
-                      <td className="px-6 py-3.5 text-sm text-gray-500">
-                        {client.number}
-                      </td>
+          <TableBody>
+            {pageData.length > 0 ? (
+              pageData.map((client) => (
+                <TableRow key={client.id}>
+                  <TableCell className="tabular-nums">
+                    {client.number}
+                  </TableCell>
 
-                      <td className="px-6 py-3.5 text-sm min-w-0">
-                        <div className="flex items-center gap-2 overflow-hidden">
-                          <button
-                            onClick={() =>
-                              router.push(`/clientes/${client.id}`)
-                            }
-                            className="font-semibold text-gray-800 hover:underline truncate cursor-pointer text-left"
-                            title={client.nome}
-                          >
-                            {client.nome}
-                          </button>
-                          <span className="px-2 py-0.5 text-[10px] rounded-full bg-gray-100 text-gray-600 shrink-0">
-                            {client.tipo}
-                          </span>
-                        </div>
-                      </td>
-
-                      <td className="px-6 py-3.5 text-sm text-gray-600 tabular-nums whitespace-nowrap">
-                        {client.tipo === "PF"
-                          ? formatCpf(client.cpf)
-                          : formatCnpj(client.cnpj)}
-                      </td>
-
-                      <td className="px-6 py-3.5 text-sm text-gray-600">
-                        {client.tipo === "PJ" ? client.inscricao : "-"}
-                      </td>
-
-                      <td
-                        className="px-6 py-3.5 text-sm text-gray-600 truncate"
-                        title={client.email}
+                  <TableCell>
+                    <div className="flex min-w-0 items-center gap-2">
+                      <Button
+                        variant="link"
+                        className="h-auto min-w-0 truncate p-0 text-left font-semibold"
+                        onClick={() => router.push(`/clientes/${client.id}`)}
+                        title={client.nome}
                       >
-                        {client.email}
-                      </td>
+                        {client.nome}
+                      </Button>
 
-                      <td className="px-6 py-3.5 text-sm text-gray-700 tabular-nums whitespace-nowrap">
-                        {formatPhone(client.telefone)}
-                      </td>
+                      <Badge variant="secondary">{client.tipo}</Badge>
+                    </div>
+                  </TableCell>
 
-                      <td className="px-6 py-3.5 text-center">
-                        <div className="flex items-center justify-center gap-4 opacity-0 group-hover:opacity-100 transition-opacity">
-                          <button
-                            onClick={() => setEditing(client)}
-                            className="text-[#FF5A1F] hover:text-[#E64D17] p-1.5 hover:bg-[#FF5A1F]/10 rounded-lg cursor-pointer"
-                          >
-                            <Pencil size={18} />
-                          </button>
+                  <TableCell className="whitespace-nowrap tabular-nums">
+                    {client.tipo === "PF"
+                      ? formatCpf(client.cpf)
+                      : formatCnpj(client.cnpj)}
+                  </TableCell>
 
-                          {user?.role === UserRole.OWNER && (
-                            <button
-                              onClick={() => setDeleting(client)}
-                              className="text-[#FF5A1F] hover:text-[#E64D17] p-1.5 hover:bg-[#FF5A1F]/10 rounded-lg cursor-pointer"
-                            >
-                              <Trash2 size={18} />
-                            </button>
-                          )}
-                        </div>
-                      </td>
-                    </tr>
-                  ))
-                ) : (
-                  <tr>
-                    <td
-                      colSpan={7}
-                      className="px-6 py-12 text-center text-gray-400"
-                    >
-                      Nenhum cliente encontrado
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
-          </div>
-        </div>
-        <div className="flex-1 min-h-[20px]" />
+                  <TableCell>
+                    {client.tipo === "PJ" ? client.inscricao : "-"}
+                  </TableCell>
+
+                  <TableCell className="truncate" title={client.email}>
+                    {client.email}
+                  </TableCell>
+
+                  <TableCell className="whitespace-nowrap tabular-nums">
+                    {formatPhone(client.telefone)}
+                  </TableCell>
+
+                  <TableCell>
+                    <div className="flex items-center justify-end gap-1">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => setEditing(client)}
+                        aria-label={`Editar ${client.nome}`}
+                      >
+                        <Pencil />
+                      </Button>
+
+                      {user?.role === UserRole.OWNER && (
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => setDeleting(client)}
+                          aria-label={`Excluir ${client.nome}`}
+                        >
+                          <Trash2 />
+                        </Button>
+                      )}
+                    </div>
+                  </TableCell>
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell colSpan={7} className="h-24 text-center">
+                  Nenhum cliente encontrado
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
       </div>
 
       {/* PAGINAÇÃO */}
-      <footer className="mt-auto flex flex-col md:flex-row items-center justify-center gap-8 text-sm font-medium text-gray-500 shrink-0 py-6">
-        <div className="flex items-center gap-2">
-          <span>Linhas por página</span>
-          <div className="relative">
-            <select
-              value={perPage}
-              onChange={(e) => {
-                setPerPage(Number(e.target.value));
-                setPage(1);
-              }}
-              className="bg-transparent font-bold text-gray-800 outline-none pr-4 appearance-none cursor-pointer"
-            >
-              <option value={5}>5</option>
-              <option value={10}>10</option>
-              <option value={20}>20</option>
-              <option value={50}>50</option>
-            </select>
-            <ChevronDown
-              size={14}
-              className="absolute right-0 top-1/2 -translate-y-1/2 pointer-events-none"
-            />
-          </div>
-        </div>
-
-        <div className="flex items-center gap-4">
-          <span>
-            {from}-{to} de {total}
-          </span>
-
-          <div className="flex items-center gap-3">
-            <button
-              onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
-              disabled={page === 1}
-              className="p-1.5 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-400 disabled:opacity-30 cursor-pointer disabled:cursor-not-allowed"
-            >
-              <ChevronLeft size={20} />
-            </button>
-
-            <button
-              onClick={() => setPage((prev) => Math.min(prev + 1, totalPages))}
-              disabled={!hasNextPage}
-              className="p-1.5 rounded-lg bg-[#FF5A1F] hover:bg-[#E64D17] text-white disabled:opacity-30 cursor-pointer disabled:cursor-not-allowed"
-            >
-              <ChevronRight size={20} />
-            </button>
-          </div>
-        </div>
-      </footer>
+      <DataPagination
+        page={page}
+        totalPages={totalPages}
+        from={from}
+        to={to}
+        total={total}
+        pageSize={perPage}
+        onPageChange={setPage}
+        onPageSizeChange={setPerPage}
+      />
 
       {/* MODAIS */}
       <AddClientModal

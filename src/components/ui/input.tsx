@@ -1,89 +1,46 @@
-import { useId, useState } from "react";
-import { Eye, EyeOff } from "lucide-react";
+import * as React from "react";
 
-export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement | HTMLTextAreaElement> {
+import { cn } from "@/lib/utils";
+
+interface InputProps extends React.ComponentProps<"input"> {
   error?: string;
   suffixIcon?: React.ReactNode;
-  isTextarea?: boolean;
 }
 
-/** Altura fixa do campo (label flutuante + valor); usar a mesma classe em botões alinhados na mesma linha */
-export const INPUT_FIELD_HEIGHT_CLASS = "h-14 min-h-0";
-
-const fieldBaseClass =
-  `peer w-full px-4 pt-[24px] pb-2 ${INPUT_FIELD_HEIGHT_CLASS} box-border bg-[#E5E7EB] border-2 border-transparent rounded-lg text-gray-800 placeholder-transparent focus:outline-none transition-all duration-300 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none`;
-
-const fieldFocusClass = (hasError: boolean) =>
-  hasError
-    ? "focus:border-red-500 border-red-500/60"
-    : "focus:border-[#FF5A1F]";
-
-export function Input({
-  error,
-  className = "",
-  placeholder,
-  type,
-  id: externalId,
-  suffixIcon,
-  isTextarea,
-  ...props
-}: InputProps) {
-  const internalId = useId();
-  const id = externalId || internalId;
-  const [showPassword, setShowPassword] = useState(false);
-
-  const isPassword = type === "password";
-  const currentType = isPassword ? (showPassword ? "text" : "password") : type;
-
-  const Component = isTextarea ? "textarea" : "input";
+function Input({ className, type, error, suffixIcon, ...props }: InputProps) {
   const hasError = Boolean(error);
 
   return (
-    <div className="w-full relative mb-1">
-      <div className="relative">
-        <Component
-          {...(props as any)}
-          type={isTextarea ? undefined : currentType}
-          id={id}
-          placeholder=" "
-          aria-invalid={hasError ? "true" : "false"}
-          className={`${fieldBaseClass} ${fieldFocusClass(hasError)} ${
-            isPassword || suffixIcon ? "pr-12" : ""
-          } ${isTextarea ? "resize-none h-32 pt-6" : ""} ${className}`}
+    <div className="relative w-full">
+      <div className="relative w-full">
+        <input
+          type={type}
+          data-slot="input"
+          aria-invalid={hasError ? "true" : undefined}
+          className={cn(
+            "h-8 w-full min-w-0 rounded-xl border border-transparent bg-input/50 px-2.5 py-5 pr-10 mt-4 text-base transition-[color,box-shadow] duration-200 outline-none file:inline-flex file:h-6 file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:ring-3 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm",
+            hasError
+              ? "border-destructive/60 focus-visible:border-destructive focus-visible:ring-destructive/20"
+              : "focus-visible:border-ring focus-visible:ring-ring/30",
+            className,
+          )}
+          {...props}
         />
-        {placeholder && (
-          <label
-            htmlFor={id}
-            className={`absolute left-4 z-10 origin-[0] -translate-y-3 scale-75 transform text-gray-500 duration-200 peer-placeholder-shown:scale-100 peer-focus:-translate-y-3 peer-focus:scale-75 pointer-events-none ${
-              isTextarea
-                ? "top-4 peer-placeholder-shown:top-4"
-                : "top-4 peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2"
-            } peer-focus:top-4`}
-          >
-            {placeholder}
-          </label>
-        )}
 
-        {isPassword && (
-          <button
-            type="button"
-            onClick={() => setShowPassword(!showPassword)}
-            className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 focus:outline-none transition-colors"
-          >
-            {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-          </button>
-        )}
-
-        {!isPassword && suffixIcon && (
-          <div className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">
+        {suffixIcon && (
+          <div className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground">
             {suffixIcon}
           </div>
         )}
       </div>
+
       <span
-        className={`absolute left-1 -bottom-4 text-[11px] font-medium text-red-500 transition-all duration-300 ${
-          hasError ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-2 pointer-events-none"
-        }`}
+        className={cn(
+          "absolute left-1 -bottom-4 text-[11px] font-medium text-destructive transition-all duration-200",
+          hasError
+            ? "translate-y-0 opacity-100"
+            : "pointer-events-none -translate-y-1 opacity-0",
+        )}
         role="alert"
       >
         {error}
@@ -91,3 +48,5 @@ export function Input({
     </div>
   );
 }
+
+export { Input };

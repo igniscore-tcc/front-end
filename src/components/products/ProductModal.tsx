@@ -4,7 +4,7 @@ import { X, Hash, DollarSign } from "lucide-react";
 import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Select } from "@/components/ui/Select";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { DatePicker } from "@/components/ui/DatePicker";
 import { PRODUCT_TYPE_OPTIONS } from "@/lib/constants";
 import { useProductForm } from "@/hooks/useProductForm";
@@ -73,15 +73,30 @@ export function ProductModal({
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <Select
-                placeholder="Tipo"
-                data-testid="selectType"
-                value={form.tipo}
-                onChange={(e) =>
-                  setField("tipo", e.target.value as ProductType)
+                value={form.tipo || undefined}
+                onValueChange={(value) =>
+                  setField("tipo", value as ProductType)
                 }
-                options={PRODUCT_TYPE_OPTIONS}
-                error={errors.tipo}
-              />
+              >
+                <SelectTrigger
+                  data-testid="selectType"
+                  className={errors.tipo ? "border-destructive" : ""}
+                >
+                  <SelectValue placeholder="Tipo" />
+                </SelectTrigger>
+
+                <SelectContent>
+                  {PRODUCT_TYPE_OPTIONS.map((option) => (
+                    <SelectItem key={option.value} value={option.value}>
+                      {option.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+
+              {errors.tipo && (
+                <p className="text-xs text-destructive">{errors.tipo}</p>
+              )}
               <DatePicker
                 placeholder="Validade"
                 data-testid="datePickerValidity"
