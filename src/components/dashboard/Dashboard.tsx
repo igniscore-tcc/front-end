@@ -1,47 +1,51 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import {
-  BarChart,
-  Bar,
-  CartesianGrid,
-  Tooltip,
-  XAxis,
-  YAxis,
-  ResponsiveContainer,
-} from "recharts";
+import { BarChart, Bar, CartesianGrid, XAxis, YAxis } from "recharts";
 import { ArrowDown, ArrowUp, AlertTriangle, Clock } from "lucide-react";
+
 import { useDashboard } from "@/hooks/useDashboard";
 
-interface CustomTooltipProps {
-  active?: boolean;
-  payload?: Array<{ value: number }>;
-  label?: string;
-}
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card";
 
-const CustomTooltip = ({ active, payload, label }: CustomTooltipProps) => {
-  if (active && payload && payload.length) {
-    return (
-      <div className="bg-white border border-gray-200 rounded-xl shadow-[0_4px_12px_rgba(0,0,0,0.08)] p-3 outline-none">
-        <p className="text-gray-500 text-sm font-medium mb-1">{label}</p>
-        <p className="text-[#FF5A1F] font-medium text-base">
-          R${" "}
-          {Number(payload[0].value).toLocaleString("pt-BR", {
-            minimumFractionDigits: 2,
-          })}
-        </p>
-      </div>
-    );
-  }
-  return null;
-};
+import { Badge } from "@/components/ui/badge";
+
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+
+import { Progress } from "@/components/ui/progress";
+
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+  type ChartConfig,
+} from "@/components/ui/chart";
+
+const chartConfig = {
+  vendas: {
+    label: "Vendas",
+    color: "var(--chart-1)",
+  },
+} satisfies ChartConfig;
 
 export default function Dashboard() {
   const [periodo, setPeriodo] = useState("3");
+
   const { dashboard, salesHistory, upcomingExpirations, loading } =
     useDashboard();
 
-  // Mapeia o histórico real de vendas vindo do hook para o formato do gráfico
   const dadosGraficoFiltrados = useMemo(() => {
     const mesesLabels = [
       "Jan",
@@ -71,10 +75,10 @@ export default function Dashboard() {
     return formatados.slice(-Number(periodo));
   }, [salesHistory, periodo]);
 
-  // Mapeia e define dinamicamente os badges de criticidade do equipamento baseado nos dias restantes
   const listaVencimentosFormatada = useMemo(() => {
     return upcomingExpirations.map((item, index) => {
       let status = "normal";
+
       if (item.daysRemaining <= 7) {
         status = "critico";
       } else if (item.daysRemaining <= 30) {
@@ -85,25 +89,14 @@ export default function Dashboard() {
         id: index,
         item: item.equipmentName,
         local: item.location || "Local não informado",
-        data: item.expirationDate, // Adapte formatação de data se necessário
+        data: item.expirationDate,
         status,
-        dias: `${item.daysRemaining} ${item.daysRemaining === 1 ? "dia" : "dias"}`,
+        dias: `${item.daysRemaining} ${
+          item.daysRemaining === 1 ? "dia" : "dias"
+        }`,
       };
     });
   }, [upcomingExpirations]);
-
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen bg-gray-50">
-        <div className="flex flex-col items-center gap-2">
-          <div className="w-8 h-8 border-4 border-[#FF5A1F] border-t-transparent rounded-full animate-spin"></div>
-          <span className="text-gray-500 font-medium text-sm">
-            Carregando painel de controle...
-          </span>
-        </div>
-      </div>
-    );
-  }
 
   const formatCurrency = (value: number) =>
     new Intl.NumberFormat("pt-BR", {
@@ -113,385 +106,488 @@ export default function Dashboard() {
     }).format(value);
 
   const formatarMoedaK = (valor: number) => {
-    if (valor >= 1000) return `${(valor / 1000).toFixed(0)}k`;
+    if (valor >= 1000) {
+      return `${(valor / 1000).toFixed(0)}k`;
+    }
+
     return valor.toString();
   };
 
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <span className="text-gray-500">Carregando clientes...</span>
+      </div>
+    );
+  }
+
   return (
-    <div className="bg-gray-50 min-h-screen px-4 md:px-8 py-8 text-gray-800">
-      <div className="py-2 mb-6">
-        <h1 className="text-2xl font-medium text-gray-700 tracking-tight">
-          Dashboard
-        </h1>
-        <p className="text-sm text-gray-500 mt-0.5">
+    <div className="min-h-screen bg-background px-4 py-8 text-foreground md:px-8">
+      {/* Header */}
+      <div className="mb-6 py-2">
+        <h1 className="text-2xl font-medium tracking-tight">Dashboard</h1>
+
+        <p className="mt-0.5 text-sm text-muted-foreground">
           Visão geral do sistema e controle de manutenções
         </p>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
-        <div className="bg-white p-5 border border-gray-100 shadow-sm rounded-xl flex flex-col justify-between">
-          <div className="flex justify-between items-start text-sm font-medium text-gray-500">
-            Faturamento Mensal
-            <span
-              className={`text-xs font-medium px-2 py-0.5 rounded-lg flex items-center gap-0.5 ${
-                dashboard.revenueGrowthPercentage >= 0
-                  ? "bg-green-100 text-green-800"
-                  : "bg-red-100 text-red-800"
-              }`}
-            >
-              {dashboard.revenueGrowthPercentage >= 0 ? (
-                <ArrowUp width={12} height={12} />
-              ) : (
-                <ArrowDown width={12} height={12} />
-              )}
-              {Math.abs(dashboard.revenueGrowthPercentage)}%
-            </span>
-          </div>
-          <div className="mt-4">
-            <div className="text-gray-700 font-medium text-3xl tracking-tight">
-              {formatCurrency(dashboard.monthlyRevenue)}
-            </div>
-            <p className="mt-2 text-xs text-gray-400">
-              Em relação ao mês anterior
-            </p>
-          </div>
-        </div>
+      {/* KPIs principais */}
+      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-5">
+        <Card>
+          <CardContent className="flex h-full flex-col justify-between p-5">
+            <div className="flex items-start justify-between gap-3 text-sm font-medium text-muted-foreground">
+              <span>Faturamento Mensal</span>
 
-        <div className="bg-white p-5 border border-gray-100 shadow-sm rounded-xl flex flex-col justify-between">
-          <div className="flex justify-between items-start text-sm font-medium text-gray-500">
-            Clientes Ativos
-          </div>
-          <div className="mt-4">
-            <div className="text-gray-700 font-medium text-3xl tracking-tight">
-              {dashboard.totalClients}
+              <Badge
+                variant={
+                  dashboard.revenueGrowthPercentage >= 0
+                    ? "default"
+                    : "destructive"
+                }
+                className="flex items-center gap-0.5"
+              >
+                {dashboard.revenueGrowthPercentage >= 0 ? (
+                  <ArrowUp className="h-3 w-3" />
+                ) : (
+                  <ArrowDown className="h-3 w-3" />
+                )}
+                {Math.abs(dashboard.revenueGrowthPercentage)}%
+              </Badge>
             </div>
-            <p className="mt-2 text-xs text-gray-400">
-              {dashboard.newClientsThisWeek} novos esta semana
-            </p>
-          </div>
-        </div>
 
-        <div className="bg-white p-5 border border-gray-100 shadow-sm rounded-xl flex flex-col justify-between">
-          <div className="flex justify-between items-start text-sm font-medium text-gray-500">
-            Vendas em Aberto
-          </div>
-          <div className="mt-4">
-            <div className="text-gray-700 font-medium text-3xl tracking-tight">
-              {dashboard.pendingOrders}
-            </div>
-            <p className="mt-2 text-xs text-gray-400">
-              {dashboard.pendingOrders === 0
-                ? "Nenhuma ordem pendente"
-                : "Ordens aguardando processamento"}
-            </p>
-          </div>
-        </div>
+            <div className="mt-4">
+              <div className="text-3xl font-medium tracking-tight">
+                {formatCurrency(dashboard.monthlyRevenue)}
+              </div>
 
-        <div className="bg-white p-5 border border-gray-100 shadow-sm rounded-xl flex flex-col justify-between">
-          <div className="flex justify-between items-start text-sm font-medium text-gray-500">
-            Vencerão em Breve
-          </div>
-          <div className="mt-4">
-            <div className="text-gray-700 font-medium text-3xl tracking-tight">
-              {dashboard.itemsExpiringSoon}
-            </div>
-            <p className="mt-2 text-xs text-amber-600 font-medium flex items-center gap-1">
-              <Clock width={12} height={12} /> Próximos 30 dias
-            </p>
-          </div>
-        </div>
-
-        <div className="bg-white p-5 border border-gray-100 shadow-sm rounded-xl flex flex-col justify-between">
-          <div className="flex justify-between items-start text-sm font-medium text-gray-500">
-            Itens Vencidos
-          </div>
-          <div className="mt-4">
-            <div
-              className={`${dashboard.expiredItems > 0 ? "text-red-600" : "text-gray-700"} font-medium text-3xl tracking-tight`}
-            >
-              {dashboard.expiredItems}
-            </div>
-            <p
-              className={`mt-2 text-xs font-medium flex items-center gap-1 ${dashboard.expiredItems > 0 ? "text-red-500" : "text-gray-400"}`}
-            >
-              <AlertTriangle width={12} height={12} />
-              {dashboard.expiredItems > 0
-                ? "Ação necessária urgente"
-                : "Nenhum item vencido"}
-            </p>
-          </div>
-        </div>
-      </div>
-
-      <div className="pb-6 mt-8 grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <div className="lg:col-span-2 bg-white rounded-xl p-5 h-[420px] select-none shadow-sm border border-gray-100">
-          <div className="flex items-center justify-between mb-6">
-            <div>
-              <h2 className="text-lg font-medium text-gray-700 tracking-tight">
-                Desempenho de Vendas
-              </h2>
-              <p className="text-xs text-gray-400">
-                Visão faturamento real dos contratos baseado no backend
+              <p className="mt-2 text-xs text-muted-foreground">
+                Em relação ao mês anterior
               </p>
             </div>
-            <select
-              value={periodo}
-              onChange={(e) => setPeriodo(e.target.value)}
-              className="border border-gray-200 rounded-xl px-3 py-1.5 text-xs font-medium text-gray-600 bg-gray-50 outline-none cursor-pointer hover:bg-gray-100 transition-colors"
-            >
-              <option value="3">Últimos 3 meses</option>
-              <option value="6">Últimos 6 meses</option>
-              <option value="9">Últimos 9 meses</option>
-              <option value="12">Últimos 12 meses</option>
-            </select>
-          </div>
+          </CardContent>
+        </Card>
 
-          <div className="w-full h-[80%]">
+        <Card>
+          <CardContent className="flex h-full flex-col justify-between p-5">
+            <div className="text-sm font-medium text-muted-foreground">
+              Clientes Ativos
+            </div>
+
+            <div className="mt-4">
+              <div className="text-3xl font-medium tracking-tight">
+                {dashboard.totalClients}
+              </div>
+
+              <p className="mt-2 text-xs text-muted-foreground">
+                {dashboard.newClientsThisWeek} novos esta semana
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardContent className="flex h-full flex-col justify-between p-5">
+            <div className="text-sm font-medium text-muted-foreground">
+              Vendas em Aberto
+            </div>
+
+            <div className="mt-4">
+              <div className="text-3xl font-medium tracking-tight">
+                {dashboard.pendingOrders}
+              </div>
+
+              <p className="mt-2 text-xs text-muted-foreground">
+                {dashboard.pendingOrders === 0
+                  ? "Nenhuma ordem pendente"
+                  : "Ordens aguardando processamento"}
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardContent className="flex h-full flex-col justify-between p-5">
+            <div className="text-sm font-medium text-muted-foreground">
+              Vencerão em Breve
+            </div>
+
+            <div className="mt-4">
+              <div className="text-3xl font-medium tracking-tight">
+                {dashboard.itemsExpiringSoon}
+              </div>
+
+              <p className="mt-2 flex items-center gap-1 text-xs font-medium text-muted-foreground">
+                <Clock className="h-3 w-3" />
+                Próximos 30 dias
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardContent className="flex h-full flex-col justify-between p-5">
+            <div className="text-sm font-medium text-muted-foreground">
+              Itens Vencidos
+            </div>
+
+            <div className="mt-4">
+              <div
+                className={`text-3xl font-medium tracking-tight ${
+                  dashboard.expiredItems > 0 ? "text-destructive" : ""
+                }`}
+              >
+                {dashboard.expiredItems}
+              </div>
+
+              <p
+                className={`mt-2 flex items-center gap-1 text-xs font-medium ${
+                  dashboard.expiredItems > 0
+                    ? "text-destructive"
+                    : "text-muted-foreground"
+                }`}
+              >
+                <AlertTriangle className="h-3 w-3" />
+
+                {dashboard.expiredItems > 0
+                  ? "Ação necessária urgente"
+                  : "Nenhum item vencido"}
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Gráfico + Vencimentos */}
+      <div className="mt-8 grid grid-cols-1 gap-8 pb-6 lg:grid-cols-3">
+        {/* Gráfico */}
+        <Card className="h-[420px] lg:col-span-2">
+          <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-4">
+            <div>
+              <CardTitle className="text-lg">Desempenho de Vendas</CardTitle>
+
+              <CardDescription>
+                Visão faturamento real dos contratos baseado no backend
+              </CardDescription>
+            </div>
+
+            <Select value={periodo} onValueChange={setPeriodo}>
+              <SelectTrigger className="w-[155px]">
+                <SelectValue placeholder="Período" />
+              </SelectTrigger>
+
+              <SelectContent>
+                <SelectItem value="3">Últimos 3 meses</SelectItem>
+                <SelectItem value="6">Últimos 6 meses</SelectItem>
+                <SelectItem value="9">Últimos 9 meses</SelectItem>
+                <SelectItem value="12">Últimos 12 meses</SelectItem>
+              </SelectContent>
+            </Select>
+          </CardHeader>
+
+          <CardContent className="h-[80%]">
             {dadosGraficoFiltrados.length === 0 ? (
-              <div className="w-full h-full flex items-center justify-center text-sm text-gray-400">
+              <div className="flex h-full w-full items-center justify-center text-sm text-muted-foreground">
                 Nenhum dado de venda encontrado para o período.
               </div>
             ) : (
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart
-                  data={dadosGraficoFiltrados}
-                  margin={{ top: 10, right: 5, left: -15, bottom: 0 }}
-                >
-                  <CartesianGrid vertical={false} stroke="#F3F4F6" />
-                  <XAxis
-                    dataKey="mes"
-                    tickLine={false}
-                    axisLine={false}
-                    tick={{ fill: "#9CA3AF", fontSize: 11, fontWeight: 500 }}
-                    padding={{ left: 15, right: 15 }}
-                  />
-                  <YAxis
-                    tickLine={false}
-                    axisLine={false}
-                    tickFormatter={formatarMoedaK}
-                    tick={{ fill: "#9CA3AF", fontSize: 12 }}
-                    domain={[0, "dataMax + 2000"]}
-                  />
-                  <Tooltip
-                    cursor={{ fill: "#F9FAFB" }}
-                    content={<CustomTooltip />}
-                  />
-                  <Bar
-                    dataKey="vendas"
-                    radius={[8, 8, 0, 0]}
-                    maxBarSize={45}
-                    fill="#FF5A1F"
-                    animationDuration={400}
-                  />
-                </BarChart>
-              </ResponsiveContainer>
+              <div className="flex h-full w-full">
+                {/* Eixo Y */}
+                <div className="flex w-10 shrink-0 flex-col justify-between pb-7 pt-2 text-right text-[11px] text-muted-foreground">
+                  {(() => {
+                    const max = Math.max(
+                      ...dadosGraficoFiltrados.map((item) => item.vendas),
+                      1,
+                    );
+
+                    const valorMaximo = Math.ceil(max / 1000) * 1000;
+
+                    return [
+                      valorMaximo,
+                      valorMaximo * 0.75,
+                      valorMaximo * 0.5,
+                      valorMaximo * 0.25,
+                      0,
+                    ].map((valor, index) => (
+                      <span key={index}>{formatarMoedaK(valor)}</span>
+                    ));
+                  })()}
+                </div>
+
+                {/* Área do gráfico */}
+                <div className="relative min-w-0 flex-1">
+                  {/* Linhas horizontais */}
+                  <div className="pointer-events-none absolute inset-x-0 top-2 bottom-7 flex flex-col justify-between">
+                    {Array.from({ length: 5 }).map((_, index) => (
+                      <div key={index} className="border-t border-border" />
+                    ))}
+                  </div>
+
+                  {/* Barras */}
+                  <div className="absolute inset-0 flex items-end justify-around gap-3 px-4 pb-7 pt-2">
+                    {(() => {
+                      const max = Math.max(
+                        ...dadosGraficoFiltrados.map((item) => item.vendas),
+                        1,
+                      );
+
+                      return dadosGraficoFiltrados.map((item) => {
+                        const percentual = Math.max(
+                          (item.vendas / max) * 100,
+                          item.vendas > 0 ? 2 : 0,
+                        );
+
+                        return (
+                          <div
+                            key={item.mes}
+                            className="group flex h-full min-w-0 flex-1 flex-col items-center justify-end"
+                          >
+                            {/* Valor */}
+                            <div className="pointer-events-none mb-2 rounded-md border bg-popover px-2 py-1 text-xs font-medium text-popover-foreground opacity-0 shadow-sm transition-opacity group-hover:opacity-100">
+                              {Number(item.vendas).toLocaleString("pt-BR", {
+                                style: "currency",
+                                currency: "BRL",
+                                minimumFractionDigits: 2,
+                              })}
+                            </div>
+
+                            {/* Barra */}
+                            <div
+                              className="w-full max-w-[45px] rounded-t-md bg-[var(--chart-1)] transition-all duration-300 hover:opacity-80"
+                              style={{
+                                height: `${percentual}%`,
+                              }}
+                              title={`${item.mes}: ${Number(
+                                item.vendas,
+                              ).toLocaleString("pt-BR", {
+                                style: "currency",
+                                currency: "BRL",
+                              })}`}
+                            />
+
+                            {/* Label */}
+                            <span className="mt-3 whitespace-nowrap text-[11px] font-medium text-muted-foreground">
+                              {item.mes}
+                            </span>
+                          </div>
+                        );
+                      });
+                    })()}
+                  </div>
+                </div>
+              </div>
             )}
-          </div>
-        </div>
+          </CardContent>
+        </Card>
 
-        <div className="bg-white rounded-xl p-5 h-[420px] shadow-sm border border-gray-100 flex flex-col">
-          <div className="mb-4">
-            <h2 className="text-lg font-medium text-gray-700 tracking-tight">
-              Próximos Vencimentos
-            </h2>
-            <p className="text-xs text-gray-400">
+        {/* Próximos vencimentos */}
+        <Card className="h-[420px]">
+          <CardHeader className="pb-4">
+            <CardTitle className="text-lg">Próximos Vencimentos</CardTitle>
+
+            <CardDescription>
               Equipamentos que requerem nova vistoria
-            </p>
-          </div>
+            </CardDescription>
+          </CardHeader>
 
-          <div className="space-y-4 overflow-y-auto flex-1 pr-1 scrollbar-thin">
+          <CardContent className="h-[calc(100%-105px)] overflow-y-auto">
             {listaVencimentosFormatada.length === 0 ? (
-              <div className="w-full h-full flex items-center justify-center text-sm text-gray-400 text-center">
+              <div className="flex h-full w-full items-center justify-center text-center text-sm text-muted-foreground">
                 Nenhum equipamento próximo do vencimento mapeado.
               </div>
             ) : (
-              listaVencimentosFormatada.map((item) => (
-                <div
-                  key={item.id}
-                  className="flex justify-between items-center border-b border-gray-100 pb-3 last:border-none"
-                >
-                  <div className="max-w-[65%]">
-                    <p className="font-semibold text-sm text-gray-700 truncate">
-                      {item.item}
-                    </p>
-                    <p className="text-xs text-gray-400 truncate">
-                      {item.local}
-                    </p>
+              <div className="space-y-4">
+                {listaVencimentosFormatada.map((item) => (
+                  <div
+                    key={item.id}
+                    className="flex items-center justify-between gap-3 border-b pb-3 last:border-none"
+                  >
+                    <div className="max-w-[65%]">
+                      <p className="truncate text-sm font-semibold">
+                        {item.item}
+                      </p>
+
+                      <p className="truncate text-xs text-muted-foreground">
+                        {item.local}
+                      </p>
+                    </div>
+
+                    <div className="whitespace-nowrap text-right">
+                      <Badge
+                        variant={
+                          item.status === "critico"
+                            ? "destructive"
+                            : item.status === "atencao"
+                              ? "secondary"
+                              : "outline"
+                        }
+                        className="mb-1"
+                      >
+                        {item.dias}
+                      </Badge>
+
+                      <p className="text-xs font-medium text-muted-foreground">
+                        {item.data}
+                      </p>
+                    </div>
                   </div>
-                  <div className="text-right whitespace-nowrap">
-                    <span
-                      className={`inline-block text-[11px] font-medium px-2 py-0.5 rounded-md mb-1 ${
-                        item.status === "critico"
-                          ? "bg-red-50 text-red-700"
-                          : item.status === "atencao"
-                            ? "bg-amber-50 text-amber-700"
-                            : "bg-gray-100 text-gray-700"
-                      }`}
-                    >
-                      {item.dias}
-                    </span>
-                    <p className="text-xs text-gray-400 font-medium">
-                      {item.data}
-                    </p>
-                  </div>
-                </div>
-              ))
+                ))}
+              </div>
             )}
-          </div>
-        </div>
+          </CardContent>
+        </Card>
       </div>
 
-      <div className="">
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 grid-rows-1 h-auto sm:h-[180px]">
-          <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100 flex flex-col justify-between transition-all hover:shadow-md">
-            <div className="flex justify-between items-start">
+      {/* Indicadores secundários */}
+      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
+        {/* Compliance */}
+        <Card className="transition-shadow hover:shadow-md">
+          <CardHeader className="pb-2">
+            <div className="flex items-start justify-between gap-2">
               <div>
-                <h2 className="text-sm font-medium text-gray-700 tracking-tight">
-                  Score de Conformidade
-                </h2>
-                <p className="text-[11px] text-gray-400">
+                <CardTitle className="text-sm">Score de Conformidade</CardTitle>
+
+                <CardDescription className="text-[11px]">
                   Cilindros ativos dentro do prazo
-                </p>
+                </CardDescription>
               </div>
-              <span
-                className={`text-[10px] font-semibold px-2 py-0.5 rounded ${
-                  dashboard.compliancePercentage >= 90
-                    ? "bg-green-50 text-green-700"
-                    : "bg-amber-50 text-amber-700"
-                }`}
+
+              <Badge
+                variant={
+                  dashboard.compliancePercentage >= 90 ? "default" : "secondary"
+                }
               >
                 {dashboard.compliancePercentage >= 90 ? "Excelente" : "Regular"}
+              </Badge>
+            </div>
+          </CardHeader>
+
+          <CardContent>
+            <div className="flex items-end justify-between gap-2">
+              <span className="text-2xl font-semibold tracking-tight">
+                {dashboard.compliancePercentage.toFixed(2)}%
+              </span>
+
+              <span className="text-[10px] font-medium text-muted-foreground">
+                {dashboard.compliantItems} / {dashboard.totalItems} itens
               </span>
             </div>
 
-            <div className="mt-2">
-              <div className="flex justify-between items-end mb-1">
-                <span className="text-2xl font-semibold text-gray-700 tracking-tight">
-                  {dashboard.compliancePercentage.toFixed(2)}%
-                </span>
-                <span className="text-[10px] text-gray-400 font-medium">
-                  {dashboard.compliantItems} / {dashboard.totalItems} itens
-                </span>
-              </div>
-              <div className="w-full bg-gray-100 h-1.5 rounded-full overflow-hidden">
-                <div
-                  className="bg-green-500 h-full rounded-full transition-all duration-500"
-                  style={{
-                    width: `${dashboard.compliancePercentage.toFixed(2)}%`,
-                  }}
-                ></div>
-              </div>
-            </div>
-          </div>
+            <Progress value={dashboard.compliancePercentage} className="mt-2" />
+          </CardContent>
+        </Card>
 
-          <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100 flex flex-col justify-between transition-all hover:shadow-md">
-            <div className="flex justify-between items-start">
+        {/* Previsão */}
+        <Card className="transition-shadow hover:shadow-md">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm">Previsão de Recargas</CardTitle>
+
+            <CardDescription className="text-[11px]">
+              Próximos faturamentos mapeados
+            </CardDescription>
+          </CardHeader>
+
+          <CardContent>
+            <div className="text-2xl font-semibold tracking-tight">
+              {formatCurrency(dashboard.forecastRecharges)}
+            </div>
+
+            <p className="mt-1 line-clamp-2 text-[11px] text-muted-foreground">
+              Receita prevista em ordens futuras.
+            </p>
+          </CardContent>
+        </Card>
+
+        {/* Equipamentos */}
+        <Card className="transition-shadow hover:shadow-md">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm">Total de Equipamentos</CardTitle>
+
+            <CardDescription className="text-[11px]">
+              Itens vendidos
+            </CardDescription>
+          </CardHeader>
+
+          <CardContent>
+            <div className="text-2xl font-semibold tracking-tight">
+              {dashboard.totalItems}
+            </div>
+
+            <p className="mt-1 text-[11px] text-muted-foreground">
+              Total de itens vendidos.
+            </p>
+          </CardContent>
+        </Card>
+
+        {/* Inadimplência */}
+        <Card className="transition-shadow hover:shadow-md">
+          <CardHeader className="pb-2">
+            <div className="flex items-start justify-between gap-2">
               <div>
-                <h2 className="text-sm font-medium text-gray-700 tracking-tight">
-                  Previsão de Recargas
-                </h2>
-                <p className="text-[11px] text-gray-400">
-                  Próximos faturamentos mapeados
-                </p>
-              </div>
-            </div>
-
-            <div className="mt-2">
-              <div className="text-2xl font-semibold text-gray-700 tracking-tight">
-                {formatCurrency(dashboard.forecastRecharges)}
-              </div>
-              <p className="text-[11px] text-gray-400 mt-1 line-clamp-2">
-                Receita prevista em ordens futuras.
-              </p>
-            </div>
-          </div>
-
-          <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100 flex flex-col justify-between transition-all hover:shadow-md">
-            <div className="flex justify-between items-start">
-              <div>
-                <h2 className="text-sm font-medium text-gray-700 tracking-tight">
-                  Total de Equipamentos
-                </h2>
-                <p className="text-[11px] text-gray-400">Items vendidos</p>
-              </div>
-            </div>
-
-            <div className="mt-2">
-              <div className="text-2xl font-semibold text-gray-700 tracking-tight">
-                {dashboard.totalItems}
-              </div>
-              <p className="text-[11px] text-gray-400 mt-1">
-                Total de items vendidos.
-              </p>
-            </div>
-          </div>
-
-          <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100 flex flex-col justify-between transition-all hover:shadow-md">
-            <div className="flex justify-between items-start">
-              <div>
-                <h2 className="text-sm font-medium text-gray-700 tracking-tight">
+                <CardTitle className="text-sm">
                   Inadimplência / Pendente
-                </h2>
-                <p className="text-[11px] text-gray-400">
+                </CardTitle>
+
+                <CardDescription className="text-[11px]">
                   Faturamento com atraso
-                </p>
+                </CardDescription>
               </div>
+
               {dashboard.overdueRevenue > 0 && (
-                <span className="bg-red-50 text-red-700 text-[10px] font-semibold px-2 py-0.5 rounded">
-                  Atenção
-                </span>
+                <Badge variant="destructive">Atenção</Badge>
               )}
             </div>
+          </CardHeader>
 
-            <div className="mt-2">
-              <div
-                className={`text-2xl font-semibold tracking-tight ${dashboard.overdueRevenue > 0 ? "text-red-600" : "text-gray-700"}`}
-              >
-                {formatCurrency(dashboard.overdueRevenue)}
-              </div>
-              <p className="text-[11px] text-gray-400 mt-1">
-                {dashboard.overdueClientsCount} clientes inadimplentes.
-              </p>
-            </div>
-          </div>
-
-          <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100 flex flex-col justify-between transition-all hover:shadow-md">
-            <div className="flex justify-between items-start">
-              <div>
-                <h2 className="text-sm font-medium text-gray-700 tracking-tight">
-                  Reprovações em Testes
-                </h2>
-                <p className="text-[11px] text-gray-400">
-                  Cilindros condenados no mês
-                </p>
-              </div>
+          <CardContent>
+            <div
+              className={`text-2xl font-semibold tracking-tight ${
+                dashboard.overdueRevenue > 0 ? "text-destructive" : ""
+              }`}
+            >
+              {formatCurrency(dashboard.overdueRevenue)}
             </div>
 
-            <div className="mt-2">
-              <div className="flex justify-between items-end mb-1">
-                <span className="text-2xl font-semibold text-gray-700 tracking-tight">
-                  {dashboard.condemnedItemsThisMonth}
-                </span>
-                <span className="text-[10px] text-gray-400 font-medium">
-                  {dashboard.condemnedItemsThisMonth === 1
-                    ? "1 descarte"
-                    : `${dashboard.condemnedItemsThisMonth} descartes`}
-                </span>
-              </div>
-              <div className="w-full bg-gray-100 h-1.5 rounded-full overflow-hidden">
-                <div
-                  className="bg-orange-500 h-full rounded-full transition-all duration-500"
-                  style={{
-                    width:
-                      dashboard.totalItems > 0
-                        ? `${(dashboard.condemnedItemsThisMonth / dashboard.totalItems) * 100}%`
-                        : "0%",
-                  }}
-                ></div>
-              </div>
+            <p className="mt-1 text-[11px] text-muted-foreground">
+              {dashboard.overdueClientsCount} clientes inadimplentes.
+            </p>
+          </CardContent>
+        </Card>
+
+        {/* Reprovações */}
+        <Card className="transition-shadow hover:shadow-md">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm">Reprovações em Testes</CardTitle>
+
+            <CardDescription className="text-[11px]">
+              Cilindros condenados no mês
+            </CardDescription>
+          </CardHeader>
+
+          <CardContent>
+            <div className="flex items-end justify-between gap-2">
+              <span className="text-2xl font-semibold tracking-tight">
+                {dashboard.condemnedItemsThisMonth}
+              </span>
+
+              <span className="text-[10px] font-medium text-muted-foreground">
+                {dashboard.condemnedItemsThisMonth === 1
+                  ? "1 descarte"
+                  : `${dashboard.condemnedItemsThisMonth} descartes`}
+              </span>
             </div>
-          </div>
-        </div>
+
+            <Progress
+              value={
+                dashboard.totalItems > 0
+                  ? (dashboard.condemnedItemsThisMonth / dashboard.totalItems) *
+                    100
+                  : 0
+              }
+              className="mt-2"
+            />
+          </CardContent>
+        </Card>
       </div>
     </div>
   );
