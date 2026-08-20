@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import {
   ArrowLeft,
@@ -10,9 +11,22 @@ import {
   Pencil,
   Receipt,
 } from "lucide-react";
+
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Badge } from "@/components/ui/badge";
+import { Skeleton } from "@/components/ui/skeleton";
+
 import { useClients } from "@/hooks/useClients";
-import { useEffect, useState } from "react";
 import { Cliente } from "@/types/cliente";
 import { AddClientModal } from "@/components/clients/AddClientModal";
 
@@ -20,6 +34,7 @@ export default function ClientDetails() {
   const params = useParams();
   const router = useRouter();
   const id = params.id;
+
   const { getClientById, editing, setEditing, saveEdit } = useClients();
 
   const [client, setClient] = useState<Cliente | null>(null);
@@ -31,7 +46,9 @@ export default function ClientDetails() {
 
       try {
         setLoading(true);
+
         const data = await getClientById(Number(id));
+
         setClient(data);
       } catch (error) {
         console.error("Erro ao carregar cliente:", error);
@@ -52,218 +69,263 @@ export default function ClientDetails() {
     }
   };
 
+  const sales = [
+    {
+      id: 1,
+      total: "R$ 3.600,99",
+      desconto: "5%",
+      data: "05/04/2026",
+      tipo: "Cartão",
+      status: "Paga",
+    },
+    {
+      id: 2,
+      total: "R$ 3.600,99",
+      desconto: "5%",
+      data: "05/04/2026",
+      tipo: "PIX",
+      status: "Pendente",
+    },
+    {
+      id: 3,
+      total: "R$ 3.600,99",
+      desconto: "5%",
+      data: "05/04/2026",
+      tipo: "PIX",
+      status: "Cancelada",
+    },
+  ];
+
+  const getStatusVariant = (status: string) => {
+    switch (status) {
+      case "Paga":
+        return "default";
+
+      case "Pendente":
+        return "secondary";
+
+      case "Cancelada":
+        return "destructive";
+
+      default:
+        return "outline";
+    }
+  };
+
   return (
-    <div className="p-8 min-h-screen bg-white text-base">
-      <header className="flex items-center gap-4 mb-8">
-        <Button
-          onClick={() => router.back()}
-          variant="ghost"
-          className="rounded-full w-10 h-10 p-0 flex items-center justify-center hover:bg-gray-100 text-gray-500 cursor-pointer transition-colors"
-        >
-          <ArrowLeft size={20} />
-        </Button>
-        <h1 className="text-3xl font-semibold text-[#1a1a1a]">
-          Detalhes do Cliente
-        </h1>
-      </header>
+    <div className="bg-background p-6 md:p-8">
+      <div className="mx-auto flex flex-col gap-6">
+        {/* Header */}
+        <header className="flex items-center gap-4">
+          <Button variant="outline" size="icon" onClick={() => router.back()}>
+            <ArrowLeft className="size-5" />
+          </Button>
 
-      <div className="flex flex-col gap-6">
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 flex flex-col gap-6 relative">
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-gray-100 pb-6">
+          <div>
+            <h1 className="text-2xl font-semibold tracking-tight md:text-3xl">
+              Detalhes do Cliente
+            </h1>
+
+            <p className="text-sm text-muted-foreground">
+              Visualize e gerencie as informações do cliente.
+            </p>
+          </div>
+        </header>
+
+        {/* Cliente */}
+        <Card>
+          <CardHeader className="flex flex-col gap-6 border-b pb-6 md:flex-row md:items-center md:justify-between">
             <div className="flex items-center gap-4">
-              <div className="w-16 h-16 rounded-full bg-[#FF5A1F]/10 flex items-center justify-center text-[#FF5A1F] shrink-0">
-                <User size={32} />
+              <div className="flex size-16 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
+                <User className="size-8" />
               </div>
-              <div>
-                <h2 className="text-2xl font-bold text-gray-800">
-                  {loading ? "Carregando..." : client?.nome}
-                </h2>
 
-                <p className="text-gray-500">#{client?.number ?? id}</p>
+              <div className="space-y-1">
+                {loading ? (
+                  <>
+                    <Skeleton className="h-7 w-48" />
+                    <Skeleton className="h-4 w-20" />
+                  </>
+                ) : (
+                  <>
+                    <h2 className="text-xl font-semibold md:text-2xl">
+                      {client?.nome}
+                    </h2>
+
+                    <p className="text-sm text-muted-foreground">
+                      #{client?.number ?? id}
+                    </p>
+                  </>
+                )}
               </div>
             </div>
 
-            <Button
-              onClick={() => client && setEditing(client)}
-              className="bg-[#FF5A1F] hover:bg-[#E64D17] text-white rounded-full px-6 py-2 flex items-center gap-2 transition-all cursor-pointer"
-            >
-              <Pencil size={16} />
-              <span className="font-bold">Editar</span>
+            <Button onClick={() => client && setEditing(client)}>
+              <Pencil className="mr-2 size-4" />
+              Editar
             </Button>
-          </div>
+          </CardHeader>
 
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 pt-2">
-            <div className="space-y-2">
-              <div className="flex items-center gap-2 text-gray-400">
-                <Receipt size={16} />
-                <span className="text-sm font-medium">
-                  {client?.tipo === "PF" ? "CPF" : "CNPJ"}
-                </span>
-              </div>
+          <CardContent className="grid grid-cols-1 gap-6 pt-6 md:grid-cols-2 xl:grid-cols-4">
+            {/* CPF / CNPJ */}
+            <InfoItem
+              icon={<Receipt className="size-4" />}
+              label={client?.tipo === "PF" ? "CPF" : "CNPJ"}
+              loading={loading}
+            >
+              {client?.tipo === "PF" ? client?.cpf : client?.cnpj}
+            </InfoItem>
 
-              {loading ? (
-                <div className="h-6 bg-gray-100 rounded w-3/4 animate-pulse" />
-              ) : (
-                <p className="font-semibold text-gray-800">
-                  {client?.tipo === "PF" ? client.cpf : client?.cnpj}
+            {/* Inscrição */}
+            <InfoItem
+              icon={<Building className="size-4" />}
+              label="Inscrição Estadual"
+              loading={loading}
+            >
+              {client?.tipo === "PJ"
+                ? client?.inscricao || "Não informada"
+                : "Não se aplica"}
+            </InfoItem>
+
+            {/* Email */}
+            <InfoItem
+              icon={<Mail className="size-4" />}
+              label="E-mail"
+              loading={loading}
+            >
+              {client?.email}
+            </InfoItem>
+
+            {/* Telefone */}
+            <InfoItem
+              icon={<Phone className="size-4" />}
+              label="Telefone"
+              loading={loading}
+            >
+              {client?.telefone}
+            </InfoItem>
+          </CardContent>
+        </Card>
+
+        {/* Tabs */}
+        <Card>
+          <Tabs defaultValue="vendas">
+            <CardHeader className="border-b pb-0">
+              <TabsList className="h-auto w-full justify-start rounded-none bg-transparent p-0">
+                <TabsTrigger
+                  value="vendas"
+                  className="rounded-none border-b-2 border-transparent px-4 py-4 data-[state=active]:border-primary data-[state=active]:bg-transparent"
+                >
+                  Vendas
+                </TabsTrigger>
+
+                <TabsTrigger
+                  value="pendencias"
+                  className="rounded-none border-b-2 border-transparent px-4 py-4 data-[state=active]:border-primary data-[state=active]:bg-transparent"
+                >
+                  Pendências
+                </TabsTrigger>
+
+                <TabsTrigger
+                  value="contatos"
+                  className="rounded-none border-b-2 border-transparent px-4 py-4 data-[state=active]:border-primary data-[state=active]:bg-transparent"
+                >
+                  Contatos
+                </TabsTrigger>
+              </TabsList>
+            </CardHeader>
+
+            <TabsContent value="vendas" className="m-0">
+              <CardContent className="p-0">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>ID</TableHead>
+                      <TableHead>Total</TableHead>
+                      <TableHead>Desconto</TableHead>
+                      <TableHead>Data</TableHead>
+                      <TableHead>Tipo</TableHead>
+                      <TableHead>Status</TableHead>
+                    </TableRow>
+                  </TableHeader>
+
+                  <TableBody>
+                    {sales.map((sale) => (
+                      <TableRow key={sale.id}>
+                        <TableCell className="font-medium">{sale.id}</TableCell>
+
+                        <TableCell className="font-semibold">
+                          {sale.total}
+                        </TableCell>
+
+                        <TableCell>{sale.desconto}</TableCell>
+
+                        <TableCell>{sale.data}</TableCell>
+
+                        <TableCell>{sale.tipo}</TableCell>
+
+                        <TableCell>
+                          <Badge variant={getStatusVariant(sale.status)}>
+                            {sale.status}
+                          </Badge>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </CardContent>
+            </TabsContent>
+
+            <TabsContent value="pendencias">
+              <CardContent className="py-10">
+                <p className="text-sm text-muted-foreground">
+                  Nenhuma pendência encontrada.
                 </p>
-              )}
-            </div>
+              </CardContent>
+            </TabsContent>
 
-            <div className="space-y-2">
-              <div className="flex items-center gap-2 text-gray-400">
-                <Building size={16} />
-                <span className="text-sm font-medium">Inscrição Estadual</span>
-              </div>
-
-              {loading ? (
-                <div className="h-6 bg-gray-100 rounded w-2/3 animate-pulse" />
-              ) : (
-                <p className="font-semibold text-gray-800">
-                  {client?.tipo === "PJ"
-                    ? client.inscricao || "Não informada"
-                    : "Não se aplica"}
+            <TabsContent value="contatos">
+              <CardContent className="py-10">
+                <p className="text-sm text-muted-foreground">
+                  Nenhum contato adicional encontrado.
                 </p>
-              )}
-            </div>
-
-            <div className="space-y-2">
-              <div className="flex items-center gap-2 text-gray-400">
-                <Mail size={16} />
-                <span className="text-sm font-medium">E-mail</span>
-              </div>
-
-              {loading ? (
-                <div className="h-6 bg-gray-100 rounded w-full animate-pulse" />
-              ) : (
-                <p className="font-semibold text-gray-800">{client?.email}</p>
-              )}
-            </div>
-
-            <div className="space-y-2">
-              <div className="flex items-center gap-2 text-gray-400">
-                <Phone size={16} />
-                <span className="text-sm font-medium">Telefone</span>
-              </div>
-
-              {loading ? (
-                <div className="h-6 bg-gray-100 rounded w-2/3 animate-pulse" />
-              ) : (
-                <p className="font-semibold text-gray-800">
-                  {client?.telefone}
-                </p>
-              )}
-            </div>
-          </div>
-        </div>
-
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 mt-2">
-          <div className="flex gap-8 px-8 border-b border-gray-100 overflow-x-auto">
-            <button className="py-4 text-[#FF5A1F] font-bold border-b-2 border-[#FF5A1F] transition-all cursor-pointer whitespace-nowrap">
-              Vendas
-            </button>
-            <button className="py-4 text-gray-500 font-bold hover:text-gray-800 transition-all cursor-pointer border-b-2 border-transparent hover:border-gray-300 whitespace-nowrap">
-              Pendências
-            </button>
-            <button className="py-4 text-gray-500 font-bold hover:text-gray-800 transition-all cursor-pointer border-b-2 border-transparent hover:border-gray-300 whitespace-nowrap">
-              Contatos
-            </button>
-          </div>
-
-          <div className="p-8 pt-6 overflow-x-auto">
-            <table className="w-full text-left border-collapse">
-              <thead>
-                <tr className="bg-gray-50/80">
-                  <th className="px-6 py-4 text-sm font-bold text-gray-600 first:rounded-l-xl">
-                    ID
-                  </th>
-                  <th className="px-6 py-4 text-sm font-bold text-gray-600">
-                    Total
-                  </th>
-                  <th className="px-6 py-4 text-sm font-bold text-gray-600">
-                    Desconto
-                  </th>
-                  <th className="px-6 py-4 text-sm font-bold text-gray-600">
-                    Data
-                  </th>
-                  <th className="px-6 py-4 text-sm font-bold text-gray-600">
-                    Tipo
-                  </th>
-                  <th className="px-6 py-4 text-sm font-bold text-gray-600 last:rounded-r-xl">
-                    Status
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-50">
-                <tr className="group hover:bg-gray-50/50 transition-colors">
-                  <td className="px-6 py-5 text-sm font-medium text-gray-500">
-                    1
-                  </td>
-                  <td className="px-6 py-5 text-sm font-bold text-gray-800">
-                    R$ 3.600,99
-                  </td>
-                  <td className="px-6 py-5 text-sm text-gray-600">5%</td>
-                  <td className="px-6 py-5 text-sm text-gray-600">
-                    05/04/2026
-                  </td>
-                  <td className="px-6 py-5 text-sm text-gray-600">Cartão</td>
-                  <td className="px-6 py-5 text-sm">
-                    <span className="inline-flex items-center justify-center px-3 py-1 rounded-full text-xs font-bold bg-[#E8F5E9] text-[#2E7D32]">
-                      Paga
-                    </span>
-                  </td>
-                </tr>
-
-                <tr className="group hover:bg-gray-50/50 transition-colors">
-                  <td className="px-6 py-5 text-sm font-medium text-gray-500">
-                    2
-                  </td>
-                  <td className="px-6 py-5 text-sm font-bold text-gray-800">
-                    R$ 3.600,99
-                  </td>
-                  <td className="px-6 py-5 text-sm text-gray-600">5%</td>
-                  <td className="px-6 py-5 text-sm text-gray-600">
-                    05/04/2026
-                  </td>
-                  <td className="px-6 py-5 text-sm text-gray-600">PIX</td>
-                  <td className="px-6 py-5 text-sm">
-                    <span className="inline-flex items-center justify-center px-3 py-1 rounded-full text-xs font-bold bg-[#FFF3E0] text-[#E65100]">
-                      Pendente
-                    </span>
-                  </td>
-                </tr>
-
-                <tr className="group hover:bg-gray-50/50 transition-colors">
-                  <td className="px-6 py-5 text-sm font-medium text-gray-500">
-                    3
-                  </td>
-                  <td className="px-6 py-5 text-sm font-bold text-gray-800">
-                    R$ 3.600,99
-                  </td>
-                  <td className="px-6 py-5 text-sm text-gray-600">5%</td>
-                  <td className="px-6 py-5 text-sm text-gray-600">
-                    05/04/2026
-                  </td>
-                  <td className="px-6 py-5 text-sm text-gray-600">PIX</td>
-                  <td className="px-6 py-5 text-sm">
-                    <span className="inline-flex items-center justify-center px-3 py-1 rounded-full text-xs font-bold bg-[#FFEBEE] text-[#C62828]">
-                      Cancelada
-                    </span>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
+              </CardContent>
+            </TabsContent>
+          </Tabs>
+        </Card>
       </div>
 
-      {/* Editar cliente */}
+      {/* Modal de edição */}
       <AddClientModal
         isOpen={!!editing}
         onClose={() => setEditing(null)}
         onSave={handleSaveEdit}
         clientToEdit={editing}
       />
+    </div>
+  );
+}
+
+interface InfoItemProps {
+  icon: React.ReactNode;
+  label: string;
+  loading: boolean;
+  children: React.ReactNode;
+}
+
+function InfoItem({ icon, label, loading, children }: InfoItemProps) {
+  return (
+    <div className="space-y-2">
+      <div className="flex items-center gap-2 text-sm text-muted-foreground">
+        {icon}
+        <span>{label}</span>
+      </div>
+
+      {loading ? (
+        <Skeleton className="h-5 w-3/4" />
+      ) : (
+        <p className="font-medium">{children || "Não informado"}</p>
+      )}
     </div>
   );
 }
