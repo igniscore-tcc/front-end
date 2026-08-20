@@ -10,7 +10,6 @@ import {
 } from "lucide-react";
 
 import { motion, useScroll, useMotionValueEvent } from "framer-motion";
-
 import { useRef, useState } from "react";
 
 const results = [
@@ -46,7 +45,6 @@ const results = [
 
 export default function Result() {
   const sectionRef = useRef<HTMLDivElement>(null);
-
   const [activeIndex, setActiveIndex] = useState(0);
 
   const { scrollYProgress } = useScroll({
@@ -56,7 +54,6 @@ export default function Result() {
 
   useMotionValueEvent(scrollYProgress, "change", (latest) => {
     const total = results.length;
-
     const current = Math.min(total - 1, Math.floor(latest * total));
 
     setActiveIndex(current);
@@ -67,28 +64,29 @@ export default function Result() {
       ref={sectionRef}
       id="resultados"
       className="
-    relative
-    flex
-    flex-col
-    gap-14
-    lg:gap-20
-    mt-20
-    lg:mt-24
-    px-6
-    md:px-10
-    lg:px-16
-    py-20
-    lg:py-32
-  "
+        relative
+        mt-20
+        flex
+        flex-col
+        gap-14
+        px-6
+        py-20
+        lg:mt-24
+        lg:gap-20
+        lg:px-16
+        lg:py-32
+        md:px-10
+      "
     >
+      {/* Header */}
       <div className="flex flex-col gap-6">
         <p
           className="
             text-sm
+            font-semibold
             uppercase
             tracking-[0.15em]
-            text-[#FF5A1F]
-            font-semibold
+            text-primary
           "
         >
           Resultados reais
@@ -96,25 +94,25 @@ export default function Result() {
 
         <h2
           className="
+            max-w-3xl
             text-4xl
-            md:text-5xl
-            text-[#B1B4B8]
             font-medium
             leading-[1.2]
-            max-w-3xl
+            text-foreground
+            md:text-5xl
           "
         >
-          <span className="text-[#FF5A1F]">Resultados</span> que impactam sua
+          <span className="text-primary">Resultados</span> que impactam sua
           operação
         </h2>
 
         <p
           className="
-            text-lg
-            md:text-xl
-            text-[#0B0F19]
-            leading-relaxed
             max-w-2xl
+            text-lg
+            leading-relaxed
+            text-muted-foreground
+            md:text-xl
           "
         >
           O IgnisCore melhora produtividade, organização e controle operacional
@@ -122,27 +120,26 @@ export default function Result() {
         </p>
       </div>
 
+      {/* Results */}
       <div
         className="
-    grid
-    grid-cols-1
-    lg:grid-cols-[460px_1fr]
-
-    gap-10
-    lg:gap-16
-
-    items-start
-  "
+          grid
+          grid-cols-1
+          items-start
+          gap-10
+          lg:grid-cols-[460px_1fr]
+          lg:gap-16
+        "
       >
+        {/* List */}
         <div className="flex flex-col">
           {results.map((item, index) => {
             const Icon = item.icon;
-
             const isActive = activeIndex === index;
 
             return (
               <motion.div
-                key={index}
+                key={item.title}
                 animate={{
                   opacity: isActive ? 1 : 0.4,
                   scale: isActive ? 1 : 0.98,
@@ -152,11 +149,12 @@ export default function Result() {
                 }}
                 className="
                   relative
-                  py-8
                   border-b
-                  border-[#B1B4B8]/20
+                  border-border/40
+                  py-8
                 "
               >
+                {/* Active indicator */}
                 <div
                   className={`
                     absolute
@@ -166,32 +164,35 @@ export default function Result() {
                     w-0.5
                     transition-all
                     duration-500
-
-                    ${isActive ? "bg-[#FF5A1F]" : "bg-transparent"}
+                    ${isActive ? "bg-primary" : "bg-transparent"}
                   `}
                 />
 
                 <div className="flex items-start gap-5">
+                  {/* Icon */}
                   <div
                     className={`
-                      p-3
                       border
+                      p-3
                       transition-all
                       duration-500
                       ${
                         isActive
-                          ? "border-[#FF5A1F] bg-[#FF5A1F]/10"
-                          : "border-[#B1B4B8]/20"
+                          ? "border-primary bg-primary/10"
+                          : "border-border/40"
                       }
                     `}
                   >
                     <Icon
                       width={22}
                       height={22}
-                      className={isActive ? "text-[#FF5A1F]" : "text-[#B1B4B8]"}
+                      className={
+                        isActive ? "text-primary" : "text-muted-foreground"
+                      }
                     />
                   </div>
 
+                  {/* Content */}
                   <div className="flex flex-col gap-4">
                     <div className="flex items-center gap-3">
                       <h3
@@ -200,7 +201,7 @@ export default function Result() {
                           font-medium
                           transition-all
                           duration-500
-                          ${isActive ? "text-[#FF5A1F]" : "text-[#B1B4B8]"}
+                          ${isActive ? "text-primary" : "text-muted-foreground"}
                         `}
                       >
                         {item.title}
@@ -209,11 +210,15 @@ export default function Result() {
                       <ArrowUpRight
                         width={18}
                         height={18}
-                        className={
-                          isActive
-                            ? "text-[#FF5A1F] rotate-45"
-                            : "text-[#B1B4B8]"
-                        }
+                        className={`
+                          transition-all
+                          duration-500
+                          ${
+                            isActive
+                              ? "rotate-45 text-primary"
+                              : "text-muted-foreground"
+                          }
+                        `}
                       />
                     </div>
 
@@ -229,9 +234,9 @@ export default function Result() {
                     >
                       <p
                         className="
-                          text-[#0B0F19]
-                          leading-relaxed
                           max-w-md
+                          leading-relaxed
+                          text-muted-foreground
                         "
                       >
                         {item.description}
@@ -244,35 +249,34 @@ export default function Result() {
           })}
         </div>
 
+        {/* Dashboard */}
         <div
           className="
             relative
             hidden
-            lg:flex
             items-center
             justify-center
+            lg:flex
           "
         >
           <div
             className="
               absolute
-              w-[70%]
               h-[70%]
-              bg-[#FF5A1F]/10
-              blur-3xl
+              w-[70%]
               rounded-full
+              bg-primary/10
+              blur-3xl
             "
           />
 
           <div
             className="
-    relative
-
-    hidden lg:flex
-
-    items-center
-    justify-center
-  "
+              relative
+              flex
+              items-center
+              justify-center
+            "
           >
             <Image
               src={results[activeIndex].image}
@@ -280,11 +284,11 @@ export default function Result() {
               width={1400}
               height={900}
               className="
-      w-full
-      max-w-5xl
-      object-contain
-      drop-shadow-[0_25px_80px_rgba(0,0,0,0.22)]
-    "
+                w-full
+                max-w-5xl
+                object-contain
+                drop-shadow-[0_25px_80px_rgba(0,0,0,0.22)]
+              "
             />
           </div>
         </div>

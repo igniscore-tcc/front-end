@@ -44,29 +44,37 @@ export default function InteractionDashboard() {
   return (
     <section
       className="
-    hidden
-    lg:flex
-
-    relative
-    flex-col
-    gap-16
-    overflow-hidden
-
-    mt-24
-    px-6
-    md:px-10
-    lg:px-16
-    py-24
-  "
+        relative
+        mt-24
+        hidden
+        flex-col
+        gap-16
+        overflow-hidden
+        px-6
+        py-24
+        md:px-10
+        lg:flex
+        lg:px-16
+      "
     >
-      <div className="flex flex-col items-center gap-6 text-center relative z-10">
+      <div
+        className="
+          relative
+          z-10
+          flex
+          flex-col
+          items-center
+          gap-6
+          text-center
+        "
+      >
         <p
           className="
             text-sm
+            font-semibold
             uppercase
             tracking-[0.15em]
-            text-[#FF5A1F]
-            font-semibold
+            text-primary
           "
         >
           Dashboard inteligente
@@ -74,26 +82,26 @@ export default function InteractionDashboard() {
 
         <h2
           className="
+            max-w-4xl
             text-4xl
-            md:text-5xl
-            text-[#B1B4B8]
             font-medium
             leading-[1.2]
             tracking-[0.01em]
-            max-w-4xl
+            text-foreground
+            md:text-5xl
           "
         >
-          <span className="text-[#FF5A1F]">Visualize sua</span> operação em
-          tempo real
+          <span className="text-primary">Visualize sua</span> operação em tempo
+          real
         </h2>
 
         <p
           className="
-            text-lg
-            md:text-xl
-            text-[#0B0F19]
-            leading-relaxed
             max-w-3xl
+            text-lg
+            leading-relaxed
+            text-muted-foreground
+            md:text-xl
           "
         >
           Acompanhe indicadores, vencimentos, produtividade e movimentações da
@@ -103,43 +111,45 @@ export default function InteractionDashboard() {
 
       <div
         className="
-            relative
-            hidden
-            md:flex
-            items-center
-            justify-center
-            w-full
-            min-h-162.5
+          relative
+          hidden
+          min-h-162.5
+          w-full
+          items-center
+          justify-center
+          md:flex
         "
       >
+        {/* Glow */}
         <div
           className="
             absolute
-            w-[70%]
             h-[70%]
-            bg-[#FF5A1F]/10
-            blur-3xl
+            w-[70%]
             rounded-full
+            bg-primary/10
+            blur-3xl
           "
         />
 
         <div
           className="
-            relative
             group
+            relative
             transition-transform
             duration-700
             hover:scale-[1.015]
           "
         >
+          {/* Hover frame */}
           <div
             className="
               absolute
               inset-0
+              scale-[1.03]
               rounded-[2rem]
               border
-              border-[#FF5A1F]/20
-              scale-[1.03]
+              border-primary/20
               opacity-0
               transition-all
               duration-700
@@ -162,74 +172,61 @@ export default function InteractionDashboard() {
             "
           />
 
-          {floatingCards.map((card, index) => {
+          {floatingCards.map((card) => {
             const Icon = card.icon;
 
             return (
               <article
-                key={index}
+                key={card.title}
                 className={`
                   absolute
                   ${card.position}
                   z-20
                   hidden
-                  md:flex
+                  min-w-65
                   items-start
                   gap-4
-                  min-w-65
                   border
-                  border-[#B1B4B8]/30
-                  bg-white/80
-                  backdrop-blur-xl
+                  border-border/60
+                  bg-background/80
                   px-5
                   py-4
                   shadow-[0_10px_40px_rgba(0,0,0,0.08)]
+                  backdrop-blur-xl
                   transition-all
                   duration-500
-                  hover:border-[#FF5A1F]
                   hover:-translate-y-1
+                  hover:border-primary
+                  md:flex
                 `}
               >
                 <div
                   className="
                     flex
+                    h-12
+                    min-w-12
                     items-center
                     justify-center
-                    min-w-12
-                    h-12
                     border
-                    border-[#FF5A1F]/30
-                    bg-[#FF5A1F]/10
+                    border-primary/30
+                    bg-primary/10
                   "
                 >
-                  <Icon width={22} height={22} className="text-[#FF5A1F]" />
+                  <Icon width={22} height={22} className="text-primary" />
                 </div>
 
                 <div className="flex flex-col gap-1">
-                  <p
-                    className="
-                      text-sm
-                      text-[#B1B4B8]
-                    "
-                  >
-                    {card.title}
-                  </p>
+                  <p className="text-sm text-muted-foreground">{card.title}</p>
 
                   <div className="flex items-center gap-2">
-                    <h3
-                      className="
-                        text-lg
-                        font-medium
-                        text-[#0B0F19]
-                      "
-                    >
+                    <h3 className="text-lg font-medium text-foreground">
                       {card.value}
                     </h3>
 
                     <ArrowUpRight
                       width={16}
                       height={16}
-                      className="text-[#FF5A1F]"
+                      className="text-primary"
                     />
                   </div>
                 </div>

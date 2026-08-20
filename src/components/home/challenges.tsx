@@ -7,40 +7,68 @@ import {
   UserX,
 } from "lucide-react";
 
+const challenges = [
+  {
+    title: "Controle manual de vencimentos",
+    description:
+      "Risco de atrasos, multas e perda de contratos por falta de automação.",
+    icon: CalendarClock,
+  },
+  {
+    title: "Perda de clientes recorrentes",
+    description:
+      "Falta de acompanhamento reduz retenção e recorrência de serviços.",
+    icon: UserX,
+  },
+  {
+    title: "Ordens de serviço desorganizadas",
+    description:
+      "Informações descentralizadas dificultam execução e acompanhamento.",
+    icon: ClipboardListIcon,
+  },
+  {
+    title: "Falta de indicadores em tempo real",
+    description:
+      "Decisões estratégicas ficam limitadas sem dados centralizados.",
+    icon: ChartBarIncreasingIcon,
+  },
+];
+
 export default function Challenges() {
   return (
     <section
       id="desafios"
       className="
         relative
+        mx-6
         grid
         grid-cols-1
-        lg:grid-cols-2
         gap-16
-        mx-6
+        py-24
         md:mx-10
         lg:mx-16
-        py-24
+        lg:grid-cols-2
       "
     >
+      {/* Content */}
       <div
         className="
-          lg:sticky
-          lg:top-32
-          h-max
           flex
+          h-max
           flex-col
           gap-6
           self-start
+          lg:sticky
+          lg:top-32
         "
       >
         <p
           className="
             text-sm
+            font-semibold
             uppercase
             tracking-[0.15em]
-            text-[#FF5A1F]
-            font-semibold
+            text-primary
           "
         >
           Desafios da operação
@@ -49,25 +77,24 @@ export default function Challenges() {
         <h2
           className="
             text-3xl
-            md:text-5xl
-            text-cen
-            text-[#B1B4B8]
             font-medium
             leading-[1.2]
             tracking-[0.01em]
+            text-foreground
+            md:text-5xl
           "
         >
-          <span className="text-[#FF5A1F]">Sua operação</span> ainda depende de
+          <span className="text-primary">Sua operação</span> ainda depende de
           planilhas e processos manuais?
         </h2>
 
         <p
           className="
-            text-lg
-            md:text-xl
-            text-[#0B0F19]
-            leading-relaxed
             max-w-xl
+            text-lg
+            leading-relaxed
+            text-foreground
+            md:text-xl
           "
         >
           Processos descentralizados dificultam o controle da operação, aumentam
@@ -75,219 +102,73 @@ export default function Challenges() {
         </p>
       </div>
 
+      {/* Challenges */}
       <div className="flex flex-col gap-8">
-        <article
-          className="
-            group
-            w-full
-            border
-            border-[#B1B4B8]
-            p-6
-            md:p-8
-            flex
-            justify-between
-            items-center
-            gap-6
-            transition-all
-            duration-300
-            hover:border-[#FF5A1F]
-            hover:-translate-y-1
-            hover:shadow-[0_0_30px_rgba(255,90,31,0.08)]
-          "
-        >
-          <div className="flex flex-col gap-3">
-            <p
+        {challenges.map((challenge) => {
+          const Icon = challenge.icon;
+
+          return (
+            <article
+              key={challenge.title}
               className="
-                text-lg
-                md:text-xl
-                text-[#0B0F19]
-                leading-normal
-                tracking-[0.02em]
-                transition-colors
+                group
+                flex
+                w-full
+                items-center
+                justify-between
+                gap-6
+                border
+                border-border
+                p-6
+                transition-all
                 duration-300
-                group-hover:text-[#FF5A1F]
+                hover:-translate-y-1
+                hover:border-primary
+                hover:shadow-[0_0_30px_rgba(255,90,31,0.08)]
+                md:p-8
               "
             >
-              Controle manual de vencimentos
-            </p>
+              <div className="flex flex-col gap-3">
+                <p
+                  className="
+                    text-lg
+                    leading-normal
+                    tracking-[0.02em]
+                    text-foreground
+                    transition-colors
+                    duration-300
+                    group-hover:text-primary
+                    md:text-xl
+                  "
+                >
+                  {challenge.title}
+                </p>
 
-            <span className="text-sm text-[#B1B4B8] leading-relaxed">
-              Risco de atrasos, multas e perda de contratos por falta de
-              automação.
-            </span>
-          </div>
+                <span
+                  className="
+                    text-sm
+                    leading-relaxed
+                    text-muted-foreground
+                  "
+                >
+                  {challenge.description}
+                </span>
+              </div>
 
-          <CalendarClock
-            width={48}
-            height={48}
-            className="
-              text-[#FF5A1F]
-              min-w-12
-              transition-transform
-              duration-300
-              group-hover:scale-110
-            "
-          />
-        </article>
-
-        <article
-          className="
-            group
-            w-full
-            border
-            border-[#B1B4B8]
-            p-6
-            md:p-8
-            flex
-            justify-between
-            items-center
-            gap-6
-            transition-all
-            duration-300
-            hover:border-[#FF5A1F]
-            hover:-translate-y-1
-            hover:shadow-[0_0_30px_rgba(255,90,31,0.08)]
-          "
-        >
-          <div className="flex flex-col gap-3">
-            <p
-              className="
-                text-lg
-                md:text-xl
-                text-[#0B0F19]
-                leading-normal
-                tracking-[0.02em]
-                transition-colors
-                duration-300
-                group-hover:text-[#FF5A1F]
-              "
-            >
-              Perda de clientes recorrentes
-            </p>
-
-            <span className="text-sm text-[#B1B4B8] leading-relaxed">
-              Falta de acompanhamento reduz retenção e recorrência de serviços.
-            </span>
-          </div>
-
-          <UserX
-            width={48}
-            height={48}
-            className="
-              text-[#FF5A1F]
-              min-w-12
-              transition-transform
-              duration-300
-              group-hover:scale-110
-            "
-          />
-        </article>
-
-        <article
-          className="
-            group
-            w-full
-            border
-            border-[#B1B4B8]
-            p-6
-            md:p-8
-            flex
-            justify-between
-            items-center
-            gap-6
-            transition-all
-            duration-300
-            hover:border-[#FF5A1F]
-            hover:-translate-y-1
-            hover:shadow-[0_0_30px_rgba(255,90,31,0.08)]
-          "
-        >
-          <div className="flex flex-col gap-3">
-            <p
-              className="
-                text-lg
-                md:text-xl
-                text-[#0B0F19]
-                leading-normal
-                tracking-[0.02em]
-                transition-colors
-                duration-300
-                group-hover:text-[#FF5A1F]
-              "
-            >
-              Ordens de serviço desorganizadas
-            </p>
-
-            <span className="text-sm text-[#B1B4B8] leading-relaxed">
-              Informações descentralizadas dificultam execução e acompanhamento.
-            </span>
-          </div>
-
-          <ClipboardListIcon
-            width={48}
-            height={48}
-            className="
-              text-[#FF5A1F]
-              min-w-12
-              transition-transform
-              duration-300
-              group-hover:scale-110
-            "
-          />
-        </article>
-
-        <article
-          className="
-            group
-            w-full
-            border
-            border-[#B1B4B8]
-            p-6
-            md:p-8
-            flex
-            justify-between
-            items-center
-            gap-6
-            transition-all
-            duration-300
-            hover:border-[#FF5A1F]
-            hover:-translate-y-1
-            hover:shadow-[0_0_30px_rgba(255,90,31,0.08)]
-          "
-        >
-          <div className="flex flex-col gap-3">
-            <p
-              className="
-                text-lg
-                md:text-xl
-                text-[#0B0F19]
-                leading-normal
-                tracking-[0.02em]
-                transition-colors
-                duration-300
-                group-hover:text-[#FF5A1F]
-              "
-            >
-              Falta de indicadores em tempo real
-            </p>
-
-            <span className="text-sm text-[#B1B4B8] leading-relaxed">
-              Decisões estratégicas ficam limitadas sem dados centralizados.
-            </span>
-          </div>
-
-          <ChartBarIncreasingIcon
-            width={48}
-            height={48}
-            className="
-              text-[#FF5A1F]
-              min-w-12
-              transition-transform
-              duration-300
-              group-hover:scale-110
-            "
-          />
-        </article>
+              <Icon
+                width={48}
+                height={48}
+                className="
+                  min-w-12
+                  text-primary
+                  transition-transform
+                  duration-300
+                  group-hover:scale-110
+                "
+              />
+            </article>
+          );
+        })}
       </div>
     </section>
   );

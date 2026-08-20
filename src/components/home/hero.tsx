@@ -10,32 +10,32 @@ export default function Hero() {
       className="
         relative
         flex
-        flex-col
-        lg:flex-row
-        justify-between
-        items-center
-        gap-16
         min-h-screen
+        flex-col
+        items-center
+        justify-between
+        gap-16
+        overflow-hidden
+        border-b
+        border-border
         mx-6
-        md:mx-10
-        lg:mx-16
         pt-32
         pb-16
-        border-b
-        border-[#B1B4B8]
-        overflow-hidden
+        md:mx-10
+        lg:mx-16
+        lg:flex-row
       "
     >
-      <div className="flex flex-col gap-8 max-w-3xl relative z-10">
+      <div className="relative z-10 flex max-w-3xl flex-col gap-8">
         <div className="flex flex-col gap-4">
           <p
             className="
               text-sm
-              md:text-base
-              text-[#B1B4B8]
               font-semibold
-              tracking-[0.02em]
               uppercase
+              tracking-[0.02em]
+              text-muted-foreground
+              md:text-base
             "
           >
             Plataforma SaaS para empresas de extintores
@@ -44,25 +44,25 @@ export default function Hero() {
           <h1
             className="
               text-4xl
-              md:text-5xl
-              lg:text-6xl
-              text-[#B1B4B8]
               font-medium
               leading-[1.2]
               tracking-[0.01em]
+              text-foreground
+              md:text-5xl
+              lg:text-6xl
             "
           >
-            <span className="text-[#FF5A1F]">Gestão inteligente</span> para
+            <span className="text-primary">Gestão inteligente</span> para
             empresas de extintores
           </h1>
 
           <p
             className="
-              text-lg
-              md:text-xl
-              text-[#0B0F19]
-              leading-relaxed
               max-w-2xl
+              text-lg
+              leading-relaxed
+              text-foreground
+              md:text-xl
             "
           >
             Controle vendas, vencimentos, clientes e ordens de serviço em uma
@@ -71,30 +71,32 @@ export default function Hero() {
           </p>
         </div>
 
-        <div className="flex flex-col sm:flex-row gap-4 sm:gap-6">
+        <div className="flex flex-col gap-4 sm:flex-row sm:gap-6">
           <Link
             href="https://wa.me/5519996779283?text=Olá,%20quero%20agendar%20uma%20demonstração%20do%20IgnisCore"
             target="_blank"
             className="
               group
-              px-6
-              py-4
-              bg-[#FF5A1F]
-              text-white
-              border
-              border-[#FF5A1F]
-              font-semibold
               flex
               items-center
               justify-center
               gap-3
+              border
+              border-primary
+              bg-primary
+              px-6
+              py-4
+              font-semibold
+              text-primary-foreground
               transition-all
               duration-300
-              hover:shadow-[0_0_30px_rgba(255,90,31,0.25)]
               hover:-translate-y-0.5
+              hover:bg-primary/90
+              hover:shadow-[0_0_30px_rgba(255,90,31,0.25)]
             "
           >
             Solicitar demonstração
+
             <ArrowRight
               width={18}
               height={18}
@@ -110,23 +112,25 @@ export default function Hero() {
             href="/#dashboard"
             className="
               group
-              px-6
-              py-4
-              border
-              border-[#FF5A1F]
-              text-[#FF5A1F]
               flex
               items-center
               justify-center
               gap-3
+              border
+              border-primary
+              bg-transparent
+              px-6
+              py-4
               font-semibold
+              text-primary
               transition-all
               duration-300
-              hover:bg-[#FF5A1F]
-              hover:text-white
+              hover:bg-primary
+              hover:text-primary-foreground
             "
           >
             Ver plataforma
+
             <ArrowRight
               width={18}
               height={18}
@@ -141,34 +145,40 @@ export default function Hero() {
 
         <div className="flex flex-wrap gap-6 pt-2">
           <div className="flex items-center gap-2">
-            <div className="w-2.5 h-2.5 rounded-full bg-[#FF5A1F]" />
+            <div className="size-2.5 rounded-full bg-primary" />
 
-            <p className="text-sm text-[#B1B4B8]">Gestão centralizada</p>
+            <p className="text-sm text-muted-foreground">
+              Gestão centralizada
+            </p>
           </div>
 
           <div className="flex items-center gap-2">
-            <div className="w-2.5 h-2.5 rounded-full bg-[#FF5A1F]" />
+            <div className="size-2.5 rounded-full bg-primary" />
 
-            <p className="text-sm text-[#B1B4B8]">Controle de vencimentos</p>
+            <p className="text-sm text-muted-foreground">
+              Controle de vencimentos
+            </p>
           </div>
 
           <div className="flex items-center gap-2">
-            <div className="w-2.5 h-2.5 rounded-full bg-[#FF5A1F]" />
+            <div className="size-2.5 rounded-full bg-primary" />
 
-            <p className="text-sm text-[#B1B4B8]">Dashboard em tempo real</p>
+            <p className="text-sm text-muted-foreground">
+              Dashboard em tempo real
+            </p>
           </div>
         </div>
       </div>
 
-      <div className="relative w-full max-w-4xl flex justify-center">
+      <div className="relative flex w-full max-w-4xl justify-center">
         <div
           className="
             absolute
-            w-[80%]
             h-[80%]
-            bg-[#FF5A1F]/10
-            blur-3xl
+            w-[80%]
             rounded-full
+            bg-primary/10
+            blur-3xl
           "
         />
 
@@ -180,15 +190,15 @@ export default function Hero() {
           priority
           className="
             relative
-            object-contain
             w-full
             max-w-225
-            lg:max-w-275
-            xl:max-w-312.5
+            object-contain
             transition-transform
             duration-500
             hover:scale-[1.02]
-        "
+            lg:max-w-275
+            xl:max-w-312.5
+          "
         />
       </div>
     </section>

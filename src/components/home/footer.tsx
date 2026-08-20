@@ -55,21 +55,22 @@ export default function Footer() {
         relative
         overflow-hidden
         border-t
-        border-[#B1B4B8]/10
-        bg-[#0B0F19]
+        border-border
+        bg-background
         px-6
-        md:px-10
-        lg:px-16
         pt-16
         pb-8
+        md:px-10
+        lg:px-16
       "
     >
+      {/* Glow */}
       <div
         className="
+          pointer-events-none
           absolute
           inset-0
-          opacity-[0.04]
-          bg-[radial-gradient(circle_at_top_left,#FF5A1F,transparent_35%)]
+          bg-[radial-gradient(circle_at_top_left,rgba(255,90,31,0.08),transparent_35%)]
         "
       />
 
@@ -79,45 +80,41 @@ export default function Footer() {
           z-10
           grid
           grid-cols-1
+          gap-12
           md:grid-cols-2
           xl:grid-cols-[1.2fr_1fr_1fr]
-          gap-12
         "
       >
+        {/* Brand */}
         <div className="flex flex-col gap-6">
           <div className="flex items-center gap-4">
             <div
               className="
                 flex
+                h-14
+                w-14
                 items-center
                 justify-center
-                w-14
-                h-14
-                bg-[#FF5A1F]/10
                 border
-                border-[#FF5A1F]/20
+                border-primary/20
+                bg-primary/10
               "
             >
               <Image
                 width={28}
                 height={28}
                 src="/igniscore.png"
-                alt="Dashboard da plataforma IgnisCore para gestão de empresas de extintores"
-              ></Image>
+                alt="IgnisCore"
+                className="object-contain"
+              />
             </div>
 
             <div className="flex flex-col">
-              <h3
-                className="
-                  text-2xl
-                  font-medium
-                  text-white
-                "
-              >
+              <h3 className="text-2xl font-medium text-foreground">
                 IgnisCore
               </h3>
 
-              <p className="text-sm text-white/50">
+              <p className="text-sm text-muted-foreground">
                 Gestão operacional inteligente
               </p>
             </div>
@@ -125,11 +122,11 @@ export default function Footer() {
 
           <p
             className="
-              text-sm
-              md:text-base
-              leading-relaxed
-              text-white/70
               max-w-md
+              text-sm
+              leading-relaxed
+              text-muted-foreground
+              md:text-base
             "
           >
             Plataforma desenvolvida para empresas de manutenção, revendas e
@@ -137,6 +134,7 @@ export default function Footer() {
             e centralizado.
           </p>
 
+          {/* Contact */}
           <div className="flex flex-col gap-4">
             <a
               href="mailto:suporte@igniscore.com"
@@ -144,10 +142,10 @@ export default function Footer() {
                 flex
                 items-center
                 gap-3
-                text-white/70
+                text-muted-foreground
                 transition-colors
                 duration-300
-                hover:text-[#FF5A1F]
+                hover:text-primary
               "
             >
               <Mail width={18} height={18} />
@@ -161,10 +159,10 @@ export default function Footer() {
                 flex
                 items-center
                 gap-3
-                text-white/70
+                text-muted-foreground
                 transition-colors
                 duration-300
-                hover:text-[#FF5A1F]
+                hover:text-primary
               "
             >
               <Phone width={18} height={18} />
@@ -174,15 +172,10 @@ export default function Footer() {
           </div>
         </div>
 
+        {/* Navigation */}
         {navigation.map((group) => (
           <div key={group.title} className="flex flex-col gap-6">
-            <h4
-              className="
-                text-lg
-                font-medium
-                text-white
-              "
-            >
+            <h4 className="text-lg font-medium text-foreground">
               {group.title}
             </h4>
 
@@ -204,10 +197,10 @@ export default function Footer() {
                         flex
                         items-center
                         gap-2
-                        text-white/65
+                        text-muted-foreground
                         transition-colors
                         duration-300
-                        hover:text-[#FF5A1F]
+                        hover:text-primary
                       "
                     >
                       <span>{item.label}</span>
@@ -216,12 +209,12 @@ export default function Footer() {
                         width={16}
                         height={16}
                         className="
-                          opacity-0
                           -translate-x-1
+                          opacity-0
                           transition-all
                           duration-300
-                          group-hover:opacity-100
                           group-hover:translate-x-0
+                          group-hover:opacity-100
                         "
                       />
                     </Link>
@@ -233,48 +226,43 @@ export default function Footer() {
         ))}
       </div>
 
+      {/* Bottom */}
       <div
         className="
           relative
           z-10
           mt-14
-          pt-8
-          border-t
-          border-white/10
           flex
           flex-col
-          md:flex-row
           items-center
           justify-between
           gap-4
+          border-t
+          border-border
+          pt-8
+          md:flex-row
         "
       >
         <p
           className="
-            text-sm
-            text-white/50
             text-center
+            text-sm
+            text-muted-foreground
             md:text-left
           "
         >
           © {new Date().getFullYear()} IgnisCore. Todos os direitos reservados.
         </p>
 
-        <div
-          className="
-            flex
-            items-center
-            gap-6
-          "
-        >
+        <div className="flex items-center gap-6">
           <Link
             href="/privacidade"
             className="
               text-sm
-              text-white/50
+              text-muted-foreground
               transition-colors
               duration-300
-              hover:text-[#FF5A1F]
+              hover:text-primary
             "
           >
             Privacidade
@@ -284,10 +272,10 @@ export default function Footer() {
             href="/termos"
             className="
               text-sm
-              text-white/50
+              text-muted-foreground
               transition-colors
               duration-300
-              hover:text-[#FF5A1F]
+              hover:text-primary
             "
           >
             Termos
