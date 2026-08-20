@@ -34,27 +34,19 @@ export default function Market() {
         relative
         overflow-hidden
         px-6
+        py-24
         md:px-10
         lg:px-16
-        py-24
       "
     >
-      <div
-        className="
-          flex
-          flex-col
-          items-center
-          text-center
-          gap-6
-        "
-      >
+      <div className="flex flex-col items-center gap-6 text-center">
         <p
           className="
             text-sm
+            font-semibold
             uppercase
             tracking-[0.15em]
-            text-[#FF5A1F]
-            font-semibold
+            text-primary
           "
         >
           Público-alvo
@@ -63,25 +55,25 @@ export default function Market() {
         <h2
           id="market-title"
           className="
+            max-w-4xl
             text-4xl
-            md:text-5xl
-            text-[#B1B4B8]
             font-medium
             leading-[1.2]
-            max-w-4xl
+            text-foreground
+            md:text-5xl
           "
         >
-          <span className="text-[#FF5A1F]">Desenvolvido</span> para quem vive
-          esse mercado
+          <span className="text-primary">Desenvolvido</span> para quem vive esse
+          mercado
         </h2>
 
         <p
           className="
-            text-base
-            md:text-xl
-            text-[#0B0F19]
-            leading-relaxed
             max-w-3xl
+            text-base
+            leading-relaxed
+            text-muted-foreground
+            md:text-xl
           "
         >
           O IgnisCore foi projetado para empresas que precisam de controle
@@ -95,9 +87,9 @@ export default function Market() {
           mt-16
           grid
           grid-cols-1
+          gap-6
           md:grid-cols-2
           xl:grid-cols-3
-          gap-6
         "
       >
         {markets.map((item, index) => (
@@ -124,26 +116,26 @@ export default function Market() {
               relative
               overflow-hidden
               border
-              border-[#B1B4B8]/20
-              bg-white/70
-              backdrop-blur-xl
+              border-border
+              bg-card
               p-6
-              md:p-8
               transition-all
               duration-500
-              hover:border-[#FF5A1F]/40
               hover:-translate-y-2
+              hover:border-primary/40
+              md:p-8
             "
           >
             <div
               className="
+                pointer-events-none
                 absolute
                 inset-0
+                bg-[radial-gradient(circle_at_top_left,rgba(255,90,31,0.08),transparent_70%)]
                 opacity-0
-                group-hover:opacity-100
                 transition-opacity
                 duration-500
-                bg-[radial-gradient(circle_at_top_left,rgba(255,90,31,0.08),transparent_70%)]
+                group-hover:opacity-100
               "
             />
 
@@ -161,8 +153,8 @@ export default function Market() {
                   overflow-hidden
                   rounded-2xl
                   border
-                  border-[#B1B4B8]/10
-                  bg-[#F8F8F8]
+                  border-border
+                  bg-muted
                 "
               >
                 <Image
@@ -172,13 +164,13 @@ export default function Market() {
                   height={600}
                   priority={index === 0}
                   className="
-                    w-full
                     h-64
-                    md:h-72
+                    w-full
                     object-contain
                     transition-transform
                     duration-700
                     group-hover:scale-105
+                    md:h-72
                   "
                 />
               </div>
@@ -188,10 +180,10 @@ export default function Market() {
                   className="
                     text-2xl
                     font-medium
-                    text-[#B1B4B8]
+                    text-foreground
                     transition-colors
                     duration-500
-                    group-hover:text-[#FF5A1F]
+                    group-hover:text-primary
                   "
                 >
                   {item.title}
@@ -200,9 +192,9 @@ export default function Market() {
                 <p
                   className="
                     text-sm
-                    md:text-base
                     leading-relaxed
-                    text-[#0B0F19]
+                    text-muted-foreground
+                    md:text-base
                   "
                 >
                   {item.description}
