@@ -9,7 +9,6 @@ import {
 } from "lucide-react";
 
 import { motion, useScroll, useMotionValueEvent } from "framer-motion";
-
 import { useRef, useState } from "react";
 
 const steps = [
@@ -45,7 +44,6 @@ const steps = [
 
 export default function Timeline() {
   const sectionRef = useRef<HTMLDivElement>(null);
-
   const [activeIndex, setActiveIndex] = useState(0);
 
   const { scrollYProgress } = useScroll({
@@ -55,7 +53,6 @@ export default function Timeline() {
 
   useMotionValueEvent(scrollYProgress, "change", (latest) => {
     const total = steps.length;
-
     const current = Math.min(total - 1, Math.floor(latest * total));
 
     setActiveIndex(current);
@@ -70,19 +67,20 @@ export default function Timeline() {
         relative
         overflow-hidden
         px-6
+        py-24
         md:px-10
         lg:px-16
-        py-24
       "
     >
-      <div className="flex flex-col items-center text-center gap-6">
+      {/* Header */}
+      <div className="flex flex-col items-center gap-6 text-center">
         <p
           className="
             text-sm
+            font-semibold
             uppercase
             tracking-[0.15em]
-            text-[#FF5A1F]
-            font-semibold
+            text-primary
           "
         >
           Processo simples
@@ -91,25 +89,25 @@ export default function Timeline() {
         <h2
           id="timeline-title"
           className="
+            max-w-4xl
             text-4xl
-            md:text-5xl
-            text-[#B1B4B8]
             font-medium
             leading-[1.2]
-            max-w-4xl
+            text-foreground
+            md:text-5xl
           "
         >
-          <span className="text-[#FF5A1F]">Comece</span> sua operação em poucos
+          <span className="text-primary">Comece</span> sua operação em poucos
           passos
         </h2>
 
         <p
           className="
-            text-base
-            md:text-xl
-            text-[#0B0F19]
-            leading-relaxed
             max-w-3xl
+            text-base
+            leading-relaxed
+            text-muted-foreground
+            md:text-xl
           "
         >
           Estruture processos, automatize tarefas e acompanhe toda operação da
@@ -117,17 +115,19 @@ export default function Timeline() {
         </p>
       </div>
 
+      {/* Timeline */}
       <div
         className="
           relative
           mt-20
-          md:mt-28
           flex
           flex-col
           gap-8
+          md:mt-28
           md:gap-14
         "
       >
+        {/* Timeline line */}
         <motion.div
           initial={{ scaleY: 0 }}
           whileInView={{ scaleY: 1 }}
@@ -138,22 +138,20 @@ export default function Timeline() {
           viewport={{ once: true }}
           className="
             absolute
-            top-0
             left-5
-            md:left-1/2
-            w-px
+            top-0
             h-full
-            bg-[#B1B4B8]/20
+            w-px
             origin-top
+            bg-border/50
+            md:left-1/2
             md:-translate-x-1/2
           "
         />
 
         {steps.map((item, index) => {
           const Icon = item.icon;
-
           const isLeft = index % 2 === 0;
-
           const isActive = activeIndex === index;
 
           return (
@@ -191,41 +189,44 @@ export default function Timeline() {
                   group
                   relative
                   ml-14
-                  md:ml-0
                   w-full
-                  md:w-[85%]
-                  lg:w-[46%]
                   border
-                  ${isActive ? "border-[#FF5A1F]/40" : "border-[#B1B4B8]/20"}
-                  bg-white/80
-                  backdrop-blur-xl
+                  bg-background/80
                   p-6
-                  md:p-8
+                  backdrop-blur-xl
                   transition-all
                   duration-500
-                  hover:border-[#FF5A1F]/40
+                  hover:border-primary/40
+                  md:ml-0
+                  md:w-[85%]
+                  md:p-8
+                  lg:w-[46%]
+                  ${isActive ? "border-primary/40" : "border-border/40"}
                 `}
               >
+                {/* Hover glow */}
                 <div
                   className="
+                    pointer-events-none
                     absolute
                     inset-0
+                    bg-[radial-gradient(circle_at_top_left,rgba(255,90,31,0.08),transparent_70%)]
                     opacity-0
-                    group-hover:opacity-100
                     transition-opacity
                     duration-500
-                    bg-[radial-gradient(circle_at_top_left,rgba(255,90,31,0.08),transparent_70%)]
+                    group-hover:opacity-100
                   "
                 />
 
+                {/* Connector */}
                 <div
                   className={`
                     absolute
                     top-10
+                    hidden
                     h-px
                     w-10
-                    bg-[#B1B4B8]/20
-                    hidden
+                    bg-border/50
                     md:block
                     ${isLeft ? "right-[-40px]" : "left-[-40px]"}
                   `}
@@ -242,22 +243,23 @@ export default function Timeline() {
                 >
                   <div className="flex flex-col gap-5">
                     <div className="flex items-center gap-4">
+                      {/* Icon */}
                       <div
                         className={`
                           flex
+                          h-12
+                          w-12
                           items-center
                           justify-center
-                          w-12
-                          h-12
-                          md:w-14
-                          md:h-14
                           border
                           transition-all
                           duration-500
+                          md:h-14
+                          md:w-14
                           ${
                             isActive
-                              ? "border-[#FF5A1F]/30 bg-[#FF5A1F]/10"
-                              : "border-[#B1B4B8]/20"
+                              ? "border-primary/30 bg-primary/10"
+                              : "border-border/40"
                           }
                         `}
                       >
@@ -265,26 +267,27 @@ export default function Timeline() {
                           width={24}
                           height={24}
                           className={
-                            isActive ? "text-[#FF5A1F]" : "text-[#B1B4B8]"
+                            isActive ? "text-primary" : "text-muted-foreground"
                           }
                         />
                       </div>
 
+                      {/* Title */}
                       <h3
                         className={`
                           text-xl
-                          md:text-2xl
                           font-medium
                           transition-all
                           duration-500
-
-                          ${isActive ? "text-[#FF5A1F]" : "text-[#B1B4B8]"}
+                          md:text-2xl
+                          ${isActive ? "text-primary" : "text-muted-foreground"}
                         `}
                       >
                         {item.title}
                       </h3>
                     </div>
 
+                    {/* Description */}
                     <motion.div
                       animate={{
                         height: isActive ? "auto" : 0,
@@ -297,11 +300,11 @@ export default function Timeline() {
                     >
                       <p
                         className="
-                          text-sm
-                          md:text-base
-                          text-[#0B0F19]
-                          leading-relaxed
                           max-w-md
+                          text-sm
+                          leading-relaxed
+                          text-muted-foreground
+                          md:text-base
                         "
                       >
                         {item.description}
@@ -309,23 +312,28 @@ export default function Timeline() {
                     </motion.div>
                   </div>
 
+                  {/* Step number */}
                   <div
                     className="
                       hidden
-                      sm:flex
                       flex-col
                       items-end
                       gap-2
+                      sm:flex
                     "
                   >
                     <span
                       className={`
                         text-4xl
-                        md:text-5xl
                         font-medium
                         transition-all
                         duration-500
-                        ${isActive ? "text-[#FF5A1F]/80" : "text-[#B1B4B8]/40"}
+                        md:text-5xl
+                        ${
+                          isActive
+                            ? "text-primary/80"
+                            : "text-muted-foreground/40"
+                        }
                       `}
                     >
                       {item.step}
@@ -339,8 +347,8 @@ export default function Timeline() {
                         duration-500
                         ${
                           isActive
-                            ? "text-[#FF5A1F] translate-x-1"
-                            : "text-[#B1B4B8]"
+                            ? "translate-x-1 text-primary"
+                            : "text-muted-foreground"
                         }
                       `}
                     />
