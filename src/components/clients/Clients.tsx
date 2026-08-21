@@ -12,7 +12,7 @@ import {
 } from "lucide-react";
 import { ListPageHeader } from "../shared/ListPageHeader";
 import { AddClientModal } from "./AddClientModal";
-import { DeleteConfirmModal } from "./DeleteConfirmModal";
+import { ConfirmDialog } from "../shared/DeleteConfirmModal";
 import { formatCnpj, formatPhone, formatCpf } from "@/lib/validators";
 import { useClients } from "@/hooks/useClients";
 import { useRouter } from "next/navigation";
@@ -243,11 +243,27 @@ export default function Clients() {
         clientToEdit={editing}
       />
 
-      <DeleteConfirmModal
-        isOpen={!!deleting}
-        onClose={() => setDeleting(null)}
-        onConfirm={() => deleting && removeClient(deleting.id)}
-        client={deleting}
+      <ConfirmDialog
+        open={!!deleting}
+        onOpenChange={(open) => {
+          if (!open) {
+            setDeleting(null);
+          }
+        }}
+        onConfirm={() => {
+          if (deleting) {
+            removeClient(deleting.id);
+          }
+        }}
+        title="Confirmar exclusão"
+        description={
+          <>
+            Tem certeza que deseja excluir o cliente{" "}
+            <strong className="text-foreground">"{deleting?.nome}"</strong>?
+          </>
+        }
+        warning="Esta ação não poderá ser desfeita e todos os dados associados serão removidos."
+        confirmText="Excluir"
       />
     </div>
   );

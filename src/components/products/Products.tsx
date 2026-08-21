@@ -19,6 +19,7 @@ import {
 } from "../ui/table";
 import { Badge } from "../ui/badge";
 import { DataPagination } from "../layout/pagination/pagination";
+import { ConfirmDialog } from "../shared/DeleteConfirmModal";
 
 export default function Products() {
   const {
@@ -44,6 +45,8 @@ export default function Products() {
     setEditing,
     saveEdit,
     removeProduct,
+    deleting,
+    setDeleting,
   } = useProducts();
 
   const { user } = useAuth();
@@ -195,7 +198,7 @@ export default function Products() {
                         <Button
                           variant="ghost"
                           size="icon"
-                          onClick={() => removeProduct(product.id)}
+                          onClick={() => setDeleting(product)}
                           aria-label={`Excluir ${product.nome}`}
                         >
                           <Trash2 />
@@ -237,6 +240,29 @@ export default function Products() {
         }}
         onSave={handleSave}
         productToEdit={editing}
+      />
+
+      <ConfirmDialog
+        open={!!deleting}
+        onOpenChange={(open) => {
+          if (!open) {
+            setDeleting(null);
+          }
+        }}
+        onConfirm={() => {
+          if (deleting) {
+            removeProduct(deleting.id);
+          }
+        }}
+        title="Excluir produto"
+        description={
+          <>
+            Tem certeza que deseja excluir o produto{" "}
+            <strong className="text-foreground">"{deleting?.nome}"</strong>?
+          </>
+        }
+        warning="Esta ação não poderá ser desfeita."
+        confirmText="Excluir"
       />
     </div>
   );
