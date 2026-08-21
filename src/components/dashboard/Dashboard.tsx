@@ -115,14 +115,14 @@ export default function Dashboard() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center">
+      <div className="flex items-center justify-center min-h-screen">
         <span className="text-gray-500">Carregando clientes...</span>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-background px-4 py-8 text-foreground md:px-8">
+    <div className="bg-background px-4 py-8 text-foreground md:px-8">
       {/* Header */}
       <div className="mb-6 py-2">
         <h1 className="text-2xl font-medium tracking-tight">Dashboard</h1>

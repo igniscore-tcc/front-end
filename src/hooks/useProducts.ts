@@ -25,6 +25,7 @@ export function useProducts() {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [editing, setEditing] = useState<Product | null>(null);
+  const [deleting, setDeleting] = useState<Product | null>(null);
   const [showModal, setShowModal] = useState(false);
 
   const [search, setSearch] = useState("");
@@ -253,6 +254,8 @@ export function useProducts() {
 
       await fetchProducts();
 
+      setDeleting(null);
+
       if (editing?.id === id) {
         setEditing(null);
       }
@@ -292,6 +295,8 @@ export function useProducts() {
     addProduct,
     editing,
     setEditing,
+    deleting,
+    setDeleting,
     saveEdit,
     removeProduct,
     refreshProducts: fetchProducts,
