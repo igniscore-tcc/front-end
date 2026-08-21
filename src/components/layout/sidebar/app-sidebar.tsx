@@ -1,19 +1,31 @@
-"use client"
+"use client";
 
-import * as React from "react"
+import * as React from "react";
 
-import { NavMain } from "@/components/layout/sidebar/nav-main"
-import { NavProjects } from "@/components/layout/sidebar/nav-projects"
-import { NavUser } from "@/components/layout/sidebar/nav-user"
-import { TeamSwitcher } from "@/components/layout/sidebar/team-switcher"
+import { NavMain } from "@/components/layout/sidebar/nav-main";
+import { NavProjects } from "@/components/layout/sidebar/nav-projects";
+import { NavUser } from "@/components/layout/sidebar/nav-user";
+import { TeamSwitcher } from "@/components/layout/sidebar/team-switcher";
 import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
   SidebarHeader,
   SidebarRail,
-} from "@/components/ui/sidebar"
-import { GalleryVerticalEndIcon, AudioLinesIcon, TerminalIcon, TerminalSquareIcon, BotIcon, BookOpenIcon, Settings2Icon, FrameIcon, PieChartIcon, MapIcon, LayoutDashboard } from "lucide-react"
+} from "@/components/ui/sidebar";
+import {
+  GalleryVerticalEndIcon,
+  AudioLinesIcon,
+  TerminalIcon,
+  TerminalSquareIcon,
+  BotIcon,
+  BookOpenIcon,
+  Settings2Icon,
+  FrameIcon,
+  PieChartIcon,
+  MapIcon,
+  LayoutDashboard,
+} from "lucide-react";
 
 // This is sample data.
 const data = {
@@ -26,10 +38,20 @@ const data = {
     {
       name: "IgnisCore",
       logo: (
-        <img
-          src="/igniscore.svg"
-          alt="IgnisCore"
-          className="size-7 object-contain"
+        <div
+          className="size-7 shrink-0 bg-primary"
+          role="img"
+          aria-label="IgnisCore"
+          style={{
+            maskImage: "url('/igniscore.svg')",
+            WebkitMaskImage: "url('/igniscore.svg')",
+            maskRepeat: "no-repeat",
+            WebkitMaskRepeat: "no-repeat",
+            maskPosition: "center",
+            WebkitMaskPosition: "center",
+            maskSize: "contain",
+            WebkitMaskSize: "contain",
+          }}
         />
       ),
       plan: "Enterprise",
@@ -39,10 +61,7 @@ const data = {
     {
       title: "Principal",
       url: "#",
-      icon: (
-        <LayoutDashboard
-        />
-      ),
+      icon: <LayoutDashboard />,
       isActive: true,
       items: [
         {
@@ -70,10 +89,7 @@ const data = {
     {
       title: "Settings",
       url: "#",
-      icon: (
-        <Settings2Icon
-        />
-      ),
+      icon: <Settings2Icon />,
       items: [
         {
           title: "Perfil da empresa",
@@ -120,7 +136,7 @@ const data = {
   //     ),
   //   },
   // ],
-}
+};
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
@@ -137,5 +153,5 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>
-  )
+  );
 }
