@@ -1,14 +1,30 @@
 "use client";
 
-import { X, Hash, DollarSign } from "lucide-react";
-import { useEffect } from "react";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+
 import { DatePicker } from "@/components/ui/DatePicker";
+
 import { PRODUCT_TYPE_OPTIONS } from "@/lib/constants";
 import { useProductForm } from "@/hooks/useProductForm";
 import { maskCurrency, parseCurrencyToNumber } from "@/lib/validators";
+
 import type { ProductModalProps, ProductType } from "@/types/product";
 
 export function ProductModal({
@@ -25,45 +41,49 @@ export function ProductModal({
       onClose,
     });
 
-  useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "unset";
-    }
-    return () => {
-      document.body.style.overflow = "unset";
-    };
-  }, [isOpen]);
-
-  if (!isOpen) return null;
-
   return (
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4 animate-in fade-in duration-200"
-      onClick={onClose}
+    <Dialog
+      open={isOpen}
+      onOpenChange={(open) => {
+        if (!open) {
+          onClose();
+        }
+      }}
     >
-      <div
-        className="bg-white rounded-xl shadow-lg w-full max-w-2xl flex flex-col overflow-hidden animate-in zoom-in-95 duration-200"
-        onClick={(e) => e.stopPropagation()}
+      <DialogContent
+        className="
+          w-[calc(100%-1.5rem)]
+          max-w-2xl
+          max-h-[90vh]
+          overflow-y-auto
+          p-0
+          gap-0
+          rounded-xl
+        "
       >
-        <div className="flex items-center justify-between p-5 border-b border-gray-100">
-          <h2 className="text-xl font-semibold text-gray-900">
+        {/* HEADER */}
+        <DialogHeader className="border-b px-6 py-5 sm:px-8">
+          <DialogTitle className="text-xl font-semibold">
             {isEditing ? "Editar produto" : "Adicionar produto"}
-          </h2>
-          <button
-            onClick={onClose}
-            className="w-8 h-8 flex items-center justify-center rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-500 transition-colors cursor-pointer"
-          >
-            <X className="w-5 h-5" strokeWidth={2.5} />
-          </button>
-        </div>
+          </DialogTitle>
 
-        <form onSubmit={handleSubmit} className="flex flex-col">
-          <div className="p-8 space-y-6">
-            <div className="grid grid-cols-1 gap-4">
+          <DialogDescription>
+            {isEditing
+              ? "Atualize as informações do produto."
+              : "Preencha os dados abaixo para cadastrar um novo produto."}
+          </DialogDescription>
+        </DialogHeader>
+
+        <form onSubmit={handleSubmit}>
+          <div className="space-y-6 px-6 py-6 sm:px-8 sm:py-8">
+            <div className="space-y-2">
+              <label htmlFor="product-name" className="text-sm font-medium">
+                Nome
+              </label>
+
               <Input
-                placeholder="Nome"
+                id="product-name"
+                placeholder="Digite o nome do produto"
                 data-testid="inputName"
                 value={form.nome}
                 onChange={(e) => setField("nome", e.target.value)}
@@ -71,7 +91,12 @@ export function ProductModal({
               />
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {/* Tipo */}
+            <div className="space-y-2">
+              <label htmlFor="product-type" className="text-sm font-medium">
+                Tipo
+              </label>
+
               <Select
                 value={form.tipo || undefined}
                 onValueChange={(value) =>
@@ -79,10 +104,13 @@ export function ProductModal({
                 }
               >
                 <SelectTrigger
+                  id="product-type"
                   data-testid="selectType"
-                  className={errors.tipo ? "border-destructive" : ""}
+                  className={`w-full ${
+                    errors.tipo ? "border-destructive" : ""
+                  }`}
                 >
-                  <SelectValue placeholder="Tipo" />
+                  <SelectValue placeholder="Selecione o tipo" />
                 </SelectTrigger>
 
                 <SelectContent>
@@ -97,26 +125,50 @@ export function ProductModal({
               {errors.tipo && (
                 <p className="text-xs text-destructive">{errors.tipo}</p>
               )}
-              <DatePicker
-                placeholder="Validade"
-                data-testid="datePickerValidity"
-                date={form.validade}
-                setDate={(date) => setField("validade", date)}
-                error={errors.validade}
-              />
-              <Input
-                placeholder="Lote"
-                data-testid="inputLot"
-                value={form.lote}
-                onChange={(e) => setField("lote", e.target.value)}
-                error={errors.lote}
-                suffixIcon={<Hash size={18} className="text-gray-400" />}
-              />
             </div>
 
-            <div className="grid grid-cols-1 gap-4">
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+              <div className="space-y-2">
+                <label
+                  htmlFor="product-validity"
+                  className="text-sm font-medium"
+                >
+                  Validade
+                </label>
+
+                <DatePicker
+                  placeholder="Selecione a validade"
+                  data-testid="datePickerValidity"
+                  date={form.validade}
+                  setDate={(date) => setField("validade", date)}
+                  error={errors.validade}
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label htmlFor="product-lot" className="text-sm font-medium">
+                  Lote
+                </label>
+
+                <Input
+                  id="product-lot"
+                  placeholder="Digite o lote"
+                  data-testid="inputLot"
+                  value={form.lote}
+                  onChange={(e) => setField("lote", e.target.value)}
+                  error={errors.lote}
+                />
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <label htmlFor="product-price" className="text-sm font-medium">
+                Preço
+              </label>
+
               <Input
-                placeholder="Preço"
+                id="product-price"
+                placeholder="0,00"
                 data-testid="inputPrice"
                 type="text"
                 value={
@@ -128,38 +180,37 @@ export function ProductModal({
                   setField("preco", parseCurrencyToNumber(e.target.value))
                 }
                 error={errors.preco}
-                suffixIcon={
-                  <span className="text-sm font-bold text-gray-400">R$</span>
-                }
               />
             </div>
           </div>
 
-          <div className="p-6 bg-gray-50/50 border-t border-dashed border-gray-200 flex items-center justify-end gap-4">
+          <div className="flex flex-col-reverse gap-2 border-t bg-muted/30 px-6 py-4 sm:flex-row sm:justify-end sm:px-8">
             <Button
               type="button"
               data-testid="buttonCancelar"
               variant="outline"
               onClick={onClose}
-              className="px-8 py-2.5 h-auto text-sm font-bold rounded-lg bg-[#E5E7EB] text-gray-700 hover:bg-gray-300 border-none transition-colors cursor-pointer"
+              disabled={submitting}
+              className="w-full sm:w-auto"
             >
               Cancelar
             </Button>
+
             <Button
               type="submit"
               data-testid="buttonSalvar"
               disabled={submitting}
-              className="px-8 py-2.5 h-auto text-sm font-bold rounded-lg bg-[#FF5A1F] text-white hover:bg-[#E64D17] transition-colors shadow-sm cursor-pointer"
+              className="w-full sm:w-auto"
             >
               {submitting
                 ? "Salvando..."
                 : isEditing
                   ? "Salvar alterações"
-                  : "Adicionar"}
+                  : "Adicionar produto"}
             </Button>
           </div>
         </form>
-      </div>
-    </div>
+      </DialogContent>
+    </Dialog>
   );
 }
