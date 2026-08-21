@@ -104,12 +104,20 @@ export default function LoginForm() {
     <div className="mx-auto flex w-full max-w-sm flex-col px-4 sm:px-0">
       {/* Logo */}
       <div className="mb-8 flex items-center justify-center gap-2">
-        <Image
-          src="/igniscore.png"
-          alt="IgnisCore Logo"
-          width={38}
-          height={52}
-          className="object-contain"
+        <div
+          className="h-[52px] w-[38px] bg-primary"
+          role="img"
+          aria-label="IgnisCore Logo"
+          style={{
+            maskImage: "url('/igniscore.svg')",
+            WebkitMaskImage: "url('/igniscore.svg')",
+            maskRepeat: "no-repeat",
+            WebkitMaskRepeat: "no-repeat",
+            maskPosition: "center",
+            WebkitMaskPosition: "center",
+            maskSize: "contain",
+            WebkitMaskSize: "contain",
+          }}
         />
 
         <span
