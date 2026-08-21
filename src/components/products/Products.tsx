@@ -1,28 +1,32 @@
 "use client";
 
-import {
-  ArrowUp,
-  ArrowDown,
-  ArrowUpDown,
-  ChevronLeft,
-  ChevronRight,
-  Pencil,
-  Trash2,
-  ChevronDown,
-} from "lucide-react";
-import { ListPageHeader } from "@/components/shared/ListPageHeader";
-import { useProducts } from "@/hooks/useProducts";
+import { ArrowUp, ArrowDown, ArrowUpDown, Pencil, Trash2 } from "lucide-react";
+import { ListPageHeader } from "../shared/ListPageHeader";
 import { Product, ProductFormData } from "@/types/product";
 import { PRODUCT_TYPE_OPTIONS } from "@/lib/constants";
 import { ProductModal } from "./ProductModal";
+import { useProducts } from "@/hooks/useProducts";
 import { useAuth } from "@/contexts/AuthContext";
 import { UserRole } from "@/types/me";
+import { Button } from "../ui/button";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "../ui/table";
+import { Badge } from "../ui/badge";
+import { DataPagination } from "../layout/pagination/pagination";
 
 export default function Products() {
   const {
     pageData,
     loading,
     total,
+    totalPages,
+    hasNextPage,
     from,
     to,
     search,
@@ -54,6 +58,7 @@ export default function Products() {
 
   const sortIcon = (key: keyof Product) => {
     if (sort.key !== key) return <ArrowUpDown size={14} />;
+
     return sort.dir === "asc" ? <ArrowUp size={14} /> : <ArrowDown size={14} />;
   };
 
@@ -73,7 +78,7 @@ export default function Products() {
   }
 
   return (
-    <div className="h-screen max-h-screen p-6 flex flex-col bg-white text-base overflow-hidden">
+    <div className="max-h-screen p-6 flex flex-col text-base overflow-hidden">
       <ListPageHeader
         title="Produtos"
         search={search}
@@ -84,185 +89,146 @@ export default function Products() {
         onAddClick={() => setShowModal(true)}
       />
 
-      <div className="flex flex-wrap items-center gap-4 mb-4">
-        {["id", "nome", "tipo", "validade"].map((key) => (
-          <button
-            key={key}
-            onClick={() => handleSort(key as keyof Product)}
-            className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold border transition-colors cursor-pointer ${
-              sort.key === key
-                ? "bg-[#FF5A1F]/10 text-[#FF5A1F] border-[#FF5A1F]/20 shadow-sm"
-                : "bg-gray-100/50 text-gray-500 hover:bg-gray-100 hover:text-gray-700"
-            }`}
-          >
-            {key === "id" ? "ID" : key.charAt(0).toUpperCase() + key.slice(1)}{" "}
-            {sortIcon(key as keyof Product)}
-          </button>
-        ))}
+      {/* FILTROS */}
+      <div className="flex flex-wrap items-center gap-2 mb-4">
+        <Button
+          variant={sort.key === "id" ? "default" : "outline"}
+          onClick={() => handleSort("id")}
+        >
+          ID
+          {sortIcon("id")}
+        </Button>
+
+        <Button
+          variant={sort.key === "nome" ? "default" : "outline"}
+          onClick={() => handleSort("nome")}
+        >
+          Nome
+          {sortIcon("nome")}
+        </Button>
+
+        <Button
+          variant={sort.key === "tipo" ? "default" : "outline"}
+          onClick={() => handleSort("tipo")}
+        >
+          Tipo
+          {sortIcon("tipo")}
+        </Button>
+
+        <Button
+          variant={sort.key === "validade" ? "default" : "outline"}
+          onClick={() => handleSort("validade")}
+        >
+          Validade
+          {sortIcon("validade")}
+        </Button>
       </div>
 
       {/* TABELA */}
-      <div className="flex-1 min-h-0 flex flex-col">
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden h-fit max-h-full flex flex-col">
-          <div className="flex-1 overflow-y-auto overflow-x-hidden custom-scrollbar">
-            <table className="w-full text-left border-collapse table-fixed">
-              <thead className="sticky top-0 z-10 bg-gray-50">
-                <tr className="bg-gray-50 border-b border-gray-100">
-                  <th className="w-[80px] px-6 py-3 text-sm font-bold text-gray-500 uppercase tracking-wider">
-                    ID
-                  </th>
-                  <th className="px-6 py-3 text-sm font-bold text-gray-500 uppercase tracking-wider">
-                    Nome
-                  </th>
-                  <th className="w-[150px] px-6 py-3 text-sm font-bold text-gray-500 uppercase tracking-wider">
-                    Tipo
-                  </th>
-                  <th className="w-[120px] px-6 py-3 text-sm font-bold text-gray-500 uppercase tracking-wider">
-                    Validade
-                  </th>
-                  <th className="w-[120px] px-6 py-3 text-sm font-bold text-gray-500 uppercase tracking-wider">
-                    Lote
-                  </th>
-                  <th className="w-[150px] px-6 py-3 text-sm font-bold text-gray-500 uppercase tracking-wider text-right">
-                    Preço
-                  </th>
-                  <th className="w-[100px] px-6 py-3 text-sm font-bold text-gray-500 uppercase tracking-wider text-center">
-                    Ações
-                  </th>
-                </tr>
-              </thead>
+      <div className="overflow-x-auto">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Nº</TableHead>
+              <TableHead>Nome</TableHead>
+              <TableHead>Tipo</TableHead>
+              <TableHead>Validade</TableHead>
+              <TableHead>Lote</TableHead>
+              <TableHead className="text-right">Preço</TableHead>
+              <TableHead className="text-right">Ações</TableHead>
+            </TableRow>
+          </TableHeader>
 
-              <tbody className="divide-y divide-gray-50">
-                {pageData.length > 0 ? (
-                  pageData.map((product) => (
-                    <tr
-                      key={product.id}
-                      className="group hover:bg-gray-50/80 transition-colors cursor-pointer"
-                    >
-                      <td className="px-6 py-3.5 text-sm text-gray-500">
-                        {product.numberProduct}
-                      </td>
+          <TableBody>
+            {pageData.length > 0 ? (
+              pageData.map((product) => (
+                <TableRow key={product.id}>
+                  <TableCell className="tabular-nums">
+                    {product.numberProduct}
+                  </TableCell>
 
-                      <td
-                        className="px-6 py-3.5 text-sm font-bold text-gray-800 truncate"
+                  <TableCell>
+                    <div className="min-w-0">
+                      <span
+                        className="block truncate font-semibold"
                         title={product.nome}
                       >
                         {product.nome}
-                      </td>
+                      </span>
+                    </div>
+                  </TableCell>
 
-                      <td className="px-6 py-3.5">
-                        <span className="px-2.5 py-1 text-xs font-semibold rounded-full bg-gray-100 text-gray-600">
-                          {PRODUCT_TYPE_OPTIONS.find(
-                            (opt) => opt.value === product.tipo,
-                          )?.label || product.tipo}
-                        </span>
-                      </td>
+                  <TableCell>
+                    <Badge variant="secondary">
+                      {PRODUCT_TYPE_OPTIONS.find(
+                        (option) => option.value === product.tipo,
+                      )?.label || product.tipo}
+                    </Badge>
+                  </TableCell>
 
-                      <td className="px-6 py-3.5 text-sm text-gray-600 whitespace-nowrap">
-                        {product.validade.split("-").reverse().join("/")}
-                      </td>
+                  <TableCell className="whitespace-nowrap">
+                    {product.validade
+                      ? product.validade.split("-").reverse().join("/")
+                      : "-"}
+                  </TableCell>
 
-                      <td className="px-6 py-3.5 text-sm text-gray-600 whitespace-nowrap">
-                        {product.lote}
-                      </td>
+                  <TableCell className="whitespace-nowrap tabular-nums">
+                    {product.lote || "-"}
+                  </TableCell>
 
-                      <td className="px-6 py-3.5 text-sm font-bold text-gray-800 text-right tabular-nums whitespace-nowrap">
-                        {formatCurrency(product.preco)}
-                      </td>
+                  <TableCell className="text-right font-semibold tabular-nums whitespace-nowrap">
+                    {formatCurrency(product.preco)}
+                  </TableCell>
 
-                      <td className="px-6 py-3.5 text-center">
-                        <div className="flex items-center justify-center gap-4 opacity-0 group-hover:opacity-100 transition-opacity">
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              setEditing(product);
-                            }}
-                            className="text-[#FF5A1F] hover:text-[#E64D17] p-1.5 hover:bg-[#FF5A1F]/10 rounded-lg cursor-pointer"
-                          >
-                            <Pencil size={18} />
-                          </button>
-                          {user?.role === UserRole.OWNER && (
-                            <button
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                removeProduct(product.id);
-                              }}
-                              className="text-[#FF5A1F] hover:text-[#E64D17] p-1.5 hover:bg-[#FF5A1F]/10 rounded-lg cursor-pointer"
-                            >
-                              <Trash2 size={18} />
-                            </button>
-                          )}
-                        </div>
-                      </td>
-                    </tr>
-                  ))
-                ) : (
-                  <tr>
-                    <td
-                      colSpan={7}
-                      className="px-6 py-12 text-center text-gray-400"
-                    >
-                      Nenhum produto encontrado
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
-          </div>
-        </div>
-        <div className="flex-1 min-h-[20px]" />
+                  <TableCell>
+                    <div className="flex items-center justify-end gap-1">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => setEditing(product)}
+                        aria-label={`Editar ${product.nome}`}
+                      >
+                        <Pencil />
+                      </Button>
+
+                      {user?.role === UserRole.OWNER && (
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => removeProduct(product.id)}
+                          aria-label={`Excluir ${product.nome}`}
+                        >
+                          <Trash2 />
+                        </Button>
+                      )}
+                    </div>
+                  </TableCell>
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell colSpan={7} className="h-24 text-center">
+                  Nenhum produto encontrado
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
       </div>
 
-      {/* FOOTER */}
-      <footer className="mt-auto flex flex-col md:flex-row items-center justify-center gap-8 text-sm font-medium text-gray-500 shrink-0 py-6">
-        <div className="flex items-center gap-2">
-          <span>Linhas por página</span>
-          <div className="relative">
-            <select
-              value={perPage}
-              onChange={(e) => {
-                setPerPage(Number(e.target.value));
-                setPage(1);
-              }}
-              className="bg-transparent font-bold text-gray-800 outline-none appearance-none pr-4 cursor-pointer"
-            >
-              <option value={5}>5</option>
-              <option value={10}>10</option>
-              <option value={20}>20</option>
-              <option value={50}>50</option>
-            </select>
-            <ChevronDown
-              size={14}
-              className="absolute right-0 top-1/2 -translate-y-1/2 pointer-events-none"
-            />
-          </div>
-        </div>
+      {/* PAGINAÇÃO */}
+      <DataPagination
+        page={page}
+        totalPages={totalPages}
+        from={from}
+        to={to}
+        total={total}
+        pageSize={perPage}
+        onPageChange={setPage}
+        onPageSizeChange={setPerPage}
+      />
 
-        <div className="flex items-center gap-6">
-          <span className="font-bold text-gray-800">
-            {from}-{to} de {total}
-          </span>
-
-          <div className="flex items-center gap-3">
-            <button
-              onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
-              disabled={page === 1}
-              className="p-1.5 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-400 disabled:opacity-30 cursor-pointer disabled:cursor-not-allowed"
-            >
-              <ChevronLeft size={20} />
-            </button>
-
-            <button
-              onClick={() => setPage((prev) => prev + 1)}
-              disabled={to >= total}
-              className="p-1.5 rounded-lg bg-[#FF5A1F] hover:bg-[#E64D17] text-white disabled:opacity-30 cursor-pointer disabled:cursor-not-allowed"
-            >
-              <ChevronRight size={20} />
-            </button>
-          </div>
-        </div>
-      </footer>
-
+      {/* MODAL */}
       <ProductModal
         isOpen={showModal || !!editing}
         onClose={() => {
