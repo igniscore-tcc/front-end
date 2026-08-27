@@ -1,6 +1,5 @@
 import { useState, useMemo, useEffect, useCallback } from "react";
 import type { Cliente, SortKey, ClienteFormData } from "@/types/cliente";
-//import { mockClients } from "@/mocks/clients";
 import { INTERNAL_API, getAuthHeaders } from "@/lib/api";
 import { toast } from "sonner";
 import { useDebounce } from "@/hooks/useDebounce";
@@ -31,29 +30,38 @@ export function useClients() {
 
   const [page, setPage] = useState(1);
   const [perPage, setPerPage] = useState(10);
-  const [total, setTotal] = useState(0);
 
   const fetchClients = useCallback(async () => {
     try {
       setLoading(true);
 
-      const response = await fetch(
-        `${INTERNAL_API}/clients/findall?page=${page - 1}&size=${perPage}`,
-        {
-          method: "GET",
-          headers: getAuthHeaders(),
-        },
-      );
+      let all: any[] = [];
+      let currentPage = 0;
+      let totalPages = 1;
+      const BATCH_SIZE = 100;
 
-      const result = await safeJson(response);
+      do {
+        const response = await fetch(
+          `${INTERNAL_API}/clients/findall?page=${currentPage}&size=${BATCH_SIZE}`,
+          {
+            method: "GET",
+            headers: getAuthHeaders(),
+          },
+        );
 
-      if (!response.ok) {
-        throw new Error(result.error || "Erro ao buscar clientes");
-      }
+        const result = await safeJson(response);
 
-      const data = Array.isArray(result.clients) ? result.clients : [];
+        if (!response.ok) {
+          throw new Error(result.error || "Erro ao buscar clientes");
+        }
 
-      const formattedClients: Cliente[] = data.map((client: any) => ({
+        const data = Array.isArray(result.clients) ? result.clients : [];
+        all = all.concat(data);
+        totalPages = typeof result.totalPages === "number" ? result.totalPages : 1;
+        currentPage++;
+      } while (currentPage < totalPages);
+
+      const formattedClients: Cliente[] = all.map((client: any) => ({
         id: Number(client.id),
         number: client.number,
         nome: client.name,
@@ -68,12 +76,6 @@ export function useClients() {
       }));
 
       setClients(formattedClients);
-
-      setTotal(
-        typeof result.totalClients === "number"
-          ? result.totalClients
-          : formattedClients.length,
-      );
     } catch (error) {
       console.error("Erro ao carregar clientes:", error);
       toast.error(
@@ -84,7 +86,7 @@ export function useClients() {
     } finally {
       setLoading(false);
     }
-  }, [page, perPage]);
+  }, []);
 
   useEffect(() => {
     fetchClients();
@@ -92,7 +94,7 @@ export function useClients() {
 
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState<{ key: SortKey; dir: "asc" | "desc" }>({
-    key: "id",
+    key: "nome",
     dir: "asc",
   });
 
@@ -100,6 +102,7 @@ export function useClients() {
 
   const debouncedSearch = useDebounce(search, 300);
 
+  // Filtro roda sobre a base inteira (`clients`), não sobre uma página
   const filtered = useMemo(() => {
     const term = debouncedSearch.toLowerCase();
 
@@ -130,10 +133,15 @@ export function useClients() {
     });
   }, [filtered, sort]);
 
-  const totalPages = Math.ceil(total / perPage);
+  // Paginação agora é sobre o resultado já filtrado/ordenado
+  const total = sorted.length;
+  const totalPages = Math.max(1, Math.ceil(total / perPage));
   const hasNextPage = page < totalPages;
 
-  const pageData = sorted;
+  const pageData = useMemo(
+    () => sorted.slice((page - 1) * perPage, page * perPage),
+    [sorted, page, perPage],
+  );
 
   const from = total === 0 ? 0 : (page - 1) * perPage + 1;
   const to = Math.min(page * perPage, total);
