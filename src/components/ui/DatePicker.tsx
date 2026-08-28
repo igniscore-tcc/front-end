@@ -62,39 +62,17 @@ export function DatePicker({
             type="button"
             variant="outline"
             className={cn(
-              "relative h-14 w-full justify-between rounded-lg border-2 bg-[#E5E7EB] px-4 pt-[24px] pb-2 text-left font-normal text-gray-800 shadow-none transition-all hover:bg-[#E5E7EB] focus:outline-none",
+              "h-10 w-full min-w-0 rounded-xl border border-transparent bg-input/50 px-3 text-left font-normal transition-[color,box-shadow] duration-200 outline-none flex items-center justify-between focus-visible:ring-3 hover:bg-input/50 md:text-sm shadow-none",
               error
-                ? "border-red-500/60 focus:border-red-500"
-                : "border-transparent focus:border-[#FF5A1F]",
-              !date && "text-transparent",
+                ? "border-destructive/60 focus-visible:border-destructive focus-visible:ring-destructive/20"
+                : "focus-visible:border-ring focus-visible:ring-ring/30",
+              !date && "text-muted-foreground"
             )}
           >
-            <span
-              className={cn(
-                "truncate pr-8",
-                date ? "text-gray-800" : "text-transparent",
-              )}
-            >
-              {date && selectedDate ? format(selectedDate, "dd/MM/yyyy") : " "}
+            <span className="truncate">
+              {date && selectedDate ? format(selectedDate, "dd/MM/yyyy") : placeholder}
             </span>
-
-            <CalendarIcon
-              size={18}
-              className="absolute right-4 text-gray-400"
-            />
-
-            {placeholder && (
-              <span
-                className={cn(
-                  "pointer-events-none absolute left-4 z-10 origin-[0] transform text-gray-500 transition-all duration-200",
-                  isFloating
-                    ? "top-4 -translate-y-3 scale-75"
-                    : "top-1/2 -translate-y-1/2 scale-100",
-                )}
-              >
-                {placeholder}
-              </span>
-            )}
+            <CalendarIcon className="h-4 w-4 shrink-0 text-muted-foreground opacity-50" />
           </Button>
         </PopoverTrigger>
 

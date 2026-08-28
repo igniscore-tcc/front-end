@@ -82,7 +82,7 @@ export default function Clients() {
     );
 
   return (
-    <div className="max-h-screen p-6 flex flex-col text-base overflow-hidden">
+    <div className="p-6 flex flex-col text-base">
       <ListPageHeader
         title="Clientes"
         search={search}
