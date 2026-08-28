@@ -186,7 +186,7 @@ export function AddClientModal({
                 >
                   <SelectTrigger
                     data-testid="selectUF"
-                    className={`w-full ${
+                    className={`w-full h-10 mt-0 ${
                       errors.uf ? "border-destructive" : ""
                     }`}
                   >

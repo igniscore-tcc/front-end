@@ -237,8 +237,9 @@ export default function NewSale({
               onSubmit={handleAddCartItem}
               className="flex gap-3 mb-5 items-end"
             >
-              <div className="flex-3 relative [&>div]:mb-0 [&>div]:h-14">
+              <div className="flex-[3] relative">
                 <Input
+                  className="h-14"
                   placeholder="Produto"
                   value={productSearch}
                   onChange={(e) => {
@@ -273,8 +274,9 @@ export default function NewSale({
                   )}
               </div>
 
-              <div className="flex-[1.5] [&>div]:mb-0 [&>div]:h-14">
+              <div className="flex-[1.5]">
                 <Input
+                  className="h-14"
                   placeholder="Preço"
                   type="number"
                   step="0.01"
@@ -286,8 +288,9 @@ export default function NewSale({
                 />
               </div>
 
-              <div className="flex-1 [&>div]:mb-0 [&>div]:h-14">
+              <div className="flex-1">
                 <Input
+                  className="h-14"
                   placeholder="Qtd"
                   type="number"
                   min="1"

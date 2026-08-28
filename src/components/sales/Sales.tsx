@@ -12,7 +12,25 @@ import {
   ArrowDown,
   ArrowUpDown,
   X,
+  MoreVertical,
 } from "lucide-react";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "../ui/table";
+import { DataPagination } from "../layout/pagination/pagination";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "../ui/dropdown-menu";
+import { Button } from "../ui/button";
+import { Skeleton } from "../ui/skeleton";
 import { ListPageHeader } from "@/components/shared/ListPageHeader";
 import { SaleStatus, Sale } from "@/types/sale";
 import { useSales } from "@/hooks/useSales";
@@ -38,6 +56,15 @@ const statusLabels: Record<SaleStatus, string> = {
   COMPLETED: "Concluída",
   PENDING: "Pendente",
   CANCELLED: "Cancelada",
+};
+
+const formatNumber = (value: number | string) => {
+  const num = typeof value === "string" ? parseFloat(value) : value;
+  if (isNaN(num)) return value;
+  return new Intl.NumberFormat("pt-BR", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  }).format(num);
 };
 
 export default function Sales() {
@@ -106,13 +133,6 @@ export default function Sales() {
     return sort.dir === "asc" ? <ArrowUp size={14} /> : <ArrowDown size={14} />;
   };
 
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <span className="text-gray-500">Carregando vendas...</span>
-      </div>
-    );
-  }
 
   if (view === "create") {
     return (
@@ -150,7 +170,7 @@ export default function Sales() {
   }
 
   return (
-    <div className="h-screen max-h-screen p-6 flex flex-col bg-white text-base overflow-hidden">
+    <div className="p-6 flex flex-col text-base">
       <ListPageHeader
         title="Vendas"
         search={search}
@@ -161,40 +181,16 @@ export default function Sales() {
         onAddClick={() => setView("create")}
       />
 
-      <div className="flex flex-wrap items-center justify-between gap-4 mb-4 shrink-0">
+      <div className="flex flex-wrap items-center justify-between gap-4 mb-4">
         <div className="flex items-center gap-3">
-          <button
-            type="button"
-            onClick={() => handleSort("id")}
-            className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold border transition-colors ${
-              sort.key === "id"
-                ? "bg-[#FF5A1F]/10 text-[#FF5A1F] border-[#FF5A1F]/20"
-                : "bg-gray-100/50 text-gray-500 hover:bg-gray-100 border-transparent"
-            }`}
-          >
-            <span>ID</span>
-            {sort.key === "id" ? (
-              sort.dir === "asc" ? (
-                <ArrowUp size={14} />
-              ) : (
-                <ArrowDown size={14} />
-              )
-            ) : (
-              <ArrowUpDown size={14} />
-            )}
-          </button>
-
-          <div className="flex items-center gap-3">
             <Popover>
               <PopoverTrigger asChild>
-                <div className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-gray-200 bg-gray-50 hover:bg-gray-100 transition-colors cursor-pointer text-sm text-gray-700 min-w-[140px]">
-                  <CalendarIcon size={16} className="text-gray-400 shrink-0" />
-                  <span className={!dateFrom ? "text-gray-400" : ""}>
-                    {dateFrom
-                      ? format(parseISO(dateFrom), "dd/MM/yyyy")
-                      : "Data inicial"}
-                  </span>
-                </div>
+                <Button variant="outline" className={`w-[140px] justify-start text-left font-normal ${!dateFrom && "text-muted-foreground"}`}>
+                  <CalendarIcon size={16} className="mr-2 h-4 w-4 shrink-0" />
+                  {dateFrom
+                    ? format(parseISO(dateFrom), "dd/MM/yyyy")
+                    : "Data inicial"}
+                </Button>
               </PopoverTrigger>
               <PopoverContent className="w-auto p-0" align="start">
                 <Calendar
@@ -209,18 +205,16 @@ export default function Sales() {
               </PopoverContent>
             </Popover>
 
-            <span className="text-gray-400 text-sm font-medium">até</span>
+            <span className="text-muted-foreground text-sm font-medium">até</span>
 
             <Popover>
               <PopoverTrigger asChild>
-                <div className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-gray-200 bg-gray-50 hover:bg-gray-100 transition-colors cursor-pointer text-sm text-gray-700 min-w-[140px]">
-                  <CalendarIcon size={16} className="text-gray-400 shrink-0" />
-                  <span className={!dateTo ? "text-gray-400" : ""}>
-                    {dateTo
-                      ? format(parseISO(dateTo), "dd/MM/yyyy")
-                      : "Data final"}
-                  </span>
-                </div>
+                <Button variant="outline" className={`w-[140px] justify-start text-left font-normal ${!dateTo && "text-muted-foreground"}`}>
+                  <CalendarIcon size={16} className="mr-2 h-4 w-4 shrink-0" />
+                  {dateTo
+                    ? format(parseISO(dateTo), "dd/MM/yyyy")
+                    : "Data final"}
+                </Button>
               </PopoverTrigger>
               <PopoverContent className="w-auto p-0" align="start">
                 <Calendar
@@ -236,34 +230,33 @@ export default function Sales() {
             </Popover>
 
             {(dateFrom || dateTo) && (
-              <button
-                type="button"
+              <Button
+                variant="ghost"
                 onClick={() => {
                   setDateFrom("");
                   setDateTo("");
                   setPage(1);
                 }}
-                className="group flex items-center gap-1.5 px-3 py-2 ml-1 rounded-xl bg-gray-100 hover:bg-red-50 text-gray-500 hover:text-red-500 transition-all cursor-pointer text-sm font-medium"
+                className="group flex items-center gap-1.5 px-3 py-2 text-muted-foreground hover:text-destructive transition-all"
               >
                 <X
                   size={14}
                   className="group-hover:rotate-90 transition-transform duration-200"
                 />
                 <span>Limpar</span>
-              </button>
+              </Button>
             )}
-          </div>
         </div>
 
         <div className="flex items-center gap-3">
           <div className="relative">
-            <select
+              <select
               value={filterStatus}
               onChange={(e) => {
                 setFilterStatus(e.target.value as typeof filterStatus);
                 setPage(1);
               }}
-              className="px-5 py-2.5 pr-10 rounded-xl text-sm font-bold border border-gray-200 bg-gray-50 hover:bg-gray-100 transition-colors text-gray-600 appearance-none outline-none cursor-pointer"
+              className="px-4 py-2 pr-8 rounded-md text-sm border border-input bg-background hover:bg-accent hover:text-accent-foreground transition-colors appearance-none outline-none cursor-pointer"
             >
               <option value="ALL">Todos os status</option>
               <option value="CONCLUDED">Concluídas</option>
@@ -273,162 +266,116 @@ export default function Sales() {
 
             <ChevronDown
               size={16}
-              className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400"
+              className="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none text-muted-foreground"
             />
           </div>
         </div>
       </div>
 
-      <div className="flex-1 min-h-0 flex flex-col">
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden h-fit max-h-full flex flex-col">
-          <div className="flex-1 overflow-y-auto overflow-x-hidden custom-scrollbar">
-            <table className="w-full text-left border-collapse">
-              <thead className="sticky top-0 z-10 bg-gray-50">
-                <tr className="bg-gray-50 border-b border-gray-100">
-                  <th className="w-[80px] px-6 py-3 text-sm font-bold text-gray-500 uppercase tracking-wider text-center">
-                    ID
-                  </th>
-                  <th className="px-6 py-3 text-sm font-bold text-gray-500 uppercase tracking-wider text-right">
-                    Total
-                  </th>
-                  <th className="px-6 py-3 text-sm font-bold text-gray-500 uppercase tracking-wider text-center">
-                    Desconto
-                  </th>
-                  <th className="px-6 py-3 text-sm font-bold text-gray-500 uppercase tracking-wider text-center">
-                    Data
-                  </th>
-                  <th className="px-6 py-3 text-sm font-bold text-gray-500 uppercase tracking-wider text-center">
-                    Tipo Pgto.
-                  </th>
-                  <th className="px-6 py-3 text-sm font-bold text-gray-500 uppercase tracking-wider text-center">
-                    Status
-                  </th>
-                  <th className="w-[100px] px-6 py-3 text-sm font-bold text-gray-500 uppercase tracking-wider text-center">
-                    Ações
-                  </th>
-                </tr>
-              </thead>
+      <div className="overflow-x-auto">
+        <Table className="table-fixed w-full min-w-[800px]">
+          <TableHeader>
+            <TableRow>
+              <TableHead className="w-[25%] text-left">Cliente</TableHead>
+              <TableHead className="w-[10%] text-right">Total</TableHead>
+              <TableHead className="w-[15%] text-center">Desconto</TableHead>
+              <TableHead className="w-[15%] text-center">Data</TableHead>
+              <TableHead className="w-[15%] text-center">Tipo Pgto.</TableHead>
+              <TableHead className="w-[10%] text-center">Status</TableHead>
+              <TableHead className="w-[10%] text-right">Ações</TableHead>
+            </TableRow>
+          </TableHeader>
 
-              <tbody className="divide-y divide-gray-50">
-                {pageData.length > 0 ? (
-                  pageData.map((sale) => (
-                    <tr
-                      key={sale.id}
-                      onClick={() => setSelectedSale(sale)}
-                      className="group hover:bg-gray-50/80 transition-colors cursor-pointer"
+          <TableBody>
+            {loading ? (
+              Array.from({ length: perPage > 8 ? 8 : perPage }).map((_, i) => (
+                <TableRow key={`skeleton-${i}`}>
+                  <TableCell><Skeleton className="h-4 w-36" /></TableCell>
+                  <TableCell><Skeleton className="h-4 w-20 ml-auto" /></TableCell>
+                  <TableCell><Skeleton className="h-4 w-12 mx-auto" /></TableCell>
+                  <TableCell><Skeleton className="h-4 w-24 mx-auto" /></TableCell>
+                  <TableCell><Skeleton className="h-4 w-20 mx-auto" /></TableCell>
+                  <TableCell><Skeleton className="h-5 w-16 rounded-full mx-auto" /></TableCell>
+                  <TableCell />
+                </TableRow>
+              ))
+            ) : pageData.length > 0 ? (
+              pageData.map((sale) => (
+                <TableRow
+                  key={sale.id}
+                  onClick={() => setSelectedSale(sale)}
+                  className="cursor-pointer"
+                >
+                  <TableCell className="font-semibold truncate max-w-[200px]" title={sale.cliente?.nome}>
+                    {sale.cliente?.nome || "Não informado"}
+                  </TableCell>
+                  <TableCell className="text-right font-bold tabular-nums">
+                    <span className="font-normal text-muted-foreground">R$ </span>{formatNumber(sale.total)}
+                  </TableCell>
+                  <TableCell className="text-center text-muted-foreground">
+                    {sale.desconto}
+                  </TableCell>
+                  <TableCell className="text-center text-muted-foreground whitespace-nowrap">
+                    {sale.data}
+                  </TableCell>
+                  <TableCell className="text-center text-muted-foreground font-medium">
+                    {paymentLabels[sale.tipo] || sale.tipo}
+                  </TableCell>
+                  <TableCell className="text-center">
+                    <span
+                      className={`px-2.5 py-1 text-xs font-semibold rounded-full ${
+                        sale.status === SaleStatus.COMPLETED
+                          ? "bg-green-100 text-green-700"
+                          : sale.status === SaleStatus.PENDING
+                            ? "bg-yellow-100 text-yellow-700"
+                            : "bg-red-100 text-red-700"
+                      }`}
                     >
-                      <td className="px-6 py-3.5 text-sm text-gray-500 font-semibold text-center">
-                        {sale.numberSale}
-                      </td>
-                      <td className="px-6 py-3.5 text-sm font-bold text-gray-800 text-right">
-                        {sale.total}
-                      </td>
-                      <td className="px-6 py-3.5 text-sm text-gray-600 text-center">
-                        {sale.desconto}
-                      </td>
-                      <td className="px-6 py-3.5 text-sm text-gray-600 whitespace-nowrap text-center">
-                        {sale.data}
-                      </td>
-                      {/* 🔄 Corrigido para sale.tipo + Tradução do Enum Java */}
-                      <td className="px-6 py-3.5 text-sm text-gray-600 font-medium text-center">
-                        {paymentLabels[sale.tipo] || sale.tipo}
-                      </td>
-                      <td className="px-6 py-3.5 text-center">
-                        <span
-                          className={`px-2.5 py-1 text-xs font-semibold rounded-full ${
-                            sale.status === SaleStatus.COMPLETED
-                              ? "bg-green-100 text-green-700"
-                              : sale.status === SaleStatus.PENDING
-                                ? "bg-yellow-100 text-yellow-700"
-                                : "bg-red-100 text-red-700"
-                          }`}
-                        >
-                          {statusLabels[sale.status] || sale.status}
-                        </span>
-                      </td>
-                      <td className="px-6 py-3.5 text-center">
-                        <div className="flex items-center justify-center gap-4 opacity-0 group-hover:opacity-100 transition-opacity">
-                          <button
-                            type="button"
-                            className="text-[#FF5A1F] hover:text-[#E64D17] p-1.5 hover:bg-[#FF5A1F]/10 rounded-lg cursor-pointer"
-                          >
-                            <Pencil size={18} />
-                          </button>
-                          <button
-                            type="button"
-                            className="text-[#FF5A1F] hover:text-[#E64D17] p-1.5 hover:bg-[#FF5A1F]/10 rounded-lg cursor-pointer"
-                          >
-                            <Trash2 size={18} />
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))
-                ) : (
-                  <tr>
-                    <td
-                      colSpan={7}
-                      className="px-6 py-12 text-center text-gray-400"
-                    >
-                      Nenhuma venda encontrada
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
-          </div>
-        </div>
-        <div className="flex-1 min-h-[20px]" />
+                      {statusLabels[sale.status] || sale.status}
+                    </span>
+                  </TableCell>
+                  <TableCell className="text-right" onClick={(e) => e.stopPropagation()}>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button variant="ghost" size="icon">
+                          <MoreVertical size={18} />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end">
+                        <DropdownMenuItem>
+                          <Pencil className="mr-2 h-4 w-4" />
+                          Editar
+                        </DropdownMenuItem>
+                        <DropdownMenuItem className="text-red-600">
+                          <Trash2 className="mr-2 h-4 w-4" />
+                          Excluir
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </TableCell>
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell colSpan={7} className="h-24 text-center">
+                  Nenhuma venda encontrada
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
       </div>
 
-      <footer className="mt-auto flex flex-col md:flex-row items-center justify-center gap-8 text-sm font-medium text-gray-500 shrink-0 py-6">
-        <div className="flex items-center gap-2">
-          <span>Linhas por página</span>
-          <div className="relative">
-            <select
-              value={perPage}
-              onChange={(e) => {
-                setPerPage(Number(e.target.value));
-                setPage(1);
-              }}
-              className="bg-transparent font-bold text-gray-800 outline-none pr-4 appearance-none cursor-pointer"
-            >
-              <option value={5}>5</option>
-              <option value={10}>10</option>
-              <option value={20}>20</option>
-              <option value={50}>50</option>
-            </select>
-            <ChevronDown
-              size={14}
-              className="absolute right-0 top-1/2 -translate-y-1/2 pointer-events-none"
-            />
-          </div>
-        </div>
-
-        <div className="flex items-center gap-4">
-          <span>
-            {from}-{to} de {total}
-          </span>
-          <div className="flex items-center gap-3">
-            <button
-              type="button"
-              onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
-              disabled={page === 1}
-              className="p-1.5 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-400 disabled:opacity-30 cursor-pointer disabled:cursor-not-allowed"
-            >
-              <ChevronLeft size={20} />
-            </button>
-            <button
-              type="button"
-              onClick={() => setPage((prev) => Math.min(prev + 1, totalPages))}
-              disabled={!hasNextPage}
-              className="p-1.5 rounded-lg bg-[#FF5A1F] hover:bg-[#E64D17] text-white disabled:opacity-30 cursor-pointer disabled:cursor-not-allowed"
-            >
-              <ChevronRight size={20} />
-            </button>
-          </div>
-        </div>
-      </footer>
+      <DataPagination
+        page={page}
+        totalPages={totalPages}
+        from={from}
+        to={to}
+        total={total}
+        pageSize={perPage}
+        onPageChange={setPage}
+        onPageSizeChange={setPerPage}
+      />
 
       {selectedSale && (
         <div
@@ -436,32 +383,31 @@ export default function Sales() {
           onClick={() => setSelectedSale(null)}
         >
           <div
-            className="bg-white w-full max-w-[980px] rounded-[28px] shadow-2xl overflow-hidden"
+            className="bg-background border border-border w-full max-w-[980px] max-h-[90vh] rounded-[28px] shadow-2xl overflow-hidden flex flex-col"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="flex items-center justify-between border-b border-gray-100 px-8 py-6">
-              <h2 className="text-[26px] font-medium text-[#1A1A1A]">
+            <div className="flex items-center justify-between border-b border-border px-8 py-6 shrink-0">
+              <h2 className="text-[26px] font-medium text-foreground">
                 Detalhes da venda
               </h2>
 
               <button
                 onClick={() => setSelectedSale(null)}
-                className="w-10 h-10 rounded-lg hover:bg-gray-100 flex items-center justify-center text-gray-500 text-2xl cursor-pointer"
+                className="w-10 h-10 rounded-lg hover:bg-muted flex items-center justify-center text-muted-foreground text-2xl cursor-pointer"
               >
                 ×
               </button>
             </div>
 
-            <div className="p-8">
+            <div className="p-8 overflow-y-auto">
               <div className="flex justify-between items-start mb-8">
                 <div>
-                  <h1 className="text-[32px] font-bold text-[#1A1A1A]">
+                  <h1 className="text-[32px] font-bold text-foreground">
                     {selectedSale.cliente?.nome || "Cliente não informado"}
                   </h1>
 
                   <div className="flex items-center gap-4 mt-4">
-                    {/* 🔄 Corrigido para selectedSale.data */}
-                    <span className="text-[20px] text-gray-600">
+                    <span className="text-[20px] text-muted-foreground">
                       {selectedSale.data}
                     </span>
 
@@ -479,25 +425,25 @@ export default function Sales() {
                   </div>
                 </div>
 
-                <h1 className="text-[40px] font-black text-[#FF5A1F]">
-                  {selectedSale.total}
+                <h1 className="text-[40px] font-black text-primary tabular-nums">
+                  <span className="text-2xl font-medium text-muted-foreground">R$ </span>{formatNumber(selectedSale.total)}
                 </h1>
               </div>
 
-              <div className="rounded-2xl overflow-hidden border border-gray-100">
+              <div className="rounded-2xl overflow-hidden border border-border">
                 <table className="w-full">
-                  <thead className="bg-[#FDF0EB]">
+                  <thead className="bg-muted/50 sticky top-0 z-10">
                     <tr>
-                      <th className="px-6 py-5 text-left text-[#FF5A1F] font-bold">
+                      <th className="px-6 py-5 text-left text-primary font-bold">
                         ID
                       </th>
-                      <th className="px-6 py-5 text-left text-[#FF5A1F] font-bold">
+                      <th className="px-6 py-5 text-left text-primary font-bold">
                         Item
                       </th>
-                      <th className="px-6 py-5 text-left text-[#FF5A1F] font-bold">
+                      <th className="px-6 py-5 text-left text-primary font-bold">
                         Unidades
                       </th>
-                      <th className="px-6 py-5 text-left text-[#FF5A1F] font-bold">
+                      <th className="px-6 py-5 text-left text-primary font-bold">
                         Total
                       </th>
                     </tr>
@@ -508,20 +454,20 @@ export default function Sales() {
                       selectedSale.items.map((item) => (
                         <tr
                           key={`${item.id}-${item.nome}`}
-                          className="border-t border-gray-100"
+                          className="border-t border-border"
                         >
-                          <td className="px-6 py-5 text-gray-700">{item.id}</td>
+                          <td className="px-6 py-5 text-muted-foreground">{item.id}</td>
 
-                          <td className="px-6 py-5 text-gray-800 font-medium">
+                          <td className="px-6 py-5 text-foreground font-medium">
                             {item.nome}
                           </td>
 
-                          <td className="px-6 py-5 text-gray-700">
+                          <td className="px-6 py-5 text-muted-foreground">
                             {item.units}
                           </td>
 
-                          <td className="px-6 py-5 font-bold text-gray-900">
-                            {item.total}
+                          <td className="px-6 py-5 font-bold text-foreground text-right tabular-nums">
+                            <span className="font-normal text-muted-foreground">R$ </span>{formatNumber(item.total)}
                           </td>
                         </tr>
                       ))
@@ -529,7 +475,7 @@ export default function Sales() {
                       <tr>
                         <td
                           colSpan={4}
-                          className="text-center py-10 text-gray-400"
+                          className="text-center py-10 text-muted-foreground"
                         >
                           Nenhum item encontrado
                         </td>

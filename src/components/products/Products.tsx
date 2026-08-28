@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowUp, ArrowDown, ArrowUpDown, Pencil, Trash2 } from "lucide-react";
+import { ArrowUp, ArrowDown, ArrowUpDown, Pencil, Trash2, MoreVertical } from "lucide-react";
 import { ListPageHeader } from "../shared/ListPageHeader";
 import { Product, ProductFormData } from "@/types/product";
 import { PRODUCT_TYPE_OPTIONS } from "@/lib/constants";
@@ -18,8 +18,15 @@ import {
   TableRow,
 } from "../ui/table";
 import { Badge } from "../ui/badge";
+import { Skeleton } from "../ui/skeleton";
 import { DataPagination } from "../layout/pagination/pagination";
 import { ConfirmDialog } from "../shared/DeleteConfirmModal";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "../ui/dropdown-menu";
 
 export default function Products() {
   const {
@@ -81,7 +88,7 @@ export default function Products() {
   }
 
   return (
-    <div className="max-h-screen p-6 flex flex-col text-base overflow-hidden">
+    <div className="p-6 flex flex-col text-base">
       <ListPageHeader
         title="Produtos"
         search={search}
@@ -94,14 +101,6 @@ export default function Products() {
 
       {/* FILTROS */}
       <div className="flex flex-wrap items-center gap-2 mb-4">
-        <Button
-          variant={sort.key === "id" ? "default" : "outline"}
-          onClick={() => handleSort("id")}
-        >
-          ID
-          {sortIcon("id")}
-        </Button>
-
         <Button
           variant={sort.key === "nome" ? "default" : "outline"}
           onClick={() => handleSort("nome")}
@@ -129,27 +128,33 @@ export default function Products() {
 
       {/* TABELA */}
       <div className="overflow-x-auto">
-        <Table>
+        <Table className="table-fixed w-full min-w-[800px]">
           <TableHeader>
             <TableRow>
-              <TableHead>Nº</TableHead>
-              <TableHead>Nome</TableHead>
-              <TableHead>Tipo</TableHead>
-              <TableHead>Validade</TableHead>
-              <TableHead>Lote</TableHead>
-              <TableHead className="text-right">Preço</TableHead>
-              <TableHead className="text-right">Ações</TableHead>
+              <TableHead className="w-[30%]">Nome</TableHead>
+              <TableHead className="w-[15%]">Tipo</TableHead>
+              <TableHead className="w-[15%]">Validade</TableHead>
+              <TableHead className="w-[15%]">Lote</TableHead>
+              <TableHead className="w-[10%] text-right">Preço</TableHead>
+              <TableHead className="w-[5%] text-right">Ações</TableHead>
             </TableRow>
           </TableHeader>
 
           <TableBody>
-            {pageData.length > 0 ? (
+            {loading ? (
+              Array.from({ length: perPage > 8 ? 8 : perPage }).map((_, i) => (
+                <TableRow key={`skeleton-${i}`}>
+                  <TableCell><Skeleton className="h-4 w-40" /></TableCell>
+                  <TableCell><Skeleton className="h-5 w-20 rounded-full" /></TableCell>
+                  <TableCell><Skeleton className="h-4 w-24" /></TableCell>
+                  <TableCell><Skeleton className="h-4 w-16" /></TableCell>
+                  <TableCell><Skeleton className="h-4 w-20 ml-auto" /></TableCell>
+                  <TableCell />
+                </TableRow>
+              ))
+            ) : pageData.length > 0 ? (
               pageData.map((product) => (
                 <TableRow key={product.id}>
-                  <TableCell className="tabular-nums">
-                    {product.numberProduct}
-                  </TableCell>
-
                   <TableCell>
                     <div className="min-w-0">
                       <span
@@ -183,34 +188,41 @@ export default function Products() {
                     {formatCurrency(product.preco)}
                   </TableCell>
 
-                  <TableCell>
-                    <div className="flex items-center justify-end gap-1">
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => setEditing(product)}
-                        aria-label={`Editar ${product.nome}`}
-                      >
-                        <Pencil />
-                      </Button>
-
-                      {user?.role === UserRole.OWNER && (
+                  <TableCell className="text-right">
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
                         <Button
                           variant="ghost"
                           size="icon"
-                          onClick={() => setDeleting(product)}
-                          aria-label={`Excluir ${product.nome}`}
+                          aria-label={`Ações de ${product.nome}`}
                         >
-                          <Trash2 />
+                          <MoreVertical />
                         </Button>
-                      )}
-                    </div>
+                      </DropdownMenuTrigger>
+
+                      <DropdownMenuContent align="end">
+                        <DropdownMenuItem onClick={() => setEditing(product)}>
+                          <Pencil />
+                          Editar
+                        </DropdownMenuItem>
+
+                        {user?.role === UserRole.OWNER && (
+                          <DropdownMenuItem
+                            variant="destructive"
+                            onClick={() => setDeleting(product)}
+                          >
+                            <Trash2 />
+                            Excluir
+                          </DropdownMenuItem>
+                        )}
+                      </DropdownMenuContent>
+                    </DropdownMenu>
                   </TableCell>
                 </TableRow>
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={7} className="h-24 text-center">
+                <TableCell colSpan={6} className="h-24 text-center">
                   Nenhum produto encontrado
                 </TableCell>
               </TableRow>
