@@ -85,10 +85,14 @@ const data = {
           title: "Vencimentos",
           url: "/vencimentos",
         },
+        {
+          title: "Funcionários",
+          url: "/users",
+        },
       ],
     },
     {
-      title: "Settings",
+      title: "Configurações",
       url: "#",
       icon: <Settings2Icon />,
       items: [
