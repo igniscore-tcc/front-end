@@ -142,7 +142,7 @@ export default function Solutions() {
                   pointer-events-none
                   absolute
                   inset-0
-                  bg-[radial-gradient(circle_at_top_left,rgba(255,90,31,0.12),transparent_70%)]
+                  bg-[radial-gradient(circle_at_top_left,color-mix(in_srgb,var(--primary)_12%,transparent),transparent_70%)]
                   opacity-0
                   transition-opacity
                   duration-500

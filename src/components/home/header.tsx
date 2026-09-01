@@ -55,14 +55,21 @@ export default function Header() {
           href="/"
           className="flex items-center gap-4 transition-opacity hover:opacity-80"
         >
-          <Image
-            src="/igniscore.png"
-            alt="IgnisCore Logo"
-            width={36}
-            height={48}
-            className="object-contain"
-            priority
-          />
+          <div
+          className="h-[48px] w-[36px] bg-primary"
+          role="img"
+          aria-label="IgnisCore Logo"
+          style={{
+            maskImage: "url('/igniscore.svg')",
+            WebkitMaskImage: "url('/igniscore.svg')",
+            maskRepeat: "no-repeat",
+            WebkitMaskRepeat: "no-repeat",
+            maskPosition: "center",
+            WebkitMaskPosition: "center",
+            maskSize: "contain",
+            WebkitMaskSize: "contain",
+          }}
+        />
 
           <span className="text-2xl font-bold leading-[1.3] tracking-[0.01em] text-primary">
             IgnisCore
