@@ -101,18 +101,6 @@ const data = {
           title: "Perfil da empresa",
           url: "/configuracoes",
         },
-        {
-          title: "Team",
-          url: "#",
-        },
-        {
-          title: "Billing",
-          url: "#",
-        },
-        {
-          title: "Limits",
-          url: "#",
-        },
       ],
     },
   ],
