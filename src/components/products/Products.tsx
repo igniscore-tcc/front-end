@@ -273,7 +273,7 @@ export default function Products() {
             <strong className="text-foreground">"{deleting?.nome}"</strong>?
           </>
         }
-        warning="Esta ação não poderá ser desfeita."
+        warning="Esta ação não poderá ser desfeita e todos os dados associados serão removidos."
         confirmText="Excluir"
       />
     </div>
