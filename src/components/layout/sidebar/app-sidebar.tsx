@@ -55,7 +55,7 @@ const data = {
           }}
         />
       ),
-      plan: "Enterprise",
+      plan: "Gestão Inteligente",
     },
   ],
   navMain: [
