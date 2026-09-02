@@ -236,7 +236,7 @@ export default function Settings() {
             <AvatarImage
               src={selectedImage || "/imgProfile.png"}
               alt={company.name}
-              className="rounded-xl object-cover"
+              className="object-cover"
             />
 
             <AvatarFallback className="text-xl sm:text-2xl">
