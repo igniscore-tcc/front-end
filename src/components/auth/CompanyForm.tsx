@@ -4,7 +4,6 @@ import { useState } from "react";
 import { CompanyFormData } from "@/types/auth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import Image from "next/image";
 import Link from "next/link";
 import { Loader2 } from "lucide-react";
 import {
@@ -46,6 +45,7 @@ export default function CompanyForm() {
     };
 
     let isValid = true;
+
     const email = normalizeEmail(formData.email);
 
     if (!formData.nome.trim()) {
@@ -54,6 +54,7 @@ export default function CompanyForm() {
     }
 
     const cnpjDigits = extractNumbers(formData.cnpj);
+
     if (!cnpjDigits.length) {
       newErrors.cnpj = "CNPJ obrigatório";
       isValid = false;
@@ -82,31 +83,43 @@ export default function CompanyForm() {
     }
 
     setErrors(newErrors);
+
     return isValid;
   };
 
   const removeError = (field: keyof typeof errors) => {
-    setErrors((prev) => ({ ...prev, [field]: "" }));
+    setErrors((prev) => ({
+      ...prev,
+      [field]: "",
+    }));
   };
 
   const calculateProgress = () => {
     let filledFields = 0;
 
     if (formData.nome.trim().length >= 3) filledFields++;
+
     if (
       extractNumbers(formData.cnpj).length === 14 &&
       validateCnpj(formData.cnpj)
-    )
+    ) {
       filledFields++;
-    if (validateEmail(normalizeEmail(formData.email))) filledFields++;
+    }
+
+    if (validateEmail(normalizeEmail(formData.email))) {
+      filledFields++;
+    }
+
     if (
       extractNumbers(formData.telefone).length >= 10 &&
       validatePhoneLength(formData.telefone)
-    )
+    ) {
       filledFields++;
+    }
 
     return 50 + filledFields * 12.5;
   };
+
   const progressPercentage = calculateProgress();
 
   async function handleSubmit(e: React.FormEvent) {
@@ -140,38 +153,54 @@ export default function CompanyForm() {
   }
 
   return (
-    <div className="w-full max-w-sm mx-auto flex flex-col min-h-[600px] px-4 sm:px-0">
-      <div className="flex items-center justify-center gap-2 mb-8">
-        <Image
-          src="/igniscore.png"
-          alt="IgnisCore Logo"
-          width={38}
-          height={52}
-          className="object-contain"
+    <div className="mx-auto flex w-full max-w-sm flex-col px-4 sm:px-0">
+      {/* Logo */}
+      <div className="mb-8 flex items-center justify-center gap-2">
+        <div
+          className="h-[52px] w-[38px] bg-primary"
+          role="img"
+          aria-label="IgnisCore Logo"
+          style={{
+            maskImage: "url('/igniscore.svg')",
+            WebkitMaskImage: "url('/igniscore.svg')",
+            maskRepeat: "no-repeat",
+            WebkitMaskRepeat: "no-repeat",
+            maskPosition: "center",
+            WebkitMaskPosition: "center",
+            maskSize: "contain",
+            WebkitMaskSize: "contain",
+          }}
         />
+
         <span
-          className="text-[35px] font-bold text-[#FF5A1F]"
-          style={{ fontFamily: "var(--font-space-grotesk)" }}
+          className="text-4xl font-bold text-primary"
+          style={{
+            fontFamily: "var(--font-space-grotesk)",
+          }}
         >
           IgnisCore
         </span>
       </div>
 
-      <div className="w-full border-t border-gray-100 mb-6"></div>
+      {/* Título */}
       <div className="mb-8">
-        <h2 className="text-[25px] font-semibold text-[#FF5A1F] mb-3">
+        <h2 className="mb-3 text-2xl font-semibold text-primary">
           Cadastrar sua empresa
         </h2>
-        <div className="flex w-full h-1.5 bg-[#F0F0F0] rounded-full overflow-hidden">
+
+        {/* Progresso */}
+        <div className="h-1.5 w-full overflow-hidden rounded-full bg-muted">
           <div
-            className="bg-[#FF5A1F] h-full rounded-full transition-all duration-500 ease-out"
-            style={{ width: `${progressPercentage}%` }}
-          ></div>
+            className="h-full rounded-full bg-primary transition-all duration-500 ease-out"
+            style={{
+              width: `${progressPercentage}%`,
+            }}
+          />
         </div>
       </div>
 
       <form
-        className="w-full flex flex-col gap-4"
+        className="flex w-full flex-col gap-4"
         onSubmit={handleSubmit}
         noValidate
       >
@@ -180,7 +209,11 @@ export default function CompanyForm() {
           autoComplete="organization"
           value={formData.nome}
           onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-            setFormData({ ...formData, nome: e.target.value });
+            setFormData({
+              ...formData,
+              nome: e.target.value,
+            });
+
             removeError("nome");
           }}
           error={errors.nome}
@@ -197,6 +230,7 @@ export default function CompanyForm() {
               ...formData,
               cnpj: cleanCnpj(e.target.value),
             });
+
             removeError("cnpj");
           }}
           error={errors.cnpj}
@@ -210,7 +244,11 @@ export default function CompanyForm() {
           name="email"
           value={formData.email}
           onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-            setFormData({ ...formData, email: e.target.value });
+            setFormData({
+              ...formData,
+              email: e.target.value,
+            });
+
             removeError("email");
           }}
           error={errors.email}
@@ -228,6 +266,7 @@ export default function CompanyForm() {
               ...formData,
               telefone: cleanPhone(e.target.value),
             });
+
             removeError("telefone");
           }}
           error={errors.telefone}
@@ -236,7 +275,7 @@ export default function CompanyForm() {
         <Button
           type="submit"
           disabled={loading}
-          className="w-full mt-2 h-12 bg-[#FF5A1F] text-white rounded-lg font-semibold hover:bg-[#FF5A1F]/80 transition-all duration-200 cursor-pointer disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+          className="mt-2 h-12 w-full cursor-pointer gap-2 rounded-lg transition-all disabled:cursor-not-allowed disabled:opacity-70"
         >
           {loading ? (
             <>
@@ -247,18 +286,6 @@ export default function CompanyForm() {
             "Cadastrar"
           )}
         </Button>
-
-        <div className="mt-4 text-center">
-          <p className="text-xs font-medium text-[#4A4A4A]">
-            Você é funcionário?{" "}
-            <Link
-              href="/invite"
-              className="hover:text-[#FF5A1F] hover:underline transition-colors"
-            >
-              Enviar convite
-            </Link>
-          </p>
-        </div>
       </form>
     </div>
   );

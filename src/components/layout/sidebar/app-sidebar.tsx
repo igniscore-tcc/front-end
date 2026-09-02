@@ -27,6 +27,7 @@ import {
   MapIcon,
   LayoutDashboard,
 } from "lucide-react";
+import { UserRole } from "@/types/me";
 
 // This is sample data.
 const data = {
@@ -55,7 +56,7 @@ const data = {
           }}
         />
       ),
-      plan: "Enterprise",
+      plan: "Gestão Inteligente",
     },
   ],
   navMain: [
@@ -100,18 +101,6 @@ const data = {
           title: "Perfil da empresa",
           url: "/configuracoes",
         },
-        {
-          title: "Team",
-          url: "#",
-        },
-        {
-          title: "Billing",
-          url: "#",
-        },
-        {
-          title: "Limits",
-          url: "#",
-        },
       ],
     },
   ],
@@ -152,18 +141,24 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     avatar: "",
   };
 
+  const navItems = data.navMain.filter(
+    (item) => item.title !== "Configurações" || user?.role === UserRole.OWNER,
+  );
+
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
         <TeamSwitcher teams={data.teams} />
       </SidebarHeader>
+
       <SidebarContent>
-        <NavMain items={data.navMain} />
-        {/* <NavProjects projects={data.projects} /> */}
+        <NavMain items={navItems} />
       </SidebarContent>
+
       <SidebarFooter>
         <NavUser user={userData} />
       </SidebarFooter>
+
       <SidebarRail />
     </Sidebar>
   );
