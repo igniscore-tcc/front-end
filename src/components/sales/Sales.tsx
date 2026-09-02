@@ -385,7 +385,7 @@ export default function Sales() {
                 <TableCell colSpan={7} className="h-48">
                   <div className="flex flex-col items-center justify-center gap-2 text-center">
                     <ShoppingCart className="size-8 text-muted-foreground" />
-                    <p className="font-medium">Nenhum produto encontrado</p>
+                    <p className="font-medium">Nenhuma venda encontrada</p>
                     <p className="text-sm text-muted-foreground">
                       Tente ajustar a busca ou o filtro selecionado.
                     </p>
