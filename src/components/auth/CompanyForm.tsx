@@ -4,7 +4,6 @@ import { useState } from "react";
 import { CompanyFormData } from "@/types/auth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import Link from "next/link";
 import { Loader2 } from "lucide-react";
 import {
   formatPhone,
