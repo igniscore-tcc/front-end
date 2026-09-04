@@ -1,6 +1,8 @@
 import { cookies, headers } from "next/headers"; // Adicionado "headers"
 import { redirect } from "next/navigation";
 import { AuthProvider } from "@/contexts/AuthContext";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 export default async function PrivateLayout({
   children,
@@ -24,8 +26,24 @@ export default async function PrivateLayout({
         textAlign: "center",
         fontFamily: "sans-serif"
       }}>
-        <h1>Acesso restrito</h1>
-        <p>Este sistema está disponível apenas em computadores (Desktop).</p>
+         <div
+          className="h-[48px] w-[36px] bg-primary"
+          role="img"
+          aria-label="IgnisCore Logo"
+          style={{
+            maskImage: "url('/igniscore.svg')",
+            WebkitMaskImage: "url('/igniscore.svg')",
+            maskRepeat: "no-repeat",
+            WebkitMaskRepeat: "no-repeat",
+            maskPosition: "center",
+            WebkitMaskPosition: "center",
+            maskSize: "contain",
+            WebkitMaskSize: "contain",
+          }}
+        />
+        <h1 className="mt-10">Acesso restrito</h1>
+        <p className="mt-4">Este sistema está disponível apenas em computadores (Desktop).</p>
+      <Link href={"/"} className="mt-8"><Button>Ir para página inicial</Button></Link>
       </div>
     );
   }
