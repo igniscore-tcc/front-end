@@ -48,9 +48,6 @@ export function useExpiration() {
 
         const data: ExpirationResponse = await response.json();
 
-        console.log("PAGE:", page);
-        console.log("DATA:", data);
-
         setExpirations(data.items ?? []);
         setTotal(data.totalItems ?? 0);
         setTotalPages(data.totalPages ?? 0);

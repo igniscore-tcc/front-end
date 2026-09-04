@@ -1,7 +1,5 @@
 "use client";
 
-import { CheckCircle2, MapPin, Mail, Phone } from "lucide-react";
-
 import {
   Dialog,
   DialogContent,
