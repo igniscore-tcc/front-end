@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
-import { Search, Plus, ArrowLeft, X, Trash2 } from "lucide-react";
+import { Search, Plus, ArrowLeft, X, Trash2, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
@@ -135,7 +135,7 @@ export default function NewSale({
   };
 
   return (
-    <div className="h-screen max-h-screen p-6 flex flex-col bg-white text-base overflow-hidden">
+    <div className="min-h-screen p-6 flex flex-col bg-white text-base">
       <header className="flex items-center justify-between mb-6 shrink-0">
         <div className="flex items-center gap-4">
           <button
@@ -149,11 +149,37 @@ export default function NewSale({
         </div>
       </header>
 
-      <div className="flex-1 min-h-0 flex gap-6 overflow-hidden">
-        <div className="flex-1 flex flex-col min-h-0 overflow-y-auto custom-scrollbar pr-2">
+      <div className="flex-1 flex gap-6">
+        <div className="flex-1 flex flex-col pr-2">
           <section className="bg-white border border-zinc-200 rounded-2xl p-5 mb-6">
             <div className="mb-4">
-              <h2 className="font-bold text-lg text-zinc-900">1. Cliente</h2>
+              <h2 className="font-bold text-lg text-zinc-900">1. Documento</h2>
+              <p className="text-sm text-zinc-700">
+                Selecione o tipo e insira o número do documento
+              </p>
+            </div>
+            
+            <div className="flex items-center gap-3">
+              <Select defaultValue="nf">
+                <SelectTrigger className="w-[180px] h-10">
+                  <SelectValue placeholder="Tipo" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="nf">Nota Fiscal</SelectItem>
+                  <SelectItem value="os">Ordem de Serviço</SelectItem>
+                  <SelectItem value="none">Nenhum</SelectItem>
+                </SelectContent>
+              </Select>
+              <Input
+                placeholder="Número do documento (opcional)"
+                className="flex-1 h-10"
+              />
+            </div>
+          </section>
+
+          <section className="bg-white border border-zinc-200 rounded-2xl p-5 mb-6">
+            <div className="mb-4">
+              <h2 className="font-bold text-lg text-zinc-900">2. Cliente</h2>
               <p className="text-sm text-zinc-700">
                 Selecione quem está realizando a compra
               </p>
@@ -226,7 +252,7 @@ export default function NewSale({
 
           <section className="bg-white border border-zinc-200 rounded-2xl p-5 mb-6">
             <div className="mb-4">
-              <h2 className="font-bold text-lg">2. Produtos</h2>
+              <h2 className="font-bold text-lg">3. Produtos</h2>
 
               <p className="text-sm text-zinc-700">
                 Adicione os produtos da venda
@@ -315,7 +341,7 @@ export default function NewSale({
           <section className="bg-white border border-zinc-200 rounded-2xl p-5 flex-1 flex flex-col">
             <div className="flex items-center justify-between mb-4">
               <div>
-                <h2 className="font-bold text-lg">3. Itens da Venda</h2>
+                <h2 className="font-bold text-lg">4. Itens da Venda</h2>
 
                 <p className="text-sm text-zinc-700">
                   {cart.length} produto(s) adicionados
@@ -391,7 +417,7 @@ export default function NewSale({
 
         <div className="sticky top-6 flex flex-col gap-5">
           <section className="bg-white border border-zinc-200 rounded-2xl p-5">
-            <h2 className="font-bold text-lg mb-2">4. Pagamento</h2>
+            <h2 className="font-bold text-lg mb-2">5. Pagamento</h2>
 
             <p className="text-sm text-zinc-700 mb-4">
               Escolha a forma de pagamento

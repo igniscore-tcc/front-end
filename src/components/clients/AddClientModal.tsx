@@ -28,6 +28,8 @@ import {
   cleanPhone,
   formatCpf,
   cleanCpf,
+  formatCep,
+  cleanCep,
 } from "@/lib/validators";
 
 import { useClientForm } from "@/hooks/useClientForm";
@@ -143,6 +145,23 @@ export function AddClientModal({
               />
             </div>
 
+            {/* Nome Fantasia */}
+            {tipo === "PJ" && (
+              <div className="space-y-2">
+                <label htmlFor="client-nomeFantasia" className="text-sm font-medium">
+                  Nome fantasia
+                </label>
+
+                <Input
+                  id="client-nomeFantasia"
+                  placeholder="Nome fantasia"
+                  data-testid="inputNomeFantasia"
+                  value={form.nomeFantasia}
+                  onChange={(e) => setField("nomeFantasia", e.target.value)}
+                />
+              </div>
+            )}
+
             {/* Documento */}
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
               <div className="space-y-2">
@@ -254,6 +273,79 @@ export function AddClientModal({
                 value={form.email}
                 onChange={(e) => setField("email", e.target.value)}
               />
+            </div>
+
+            {/* Endereço */}
+            <div className="space-y-4">
+              
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+                <div className="space-y-2">
+                  <label htmlFor="client-cep" className="text-sm font-medium">
+                    CEP
+                  </label>
+                  <Input
+                    id="client-cep"
+                    placeholder="00000-000"
+                    data-testid="inputCep"
+                    value={formatCep(form.cep)}
+                    onChange={(e) => setField("cep", cleanCep(e.target.value))}
+                  />
+                </div>
+
+                <div className="space-y-2 md:col-span-2">
+                  <label htmlFor="client-endereco" className="text-sm font-medium">
+                    Endereço
+                  </label>
+                  <Input
+                    id="client-endereco"
+                    placeholder="Rua, Avenida, etc."
+                    data-testid="inputEndereco"
+                    value={form.endereco}
+                    onChange={(e) => setField("endereco", e.target.value)}
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+                <div className="space-y-2">
+                  <label htmlFor="client-numero" className="text-sm font-medium">
+                    Número
+                  </label>
+                  <Input
+                     id="client-numero"
+                     placeholder="Nº"
+                     data-testid="inputNumero"
+                     value={form.numero}
+                     onChange={(e) => setField("numero", e.target.value)}
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <label htmlFor="client-bairro" className="text-sm font-medium">
+                    Bairro
+                  </label>
+                  <Input
+                     id="client-bairro"
+                     placeholder="Bairro"
+                     data-testid="inputBairro"
+                     value={form.bairro}
+                     onChange={(e) => setField("bairro", e.target.value)}
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <label htmlFor="client-cidade" className="text-sm font-medium">
+                    Cidade
+                  </label>
+                  <Input
+                     id="client-cidade"
+                     placeholder="Cidade"
+                     data-testid="inputCidade"
+                     value={form.cidade}
+                     onChange={(e) => setField("cidade", e.target.value)}
+                  />
+                </div>
+              </div>
             </div>
 
             {/* Observação */}

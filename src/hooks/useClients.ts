@@ -73,6 +73,12 @@ export function useClients() {
         inscricao: client.ie || "",
         uf: client.ufIe || "SP",
         observacao: client.obs || "",
+        nomeFantasia: client.nomeFantasia || "",
+        endereco: client.endereco || "",
+        numero: client.numeroEndereco || client.numero || "",
+        cep: client.cep || "",
+        bairro: client.bairro || "",
+        cidade: client.cidade || "",
       }));
 
       setClients(formattedClients);
@@ -94,7 +100,7 @@ export function useClients() {
 
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState<{ key: SortKey; dir: "asc" | "desc" }>({
-    key: "nome",
+    key: "id",
     dir: "asc",
   });
 
@@ -117,16 +123,17 @@ export function useClients() {
 
       return (
         (c.nome || "").toLowerCase().includes(term) ||
-        (c.email || "").toLowerCase().includes(term) ||
-        (doc || "").toLowerCase().includes(term)
+        (c.nomeFantasia || "").toLowerCase().includes(term) ||
+        (doc || "").toLowerCase().includes(term) ||
+        String(c.id).toLowerCase().includes(term)
       );
     });
   }, [debouncedSearch, clients, filterTipo]);
 
   const sorted = useMemo(() => {
     return [...filtered].sort((a, b) => {
-      const va = a[sort.key];
-      const vb = b[sort.key];
+      const va = sort.key === "id" ? (a.number || a.id) : a[sort.key];
+      const vb = sort.key === "id" ? (b.number || b.id) : b[sort.key];
       if (va < vb) return sort.dir === "asc" ? -1 : 1;
       if (va > vb) return sort.dir === "asc" ? 1 : -1;
       return 0;
@@ -165,6 +172,13 @@ export function useClients() {
         ie: data.tipo === "PJ" ? data.inscricao : "",
         ufIe: data.uf ?? "SP",
         obs: data.observacao || null,
+        nomeFantasia: data.nomeFantasia || null,
+        endereco: data.endereco || null,
+        numero: data.numero || null,
+        numeroEndereco: data.numero || null,
+        cep: data.cep || null,
+        bairro: data.bairro || null,
+        cidade: data.cidade || null,
       };
 
       const response = await fetch(`${INTERNAL_API}/clients/create`, {
@@ -209,6 +223,13 @@ export function useClients() {
         ie: data.tipo === "PJ" ? data.inscricao : "",
         ufIe: data.uf ?? "SP",
         obs: data.observacao || null,
+        nomeFantasia: data.nomeFantasia || null,
+        endereco: data.endereco || null,
+        numero: data.numero || null,
+        numeroEndereco: data.numero || null,
+        cep: data.cep || null,
+        bairro: data.bairro || null,
+        cidade: data.cidade || null,
       };
 
       const response = await fetch(`${INTERNAL_API}/clients/update`, {
@@ -235,6 +256,12 @@ export function useClients() {
         inscricao: result.ie || "",
         uf: result.ufIe || "SP",
         observacao: result.obs || "",
+        nomeFantasia: result.nomeFantasia || "",
+        endereco: result.endereco || "",
+        numero: result.numeroEndereco || result.numero || "",
+        cep: result.cep || "",
+        bairro: result.bairro || "",
+        cidade: result.cidade || "",
       };
 
       setClients((prev) =>
@@ -279,6 +306,12 @@ export function useClients() {
           telefone: result.phone || "",
           observacao: result.obs || "",
           uf: result.ufIe || "SP",
+          nomeFantasia: result.nomeFantasia || "",
+          endereco: result.endereco || "",
+          numero: result.numeroEndereco || result.numero || "",
+          cep: result.cep || "",
+          bairro: result.bairro || "",
+          cidade: result.cidade || "",
         }
       : {
           id: Number(result.id),
@@ -291,6 +324,12 @@ export function useClients() {
           telefone: result.phone || "",
           observacao: result.obs || "",
           uf: result.ufIe || "SP",
+          nomeFantasia: result.nomeFantasia || "",
+          endereco: result.endereco || "",
+          numero: result.numeroEndereco || result.numero || "",
+          cep: result.cep || "",
+          bairro: result.bairro || "",
+          cidade: result.cidade || "",
         };
   }, []);
 

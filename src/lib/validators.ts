@@ -13,6 +13,16 @@ export function cleanCnpj(value: string): string {
   return extractNumbers(value).slice(0, CNPJ_MAX_LEN);
 }
 
+export function cleanCep(value: string): string {
+  return extractNumbers(value).slice(0, 8);
+}
+
+export function formatCep(digits: string): string {
+  const d = cleanCep(digits);
+  if (d.length <= 5) return d;
+  return `${d.slice(0, 5)}-${d.slice(5)}`;
+}
+
 /* Aplica a formatação visual padrão do CNPJ: 00.000.000/0001-00 */
 export function formatCnpj(digits: string): string {
   const d = extractNumbers(digits).slice(0, CNPJ_MAX_LEN);

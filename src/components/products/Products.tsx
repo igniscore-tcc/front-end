@@ -87,13 +87,7 @@ export default function Products() {
     }).format(value);
   };
 
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <span className="text-gray-500">Carregando produtos...</span>
-      </div>
-    );
-  }
+
 
   return (
     <div className="p-6 flex flex-col text-base">
