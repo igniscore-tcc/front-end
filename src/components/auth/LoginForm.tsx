@@ -5,7 +5,6 @@ import { useState } from "react";
 import { LoginFormData } from "@/types/auth";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import Image from "next/image";
 import { Loader2 } from "lucide-react";
 import { normalizeEmail, validateEmail } from "@/lib/validators";
 

@@ -13,6 +13,7 @@ import {
   ArrowUpDown,
   X,
   MoreVertical,
+  ShoppingCart,
 } from "lucide-react";
 import {
   Table,
@@ -133,7 +134,6 @@ export default function Sales() {
     return sort.dir === "asc" ? <ArrowUp size={14} /> : <ArrowDown size={14} />;
   };
 
-
   if (view === "create") {
     return (
       <NewSale
@@ -183,74 +183,78 @@ export default function Sales() {
 
       <div className="flex flex-wrap items-center justify-between gap-4 mb-4">
         <div className="flex items-center gap-3">
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button variant="outline" className={`w-[140px] justify-start text-left font-normal ${!dateFrom && "text-muted-foreground"}`}>
-                  <CalendarIcon size={16} className="mr-2 h-4 w-4 shrink-0" />
-                  {dateFrom
-                    ? format(parseISO(dateFrom), "dd/MM/yyyy")
-                    : "Data inicial"}
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-auto p-0" align="start">
-                <Calendar
-                  mode="single"
-                  selected={dateFrom ? parseISO(dateFrom) : undefined}
-                  onSelect={(date) => {
-                    setDateFrom(date ? format(date, "yyyy-MM-dd") : "");
-                    setPage(1);
-                  }}
-                  locale={ptBR}
-                />
-              </PopoverContent>
-            </Popover>
-
-            <span className="text-muted-foreground text-sm font-medium">até</span>
-
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button variant="outline" className={`w-[140px] justify-start text-left font-normal ${!dateTo && "text-muted-foreground"}`}>
-                  <CalendarIcon size={16} className="mr-2 h-4 w-4 shrink-0" />
-                  {dateTo
-                    ? format(parseISO(dateTo), "dd/MM/yyyy")
-                    : "Data final"}
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-auto p-0" align="start">
-                <Calendar
-                  mode="single"
-                  selected={dateTo ? parseISO(dateTo) : undefined}
-                  onSelect={(date) => {
-                    setDateTo(date ? format(date, "yyyy-MM-dd") : "");
-                    setPage(1);
-                  }}
-                  locale={ptBR}
-                />
-              </PopoverContent>
-            </Popover>
-
-            {(dateFrom || dateTo) && (
+          <Popover>
+            <PopoverTrigger asChild>
               <Button
-                variant="ghost"
-                onClick={() => {
-                  setDateFrom("");
-                  setDateTo("");
+                variant="outline"
+                className={`w-[140px] justify-start text-left font-normal ${!dateFrom && "text-muted-foreground"}`}
+              >
+                <CalendarIcon size={16} className="mr-2 h-4 w-4 shrink-0" />
+                {dateFrom
+                  ? format(parseISO(dateFrom), "dd/MM/yyyy")
+                  : "Data inicial"}
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-auto p-0" align="start">
+              <Calendar
+                mode="single"
+                selected={dateFrom ? parseISO(dateFrom) : undefined}
+                onSelect={(date) => {
+                  setDateFrom(date ? format(date, "yyyy-MM-dd") : "");
                   setPage(1);
                 }}
-                className="group flex items-center gap-1.5 px-3 py-2 text-muted-foreground hover:text-destructive transition-all"
+                locale={ptBR}
+              />
+            </PopoverContent>
+          </Popover>
+
+          <span className="text-muted-foreground text-sm font-medium">até</span>
+
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button
+                variant="outline"
+                className={`w-[140px] justify-start text-left font-normal ${!dateTo && "text-muted-foreground"}`}
               >
-                <X
-                  size={14}
-                  className="group-hover:rotate-90 transition-transform duration-200"
-                />
-                <span>Limpar</span>
+                <CalendarIcon size={16} className="mr-2 h-4 w-4 shrink-0" />
+                {dateTo ? format(parseISO(dateTo), "dd/MM/yyyy") : "Data final"}
               </Button>
-            )}
+            </PopoverTrigger>
+            <PopoverContent className="w-auto p-0" align="start">
+              <Calendar
+                mode="single"
+                selected={dateTo ? parseISO(dateTo) : undefined}
+                onSelect={(date) => {
+                  setDateTo(date ? format(date, "yyyy-MM-dd") : "");
+                  setPage(1);
+                }}
+                locale={ptBR}
+              />
+            </PopoverContent>
+          </Popover>
+
+          {(dateFrom || dateTo) && (
+            <Button
+              variant="ghost"
+              onClick={() => {
+                setDateFrom("");
+                setDateTo("");
+                setPage(1);
+              }}
+              className="group flex items-center gap-1.5 px-3 py-2 text-muted-foreground hover:text-destructive transition-all"
+            >
+              <X
+                size={14}
+                className="group-hover:rotate-90 transition-transform duration-200"
+              />
+              <span>Limpar</span>
+            </Button>
+          )}
         </div>
 
         <div className="flex items-center gap-3">
           <div className="relative">
-              <select
+            <select
               value={filterStatus}
               onChange={(e) => {
                 setFilterStatus(e.target.value as typeof filterStatus);
@@ -290,12 +294,24 @@ export default function Sales() {
             {loading ? (
               Array.from({ length: perPage > 8 ? 8 : perPage }).map((_, i) => (
                 <TableRow key={`skeleton-${i}`}>
-                  <TableCell><Skeleton className="h-4 w-36" /></TableCell>
-                  <TableCell><Skeleton className="h-4 w-20 ml-auto" /></TableCell>
-                  <TableCell><Skeleton className="h-4 w-12 mx-auto" /></TableCell>
-                  <TableCell><Skeleton className="h-4 w-24 mx-auto" /></TableCell>
-                  <TableCell><Skeleton className="h-4 w-20 mx-auto" /></TableCell>
-                  <TableCell><Skeleton className="h-5 w-16 rounded-full mx-auto" /></TableCell>
+                  <TableCell>
+                    <Skeleton className="h-4 w-36" />
+                  </TableCell>
+                  <TableCell>
+                    <Skeleton className="h-4 w-20 ml-auto" />
+                  </TableCell>
+                  <TableCell>
+                    <Skeleton className="h-4 w-12 mx-auto" />
+                  </TableCell>
+                  <TableCell>
+                    <Skeleton className="h-4 w-24 mx-auto" />
+                  </TableCell>
+                  <TableCell>
+                    <Skeleton className="h-4 w-20 mx-auto" />
+                  </TableCell>
+                  <TableCell>
+                    <Skeleton className="h-5 w-16 rounded-full mx-auto" />
+                  </TableCell>
                   <TableCell />
                 </TableRow>
               ))
@@ -306,11 +322,17 @@ export default function Sales() {
                   onClick={() => setSelectedSale(sale)}
                   className="cursor-pointer"
                 >
-                  <TableCell className="font-semibold truncate max-w-[200px]" title={sale.cliente?.nome}>
+                  <TableCell
+                    className="font-semibold truncate max-w-[200px]"
+                    title={sale.cliente?.nome}
+                  >
                     {sale.cliente?.nome || "Não informado"}
                   </TableCell>
                   <TableCell className="text-right font-bold tabular-nums">
-                    <span className="font-normal text-muted-foreground">R$ </span>{formatNumber(sale.total)}
+                    <span className="font-normal text-muted-foreground">
+                      R$ 
+                    </span>
+                    {formatNumber(sale.total)}
                   </TableCell>
                   <TableCell className="text-center text-muted-foreground">
                     {sale.desconto}
@@ -334,7 +356,10 @@ export default function Sales() {
                       {statusLabels[sale.status] || sale.status}
                     </span>
                   </TableCell>
-                  <TableCell className="text-right" onClick={(e) => e.stopPropagation()}>
+                  <TableCell
+                    className="text-right"
+                    onClick={(e) => e.stopPropagation()}
+                  >
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
                         <Button variant="ghost" size="icon">
@@ -357,8 +382,14 @@ export default function Sales() {
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={7} className="h-24 text-center">
-                  Nenhuma venda encontrada
+                <TableCell colSpan={7} className="h-48">
+                  <div className="flex flex-col items-center justify-center gap-2 text-center">
+                    <ShoppingCart className="size-8 text-muted-foreground" />
+                    <p className="font-medium">Nenhuma venda encontrada</p>
+                    <p className="text-sm text-muted-foreground">
+                      Tente ajustar a busca ou o filtro selecionado.
+                    </p>
+                  </div>
                 </TableCell>
               </TableRow>
             )}
@@ -426,7 +457,10 @@ export default function Sales() {
                 </div>
 
                 <h1 className="text-[40px] font-black text-primary tabular-nums">
-                  <span className="text-2xl font-medium text-muted-foreground">R$ </span>{formatNumber(selectedSale.total)}
+                  <span className="text-2xl font-medium text-muted-foreground">
+                    R$ 
+                  </span>
+                  {formatNumber(selectedSale.total)}
                 </h1>
               </div>
 
@@ -456,7 +490,9 @@ export default function Sales() {
                           key={`${item.id}-${item.nome}`}
                           className="border-t border-border"
                         >
-                          <td className="px-6 py-5 text-muted-foreground">{item.id}</td>
+                          <td className="px-6 py-5 text-muted-foreground">
+                            {item.id}
+                          </td>
 
                           <td className="px-6 py-5 text-foreground font-medium">
                             {item.nome}
@@ -467,7 +503,10 @@ export default function Sales() {
                           </td>
 
                           <td className="px-6 py-5 font-bold text-foreground text-right tabular-nums">
-                            <span className="font-normal text-muted-foreground">R$ </span>{formatNumber(item.total)}
+                            <span className="font-normal text-muted-foreground">
+                              R$ 
+                            </span>
+                            {formatNumber(item.total)}
                           </td>
                         </tr>
                       ))

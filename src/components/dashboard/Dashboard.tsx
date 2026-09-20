@@ -1,7 +1,13 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { BarChart, Bar, CartesianGrid, XAxis, YAxis } from "recharts";
+import {
+  CartesianGrid,
+  XAxis,
+  YAxis,
+  AreaChart,
+  Area,
+} from "recharts";
 import { ArrowDown, ArrowUp, AlertTriangle, Clock } from "lucide-react";
 
 import { useDashboard } from "@/hooks/useDashboard";
@@ -23,8 +29,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-
-import { Progress } from "@/components/ui/progress";
 
 import {
   ChartContainer,
@@ -259,9 +263,9 @@ export default function Dashboard() {
       </div>
 
       {/* Gráfico + Vencimentos */}
-      <div className="mt-8 grid grid-cols-1 gap-8 pb-6 lg:grid-cols-3">
+      <div className="mt-8 grid grid-cols-1 pb-6 lg:grid-cols-1">
         {/* Gráfico */}
-        <Card className="h-[420px] lg:col-span-2">
+        <Card className="flex h-[500px] flex-col lg:col-span-2">
           <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-4">
             <div>
               <CardTitle className="text-lg">Desempenho de Vendas</CardTitle>
@@ -285,310 +289,54 @@ export default function Dashboard() {
             </Select>
           </CardHeader>
 
-          <CardContent className="h-[80%]">
-            {dadosGraficoFiltrados.length === 0 ? (
-              <div className="flex h-full w-full items-center justify-center text-sm text-muted-foreground">
-                Nenhum dado de venda encontrado para o período.
-              </div>
-            ) : (
-              <div className="flex h-full w-full">
-                {/* Eixo Y */}
-                <div className="flex w-10 shrink-0 flex-col justify-between pb-7 pt-2 text-right text-[11px] text-muted-foreground">
-                  {(() => {
-                    const max = Math.max(
-                      ...dadosGraficoFiltrados.map((item) => item.vendas),
-                      1,
-                    );
+          <CardContent className="min-h-0 flex-1 pb-6">
+            <ChartContainer config={chartConfig} className="h-full w-full">
+              <AreaChart
+                data={dadosGraficoFiltrados}
+                margin={{
+                  top: 10,
+                  right: 10,
+                  left: 0,
+                  bottom: 0,
+                }}
+              >
+                <CartesianGrid vertical={false} />
 
-                    const valorMaximo = Math.ceil(max / 1000) * 1000;
+                <XAxis
+                  dataKey="mes"
+                  tickLine={false}
+                  axisLine={false}
+                  tickMargin={8}
+                />
 
-                    return [
-                      valorMaximo,
-                      valorMaximo * 0.75,
-                      valorMaximo * 0.5,
-                      valorMaximo * 0.25,
-                      0,
-                    ].map((valor, index) => (
-                      <span key={index}>{formatarMoedaK(valor)}</span>
-                    ));
-                  })()}
-                </div>
+                <YAxis
+                  tickLine={false}
+                  axisLine={false}
+                  tickFormatter={formatarMoedaK}
+                />
 
-                {/* Área do gráfico */}
-                <div className="relative min-w-0 flex-1">
-                  {/* Linhas horizontais */}
-                  <div className="pointer-events-none absolute inset-x-0 top-2 bottom-7 flex flex-col justify-between">
-                    {Array.from({ length: 5 }).map((_, index) => (
-                      <div key={index} className="border-t border-border" />
-                    ))}
-                  </div>
+                <ChartTooltip
+                  cursor={false}
+                  content={<ChartTooltipContent />}
+                />
 
-                  {/* Barras */}
-                  <div className="absolute inset-0 flex items-end justify-around gap-3 px-4 pb-7 pt-2">
-                    {(() => {
-                      const max = Math.max(
-                        ...dadosGraficoFiltrados.map((item) => item.vendas),
-                        1,
-                      );
-
-                      return dadosGraficoFiltrados.map((item) => {
-                        const percentual = Math.max(
-                          (item.vendas / max) * 100,
-                          item.vendas > 0 ? 2 : 0,
-                        );
-
-                        return (
-                          <div
-                            key={item.mes}
-                            className="group flex h-full min-w-0 flex-1 flex-col items-center justify-end"
-                          >
-                            {/* Valor */}
-                            <div className="pointer-events-none mb-2 rounded-md border bg-popover px-2 py-1 text-xs font-medium text-popover-foreground opacity-0 shadow-sm transition-opacity group-hover:opacity-100">
-                              {Number(item.vendas).toLocaleString("pt-BR", {
-                                style: "currency",
-                                currency: "BRL",
-                                minimumFractionDigits: 2,
-                              })}
-                            </div>
-
-                            {/* Barra */}
-                            <div
-                              className="w-full max-w-[45px] rounded-t-md bg-[var(--chart-1)] transition-all duration-300 hover:opacity-80"
-                              style={{
-                                height: `${percentual}%`,
-                              }}
-                              title={`${item.mes}: ${Number(
-                                item.vendas,
-                              ).toLocaleString("pt-BR", {
-                                style: "currency",
-                                currency: "BRL",
-                              })}`}
-                            />
-
-                            {/* Label */}
-                            <span className="mt-3 whitespace-nowrap text-[11px] font-medium text-muted-foreground">
-                              {item.mes}
-                            </span>
-                          </div>
-                        );
-                      });
-                    })()}
-                  </div>
-                </div>
-              </div>
-            )}
-          </CardContent>
-        </Card>
-
-        {/* Próximos vencimentos */}
-        <Card className="h-[420px]">
-          <CardHeader className="pb-4">
-            <CardTitle className="text-lg">Próximos Vencimentos</CardTitle>
-
-            <CardDescription>
-              Equipamentos que requerem nova vistoria
-            </CardDescription>
-          </CardHeader>
-
-          <CardContent className="h-[calc(100%-105px)] overflow-y-auto">
-            {listaVencimentosFormatada.length === 0 ? (
-              <div className="flex h-full w-full items-center justify-center text-center text-sm text-muted-foreground">
-                Nenhum equipamento próximo do vencimento mapeado.
-              </div>
-            ) : (
-              <div className="space-y-4">
-                {listaVencimentosFormatada.map((item) => (
-                  <div
-                    key={item.id}
-                    className="flex items-center justify-between gap-3 border-b pb-3 last:border-none"
-                  >
-                    <div className="max-w-[65%]">
-                      <p className="truncate text-sm font-semibold">
-                        {item.item}
-                      </p>
-
-                      <p className="truncate text-xs text-muted-foreground">
-                        {item.local}
-                      </p>
-                    </div>
-
-                    <div className="whitespace-nowrap text-right">
-                      <Badge
-                        variant={
-                          item.status === "critico"
-                            ? "destructive"
-                            : item.status === "atencao"
-                              ? "secondary"
-                              : "outline"
-                        }
-                        className="mb-1"
-                      >
-                        {item.dias}
-                      </Badge>
-
-                      <p className="text-xs font-medium text-muted-foreground">
-                        {item.data}
-                      </p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
+                <Area
+                  type="monotone"
+                  dataKey="vendas"
+                  stroke="var(--color-vendas)"
+                  fill="var(--color-vendas)"
+                  fillOpacity={0.15}
+                  strokeWidth={2}
+                  animationDuration={1000}
+                  animationEasing="ease-out"
+                />
+              </AreaChart>
+            </ChartContainer>
           </CardContent>
         </Card>
       </div>
 
       {/* Indicadores secundários */}
-      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
-        {/* Compliance */}
-        <Card className="transition-shadow hover:shadow-md">
-          <CardHeader className="pb-2">
-            <div className="flex items-start justify-between gap-2">
-              <div>
-                <CardTitle className="text-sm">Score de Conformidade</CardTitle>
-
-                <CardDescription className="text-[11px]">
-                  Cilindros ativos dentro do prazo
-                </CardDescription>
-              </div>
-
-              <Badge
-                variant={
-                  dashboard.compliancePercentage >= 90 ? "default" : "secondary"
-                }
-              >
-                {dashboard.compliancePercentage >= 90 ? "Excelente" : "Regular"}
-              </Badge>
-            </div>
-          </CardHeader>
-
-          <CardContent>
-            <div className="flex items-end justify-between gap-2">
-              <span className="text-2xl font-semibold tracking-tight">
-                {dashboard.compliancePercentage.toFixed(2)}%
-              </span>
-
-              <span className="text-[10px] font-medium text-muted-foreground">
-                {dashboard.compliantItems} / {dashboard.totalItems} itens
-              </span>
-            </div>
-
-            <Progress value={dashboard.compliancePercentage} className="mt-2" />
-          </CardContent>
-        </Card>
-
-        {/* Previsão */}
-        <Card className="transition-shadow hover:shadow-md">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm">Previsão de Recargas</CardTitle>
-
-            <CardDescription className="text-[11px]">
-              Próximos faturamentos mapeados
-            </CardDescription>
-          </CardHeader>
-
-          <CardContent>
-            <div className="text-2xl font-semibold tracking-tight">
-              {formatCurrency(dashboard.forecastRecharges)}
-            </div>
-
-            <p className="mt-1 line-clamp-2 text-[11px] text-muted-foreground">
-              Receita prevista em ordens futuras.
-            </p>
-          </CardContent>
-        </Card>
-
-        {/* Equipamentos */}
-        <Card className="transition-shadow hover:shadow-md">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm">Total de Equipamentos</CardTitle>
-
-            <CardDescription className="text-[11px]">
-              Itens vendidos
-            </CardDescription>
-          </CardHeader>
-
-          <CardContent>
-            <div className="text-2xl font-semibold tracking-tight">
-              {dashboard.totalItems}
-            </div>
-
-            <p className="mt-1 text-[11px] text-muted-foreground">
-              Total de itens vendidos.
-            </p>
-          </CardContent>
-        </Card>
-
-        {/* Inadimplência */}
-        <Card className="transition-shadow hover:shadow-md">
-          <CardHeader className="pb-2">
-            <div className="flex items-start justify-between gap-2">
-              <div>
-                <CardTitle className="text-sm">
-                  Inadimplência / Pendente
-                </CardTitle>
-
-                <CardDescription className="text-[11px]">
-                  Faturamento com atraso
-                </CardDescription>
-              </div>
-
-              {dashboard.overdueRevenue > 0 && (
-                <Badge variant="destructive">Atenção</Badge>
-              )}
-            </div>
-          </CardHeader>
-
-          <CardContent>
-            <div
-              className={`text-2xl font-semibold tracking-tight ${
-                dashboard.overdueRevenue > 0 ? "text-destructive" : ""
-              }`}
-            >
-              {formatCurrency(dashboard.overdueRevenue)}
-            </div>
-
-            <p className="mt-1 text-[11px] text-muted-foreground">
-              {dashboard.overdueClientsCount} clientes inadimplentes.
-            </p>
-          </CardContent>
-        </Card>
-
-        {/* Reprovações */}
-        <Card className="transition-shadow hover:shadow-md">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm">Reprovações em Testes</CardTitle>
-
-            <CardDescription className="text-[11px]">
-              Cilindros condenados no mês
-            </CardDescription>
-          </CardHeader>
-
-          <CardContent>
-            <div className="flex items-end justify-between gap-2">
-              <span className="text-2xl font-semibold tracking-tight">
-                {dashboard.condemnedItemsThisMonth}
-              </span>
-
-              <span className="text-[10px] font-medium text-muted-foreground">
-                {dashboard.condemnedItemsThisMonth === 1
-                  ? "1 descarte"
-                  : `${dashboard.condemnedItemsThisMonth} descartes`}
-              </span>
-            </div>
-
-            <Progress
-              value={
-                dashboard.totalItems > 0
-                  ? (dashboard.condemnedItemsThisMonth / dashboard.totalItems) *
-                    100
-                  : 0
-              }
-              className="mt-2"
-            />
-          </CardContent>
-        </Card>
-      </div>
     </div>
   );
 }

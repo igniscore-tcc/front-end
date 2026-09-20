@@ -5,7 +5,6 @@ import { useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import Image from "next/image";
 import { Loader2 } from "lucide-react";
 
 function ResetPasswordForm() {
@@ -15,6 +14,7 @@ function ResetPasswordForm() {
 
   const [isLoading, setIsLoading] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
+
   const [formData, setFormData] = useState({
     senha: "",
     confirmarSenha: "",
@@ -27,7 +27,12 @@ function ResetPasswordForm() {
   });
 
   const validate = () => {
-    const newErrors = { senha: "", confirmarSenha: "", geral: "" };
+    const newErrors = {
+      senha: "",
+      confirmarSenha: "",
+      geral: "",
+    };
+
     let isValid = true;
 
     if (!token) {
@@ -52,15 +57,20 @@ function ResetPasswordForm() {
     }
 
     setErrors(newErrors);
+
     return isValid;
   };
 
   const removeError = (field: keyof typeof errors) => {
-    setErrors((prev) => ({ ...prev, [field]: "" }));
+    setErrors((prev) => ({
+      ...prev,
+      [field]: "",
+    }));
   };
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+
     if (!validate()) return;
 
     setIsLoading(true);
@@ -69,7 +79,9 @@ function ResetPasswordForm() {
     try {
       const response = await fetch("/api/auth/reset-password", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify({
           token,
           newPassword: formData.senha,
@@ -83,6 +95,7 @@ function ResetPasswordForm() {
           ...prev,
           geral: data.error || "Erro ao redefinir a senha",
         }));
+
         return;
       }
 
@@ -102,38 +115,47 @@ function ResetPasswordForm() {
   }
 
   return (
-    <div className="w-full max-w-sm mx-auto flex flex-col justify-center min-h-screen px-4 sm:px-0">
-      <div className="flex items-center justify-center gap-2 mb-8">
-        <Image
-          src="/igniscore.png"
-          alt="IgnisCore Logo"
-          width={38}
-          height={52}
-          className="object-contain"
+    <div className="mx-auto flex min-h-screen w-full max-w-sm flex-col justify-center px-4 sm:px-0">
+      {/* Logo */}
+      <div className="mb-8 flex items-center justify-center gap-2">
+        <div
+          className="h-[52px] w-[38px] bg-primary"
+          role="img"
+          aria-label="IgnisCore Logo"
+          style={{
+            maskImage: "url('/igniscore.svg')",
+            WebkitMaskImage: "url('/igniscore.svg')",
+            maskRepeat: "no-repeat",
+            WebkitMaskRepeat: "no-repeat",
+            maskPosition: "center",
+            WebkitMaskPosition: "center",
+            maskSize: "contain",
+            WebkitMaskSize: "contain",
+          }}
         />
+
         <span
-          className="text-[35px] font-bold text-[#FF5A1F]"
-          style={{ fontFamily: "var(--font-space-grotesk)" }}
+          className="text-4xl font-bold text-primary"
+          style={{
+            fontFamily: "var(--font-space-grotesk)",
+          }}
         >
           IgnisCore
         </span>
       </div>
 
-      <div className="w-full border-t border-gray-100 mb-6"></div>
-
+      {/* Título */}
       <div className="mb-8">
-        <h2 className="text-[25px] font-semibold text-[#FF5A1F] mb-3">
-          Nova Senha
-        </h2>
+        <h2 className="mb-3 text-2xl font-semibold text-primary">Nova Senha</h2>
       </div>
 
       <form
-        className="w-full flex flex-col gap-4"
+        className="flex w-full flex-col gap-4"
         onSubmit={handleSubmit}
         noValidate
       >
         {errors.geral && (
-          <p className="text-xs font-semibold text-red-500 px-1">
+          <p className="px-1 text-xs font-semibold text-red-500">
             {errors.geral}
           </p>
         )}
@@ -143,7 +165,11 @@ function ResetPasswordForm() {
           placeholder="Nova senha"
           value={formData.senha}
           onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-            setFormData({ ...formData, senha: e.target.value });
+            setFormData({
+              ...formData,
+              senha: e.target.value,
+            });
+
             removeError("senha");
           }}
           error={errors.senha}
@@ -155,7 +181,11 @@ function ResetPasswordForm() {
           placeholder="Confirmar nova senha"
           value={formData.confirmarSenha}
           onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-            setFormData({ ...formData, confirmarSenha: e.target.value });
+            setFormData({
+              ...formData,
+              confirmarSenha: e.target.value,
+            });
+
             removeError("confirmarSenha");
           }}
           error={errors.confirmarSenha}
@@ -163,7 +193,7 @@ function ResetPasswordForm() {
         />
 
         {successMessage && (
-          <p className="text-xs font-semibold text-green-600 px-1">
+          <p className="px-1 text-xs font-semibold text-green-600">
             {successMessage} Redirecionando...
           </p>
         )}
@@ -171,7 +201,7 @@ function ResetPasswordForm() {
         <Button
           type="submit"
           disabled={isLoading || !!successMessage}
-          className="w-full mt-2 h-12 bg-[#FF5A1F] text-white rounded-lg font-semibold hover:bg-[#FF5A1F]/80 transition-all duration-200 cursor-pointer disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+          className="mt-2 h-12 w-full cursor-pointer gap-2 rounded-lg transition-all disabled:cursor-not-allowed disabled:opacity-70"
         >
           {isLoading ? (
             <>
@@ -184,11 +214,11 @@ function ResetPasswordForm() {
         </Button>
 
         <div className="mt-4 text-center">
-          <p className="text-xs font-medium text-[#4A4A4A]">
+          <p className="text-xs font-medium text-muted-foreground">
             Lembrou sua senha?{" "}
             <Link
               href="/login"
-              className="hover:text-[#FF5A1F] hover:underline transition-colors"
+              className="text-foreground transition-colors hover:text-primary hover:underline"
             >
               Voltar para o Login
             </Link>
@@ -204,7 +234,7 @@ export default function ResetPassword() {
     <Suspense
       fallback={
         <div className="flex h-screen w-screen items-center justify-center">
-          <Loader2 className="h-8 w-8 animate-spin text-[#FF5A1F]" />
+          <Loader2 className="h-8 w-8 animate-spin text-primary" />
         </div>
       }
     >

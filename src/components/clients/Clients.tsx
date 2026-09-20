@@ -138,27 +138,37 @@ export default function Clients() {
 
       {/* TABELA */}
       <div className="overflow-x-auto">
-      <Table className="table-fixed w-full min-w-[800px]">
-        <TableHeader>
-          <TableRow>
-            <TableHead className="w-[30%]">Nome</TableHead>
-            <TableHead className="w-[18%]">CPF / CNPJ</TableHead>
-            <TableHead className="w-[12%]">Inscrição</TableHead>
-            <TableHead className="w-[22%]">E-mail</TableHead>
-            <TableHead className="w-[13%]">Telefone</TableHead>
-            <TableHead className="w-[5%] text-right">Ações</TableHead>
-          </TableRow>
-        </TableHeader>
+        <Table className="table-fixed w-full min-w-[800px]">
+          <TableHeader>
+            <TableRow>
+              <TableHead className="w-[30%]">Nome</TableHead>
+              <TableHead className="w-[18%]">CPF / CNPJ</TableHead>
+              <TableHead className="w-[12%]">Inscrição</TableHead>
+              <TableHead className="w-[22%]">E-mail</TableHead>
+              <TableHead className="w-[13%]">Telefone</TableHead>
+              <TableHead className="w-[5%] text-right">Ações</TableHead>
+            </TableRow>
+          </TableHeader>
 
           <TableBody>
             {loading ? (
               Array.from({ length: perPage > 8 ? 8 : perPage }).map((_, i) => (
                 <TableRow key={`skeleton-${i}`}>
-                  <TableCell><Skeleton className="h-4 w-40" /></TableCell>
-                  <TableCell><Skeleton className="h-4 w-28" /></TableCell>
-                  <TableCell><Skeleton className="h-4 w-16" /></TableCell>
-                  <TableCell><Skeleton className="h-4 w-36" /></TableCell>
-                  <TableCell><Skeleton className="h-4 w-24" /></TableCell>
+                  <TableCell>
+                    <Skeleton className="h-4 w-40" />
+                  </TableCell>
+                  <TableCell>
+                    <Skeleton className="h-4 w-28" />
+                  </TableCell>
+                  <TableCell>
+                    <Skeleton className="h-4 w-16" />
+                  </TableCell>
+                  <TableCell>
+                    <Skeleton className="h-4 w-36" />
+                  </TableCell>
+                  <TableCell>
+                    <Skeleton className="h-4 w-24" />
+                  </TableCell>
                   <TableCell />
                 </TableRow>
               ))
@@ -167,15 +177,6 @@ export default function Clients() {
                 <TableRow key={client.id}>
                   <TableCell>
                     <div className="flex min-w-0 items-center gap-2">
-                      <button
-                        type="button"
-                        className="min-w-0 truncate text-left font-medium text-foreground hover:underline"
-                        onClick={() => router.push(`/clientes/${client.id}`)}
-                        title={client.nome}
-                      >
-                        {client.nome}
-                      </button>
-
                       <Badge variant="outline" className="shrink-0 gap-1">
                         {client.tipo === "PJ" ? (
                           <Building2 className="size-3" />
@@ -184,6 +185,15 @@ export default function Clients() {
                         )}
                         {client.tipo}
                       </Badge>
+                      
+                      <button
+                        type="button"
+                        className="min-w-0 truncate text-left font-medium text-foreground hover:underline"
+                        onClick={() => router.push(`/clientes/${client.id}`)}
+                        title={client.nome}
+                      >
+                        {client.nome}
+                      </button>
                     </div>
                   </TableCell>
 

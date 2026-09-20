@@ -4,7 +4,6 @@ import Link from "next/link";
 import { useState, useEffect, Suspense } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import Image from "next/image";
 import { Loader2 } from "lucide-react";
 import { REGEXP_ONLY_DIGITS } from "input-otp";
 import { toast } from "sonner";
@@ -29,6 +28,7 @@ function VerifyEmailForm() {
 
   useEffect(() => {
     const storedEmail = localStorage.getItem("email");
+
     if (storedEmail) {
       setEmail(storedEmail);
     }
@@ -36,15 +36,20 @@ function VerifyEmailForm() {
 
   useEffect(() => {
     if (resendCountdown <= 0) return;
+
     const timer = setTimeout(
       () => setResendCountdown(resendCountdown - 1),
       1000,
     );
+
     return () => clearTimeout(timer);
   }, [resendCountdown]);
 
   const validate = () => {
-    const newErrors = { code: "" };
+    const newErrors = {
+      code: "",
+    };
+
     let isValid = true;
 
     if (!code) {
@@ -56,11 +61,13 @@ function VerifyEmailForm() {
     }
 
     setErrors(newErrors);
+
     return isValid;
   };
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+
     if (!validate()) return;
 
     setIsLoading(true);
@@ -69,8 +76,13 @@ function VerifyEmailForm() {
     try {
       const response = await fetch("/api/auth/verify-email", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, code }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email,
+          code,
+        }),
       });
 
       const data = await response.json();
@@ -101,12 +113,17 @@ function VerifyEmailForm() {
     try {
       const response = await fetch("/api/auth/resend-code", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email,
+        }),
       });
 
       if (!response.ok) {
         const data = await response.json();
+
         toast.error(data.error || "Erro ao reenviar o código");
         return;
       }
@@ -121,32 +138,44 @@ function VerifyEmailForm() {
   }
 
   return (
-    <div className="w-full max-w-sm mx-auto flex flex-col justify-center min-h-screen px-4 sm:px-0">
-      <div className="flex items-center justify-center gap-2 mb-8">
-        <Image
-          src="/igniscore.png"
-          alt="IgnisCore Logo"
-          width={38}
-          height={52}
-          className="object-contain"
+    <div className="mx-auto flex min-h-screen w-full max-w-sm flex-col justify-center px-4 sm:px-0">
+      {/* Logo */}
+      <div className="mb-8 flex items-center justify-center gap-2">
+        <div
+          className="h-[52px] w-[38px] bg-primary"
+          role="img"
+          aria-label="IgnisCore Logo"
+          style={{
+            maskImage: "url('/igniscore.svg')",
+            WebkitMaskImage: "url('/igniscore.svg')",
+            maskRepeat: "no-repeat",
+            WebkitMaskRepeat: "no-repeat",
+            maskPosition: "center",
+            WebkitMaskPosition: "center",
+            maskSize: "contain",
+            WebkitMaskSize: "contain",
+          }}
         />
+
         <span
-          className="text-[35px] font-bold text-[#FF5A1F]"
-          style={{ fontFamily: "var(--font-space-grotesk)" }}
+          className="text-4xl font-bold text-primary"
+          style={{
+            fontFamily: "var(--font-space-grotesk)",
+          }}
         >
           IgnisCore
         </span>
       </div>
 
-      <div className="w-full border-t border-gray-100 mb-6"></div>
-
+      {/* Título */}
       <div className="mb-6">
-        <h2 className="text-[25px] font-semibold text-[#FF5A1F] mb-2">
+        <h2 className="mb-2 text-2xl font-semibold text-primary">
           Verifique seu E-mail
         </h2>
-        <p className="text-sm text-gray-500">
+
+        <p className="text-sm text-muted-foreground">
           Digite o código de 6 dígitos enviado para{" "}
-          <span className="font-semibold text-gray-700">
+          <span className="font-semibold text-foreground">
             {email || "seu e-mail"}
           </span>
           .
@@ -154,42 +183,47 @@ function VerifyEmailForm() {
       </div>
 
       <form
-        className="w-full flex flex-col gap-4"
+        className="flex w-full flex-col gap-4"
         onSubmit={handleSubmit}
         noValidate
       >
-        <div className="flex flex-col items-center justify-center my-2 gap-2">
+        {/* Código */}
+        <div className="my-2 flex flex-col items-center justify-center gap-2">
           <InputOTP
             maxLength={6}
             pattern={REGEXP_ONLY_DIGITS}
             value={code}
             onChange={(value) => {
               setCode(value);
-              setErrors((prev) => ({ ...prev, code: "" }));
+              setErrors((prev) => ({
+                ...prev,
+                code: "",
+              }));
             }}
             disabled={isLoading}
           >
             <InputOTPGroup>
-              <InputOTPSlot index={0} className="w-16 h-16 text-lg" />
-              <InputOTPSlot index={1} className="w-16 h-16 text-lg" />
-              <InputOTPSlot index={2} className="w-16 h-16 text-lg" />
-              <InputOTPSlot index={3} className="w-16 h-16 text-lg" />
-              <InputOTPSlot index={4} className="w-16 h-16 text-lg" />
-              <InputOTPSlot index={5} className="w-16 h-16 text-lg" />
+              <InputOTPSlot index={0} className="h-16 w-16 text-lg" />
+              <InputOTPSlot index={1} className="h-16 w-16 text-lg" />
+              <InputOTPSlot index={2} className="h-16 w-16 text-lg" />
+              <InputOTPSlot index={3} className="h-16 w-16 text-lg" />
+              <InputOTPSlot index={4} className="h-16 w-16 text-lg" />
+              <InputOTPSlot index={5} className="h-16 w-16 text-lg" />
             </InputOTPGroup>
           </InputOTP>
 
           {errors.code && (
-            <p className="text-xs font-semibold text-red-500 w-full text-center mt-1">
+            <p className="mt-1 w-full text-center text-xs font-semibold text-red-500">
               {errors.code}
             </p>
           )}
         </div>
 
+        {/* Botão */}
         <Button
           type="submit"
           disabled={isLoading}
-          className="w-full mt-2 h-12 bg-[#FF5A1F] text-white rounded-lg font-semibold hover:bg-[#FF5A1F]/80 transition-all duration-200 cursor-pointer disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+          className="mt-2 flex h-12 w-full cursor-pointer items-center justify-center gap-2 rounded-lg transition-all disabled:cursor-not-allowed disabled:opacity-70"
         >
           {isLoading ? (
             <>
@@ -201,14 +235,15 @@ function VerifyEmailForm() {
           )}
         </Button>
 
-        <div className="mt-4 text-center flex flex-col gap-2">
-          <p className="text-xs font-medium text-[#4A4A4A]">
+        {/* Ações */}
+        <div className="mt-4 flex flex-col gap-2 text-center">
+          <p className="text-xs font-medium text-muted-foreground">
             Não recebeu o código?{" "}
             <button
               type="button"
               onClick={handleResendCode}
               disabled={resendCountdown > 0 || isResending}
-              className="text-[#FF5A1F] font-semibold hover:underline transition-all disabled:opacity-50 disabled:no-underline cursor-pointer disabled:cursor-not-allowed"
+              className="cursor-pointer font-semibold text-foreground transition-colors hover:text-primary hover:underline disabled:cursor-not-allowed disabled:opacity-50 disabled:no-underline"
             >
               {isResending
                 ? "Enviando..."
@@ -220,9 +255,9 @@ function VerifyEmailForm() {
 
           <Link
             href="/login"
-            className="text-xs font-medium text-gray-400 hover:text-[#FF5A1F] hover:underline transition-colors mt-2"
+            className="mt-2 text-xs font-medium text-muted-foreground transition-colors hover:text-primary hover:underline"
           >
-            Voltar para o Registro
+            Voltar para o Login
           </Link>
         </div>
       </form>
@@ -235,7 +270,7 @@ export default function VerifyEmail() {
     <Suspense
       fallback={
         <div className="flex h-screen w-screen items-center justify-center">
-          <Loader2 className="h-8 w-8 animate-spin text-[#FF5A1F]" />
+          <Loader2 className="h-8 w-8 animate-spin text-primary" />
         </div>
       }
     >

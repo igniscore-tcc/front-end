@@ -29,7 +29,7 @@ export async function POST(req: NextRequest) {
     });
   }
 
-  const nextResponse = NextResponse.json(data);
+  const nextResponse = NextResponse.json({ email, token: data.token });
 
   nextResponse.cookies.set("token", data.token, {
     httpOnly: true,
@@ -39,8 +39,5 @@ export async function POST(req: NextRequest) {
     maxAge: 60 * 60 * 24 * 7,
   });
 
-  return NextResponse.json({
-    ...data,
-    email,
-  });
+  return nextResponse;
 }
