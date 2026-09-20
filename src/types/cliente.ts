@@ -11,6 +11,12 @@ export type Cliente =
       telefone: string;
       observacao?: string;
       uf?: string;
+      nomeFantasia?: string;
+      endereco?: string;
+      numero?: string;
+      cep?: string;
+      bairro?: string;
+      cidade?: string;
     }
   | {
       id: number;
@@ -23,6 +29,12 @@ export type Cliente =
       telefone: string;
       observacao?: string;
       uf?: string;
+      nomeFantasia?: string;
+      endereco?: string;
+      numero?: string;
+      cep?: string;
+      bairro?: string;
+      cidade?: string;
     };
 
 export type ClienteFormData = 
@@ -34,6 +46,12 @@ export type ClienteFormData =
       telefone: string;
       observacao?: string;
       uf?: string;
+      nomeFantasia?: string;
+      endereco?: string;
+      numero?: string;
+      cep?: string;
+      bairro?: string;
+      cidade?: string;
     }
   | {
       tipo: "PJ";
@@ -44,6 +62,12 @@ export type ClienteFormData =
       telefone: string;
       observacao?: string;
       uf?: string;
+      nomeFantasia?: string;
+      endereco?: string;
+      numero?: string;
+      cep?: string;
+      bairro?: string;
+      cidade?: string;
     };
 
 export interface ClienteModalProps {

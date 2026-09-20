@@ -230,43 +230,17 @@ export default function Settings() {
   return (
     <div className="w-full bg-muted/20">
 
-      <header className="border-b bg-background">
-        <div className="flex w-full items-center gap-4 px-4 py-6 sm:px-6 sm:py-8 lg:px-10">
-          <Avatar className="h-16 w-16 shrink-0 sm:h-20 sm:w-20">
-            <AvatarImage
-              src={selectedImage || "/imgProfile.png"}
-              alt={company.name}
-              className="object-cover"
-            />
-
-            <AvatarFallback className="text-xl sm:text-2xl">
-              {company.name?.charAt(0)?.toUpperCase()}
-            </AvatarFallback>
-          </Avatar>
-
-          <div className="min-w-0">
-            <h1 className="truncate text-xl font-semibold tracking-tight sm:text-2xl">
-              {company.name}
-            </h1>
-
-            <p className="mt-1 text-sm text-muted-foreground">
-              Configurações da empresa
-            </p>
-          </div>
-        </div>
-      </header>
-
       <main className="w-full space-y-6 px-4 py-6 sm:px-6 sm:py-8 lg:px-10">
         {/* Heading */}
         <div>
           <h2 className="text-xl font-semibold tracking-tight sm:text-2xl">
             Configurações
           </h2>
-
           <p className="mt-1 max-w-2xl text-sm text-muted-foreground">
             Gerencie as informações e a identidade visual da sua empresa.
           </p>
         </div>
+
 
         <Card className="w-full shadow-none">
           <CardHeader>

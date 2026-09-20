@@ -18,6 +18,12 @@ type FormState = {
   email: string;
   telefone: string;
   observacao: string;
+  nomeFantasia: string;
+  endereco: string;
+  numero: string;
+  cep: string;
+  bairro: string;
+  cidade: string;
 };
 
 const EMPTY_FORM: FormState = {
@@ -29,6 +35,12 @@ const EMPTY_FORM: FormState = {
   email: "",
   telefone: "",
   observacao: "",
+  nomeFantasia: "",
+  endereco: "",
+  numero: "",
+  cep: "",
+  bairro: "",
+  cidade: "",
 };
 
 interface UseClientFormProps {
@@ -67,6 +79,12 @@ export function useClientForm({
           email: clientToEdit.email ?? "",
           telefone: extractNumbers(clientToEdit.telefone ?? ""),
           observacao: clientToEdit.observacao ?? "",
+          nomeFantasia: clientToEdit.nomeFantasia ?? "",
+          endereco: clientToEdit.endereco ?? "",
+          numero: clientToEdit.numero ?? "",
+          cep: clientToEdit.cep ?? "",
+          bairro: clientToEdit.bairro ?? "",
+          cidade: clientToEdit.cidade ?? "",
         });
       } else {
         setForm(EMPTY_FORM);
@@ -86,46 +104,41 @@ export function useClientForm({
     const email = normalizeEmail(form.email);
 
     const nome = form.nome.trim();
-    if (!nome) next.nome = "Nome é obrigatório";
-    else if (nome.length < 2) next.nome = "Nome deve ter pelo menos 2 caracteres";
-    else if (nome.length > 120) next.nome = "Nome deve ter no máximo 120 caracteres";
+    if (nome && nome.length < 2) next.nome = "Nome deve ter pelo menos 2 caracteres";
+    else if (nome && nome.length > 120) next.nome = "Nome deve ter no máximo 120 caracteres";
 
     const uf = (form.uf ?? "").trim().toUpperCase();
-    if (!uf) next.uf = "UF é obrigatória";
-    else if (!/^[A-Z]{2}$/.test(uf)) next.uf = "UF inválida";
+    if (uf && !/^[A-Z]{2}$/.test(uf)) next.uf = "UF inválida";
 
     if (tipo === "PJ") {
       const d = extractNumbers(form.cnpj);
-      if (!d) next.cnpj = "CNPJ é obrigatório";
-      else if (d.length !== 14) next.cnpj = "CNPJ deve ter 14 dígitos";
-      else if (!validateCnpj(form.cnpj)) next.cnpj = "CNPJ inválido";
+      if (d && d.length !== 14) next.cnpj = "CNPJ deve ter 14 dígitos";
+      else if (d && !validateCnpj(form.cnpj)) next.cnpj = "CNPJ inválido";
     } else {
       const d = extractNumbers(form.cpf);
-      if (!d) next.cpf = "CPF é obrigatório";
-      else if (d.length !== 11) next.cpf = "CPF deve ter 11 dígitos";
-      else if (!validateCpf(form.cpf)) next.cpf = "CPF inválido";
+      if (d && d.length !== 11) next.cpf = "CPF deve ter 11 dígitos";
+      else if (d && !validateCpf(form.cpf)) next.cpf = "CPF inválido";
     }
 
-    if (!email) next.email = "Email é obrigatório";
-    else if (!validateEmail(email)) next.email = "Email inválido";
+    if (email && !validateEmail(email)) next.email = "Email inválido";
 
     const phoneDigits = extractNumbers(form.telefone);
-    if (!phoneDigits) {
-      next.telefone = "Telefone é obrigatório";
-    } else if (phoneDigits.length !== 10 && phoneDigits.length !== 11) {
-      next.telefone = "Telefone incompleto";
-    } else {
-      const ddd = Number(phoneDigits.slice(0, 2));
+    if (phoneDigits) {
+      if (phoneDigits.length !== 10 && phoneDigits.length !== 11) {
+        next.telefone = "Telefone incompleto";
+      } else {
+        const ddd = Number(phoneDigits.slice(0, 2));
 
-      if (ddd < 11 || ddd > 99) {
-        next.telefone = "DDD inválido";
-      } else if (phoneDigits.length === 11 && phoneDigits[2] !== "9") {
-        next.telefone = "Telefone inválido";
-      } else if (
-        phoneDigits.length === 10 &&
-        !/^[2-5]/.test(phoneDigits[2])
-      ) {
-        next.telefone = "Telefone inválido";
+        if (ddd < 11 || ddd > 99) {
+          next.telefone = "DDD inválido";
+        } else if (phoneDigits.length === 11 && phoneDigits[2] !== "9") {
+          next.telefone = "Telefone inválido";
+        } else if (
+          phoneDigits.length === 10 &&
+          !/^[2-5]/.test(phoneDigits[2])
+        ) {
+          next.telefone = "Telefone inválido";
+        }
       }
     }
 
@@ -151,6 +164,12 @@ export function useClientForm({
         telefone: form.telefone,
         observacao: form.observacao,
         uf: form.uf,
+        nomeFantasia: form.nomeFantasia,
+        endereco: form.endereco,
+        numero: form.numero,
+        cep: form.cep,
+        bairro: form.bairro,
+        cidade: form.cidade,
       };
     } else {
       submitData = {
@@ -162,6 +181,12 @@ export function useClientForm({
         telefone: form.telefone,
         observacao: form.observacao,
         uf: form.uf,
+        nomeFantasia: form.nomeFantasia,
+        endereco: form.endereco,
+        numero: form.numero,
+        cep: form.cep,
+        bairro: form.bairro,
+        cidade: form.cidade,
       };
     }
 

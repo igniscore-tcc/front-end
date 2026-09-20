@@ -94,46 +94,26 @@ export default function Clients() {
         addLabel="Novo cliente"
       />
 
-      {/* FILTROS */}
-      <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
-        <ToggleGroup
-          type="single"
-          variant="outline"
-          value={filterTipo}
-          onValueChange={(value) => {
-            if (value) {
-              setFilterTipo(value as "ALL" | "PF" | "PJ");
-              setPage(1);
-            }
-          }}
-        >
-          <ToggleGroupItem
-            value="ALL"
-            className="data-[state=on]:bg-primary data-[state=on]:text-primary-foreground"
-          >
-            Todos
-          </ToggleGroupItem>
-          <ToggleGroupItem
-            value="PF"
-            className="data-[state=on]:bg-primary data-[state=on]:text-primary-foreground"
-          >
-            Pessoa Física
-          </ToggleGroupItem>
-          <ToggleGroupItem
-            value="PJ"
-            className="data-[state=on]:bg-primary data-[state=on]:text-primary-foreground"
-          >
-            Pessoa Jurídica
-          </ToggleGroupItem>
-        </ToggleGroup>
+      {/* FILTROS E ORDENAÇÃO */}
+      <div className="flex flex-wrap items-center justify-end gap-3 mb-4">
 
-        <Button
-          variant={sort.key === "nome" ? "default" : "outline"}
-          size="sm"
-          onClick={() => handleSort("nome")}
-        >
-          Nome {nomeSortIcon}
-        </Button>
+        <div className="flex items-center gap-2">
+          <Button
+            variant={sort.key === "id" ? "default" : "outline"}
+            size="sm"
+            onClick={() => handleSort("id")}
+          >
+            ID {sort.key !== "id" ? <ArrowUpDown size={14} /> : sort.dir === "asc" ? <ArrowUp size={14} /> : <ArrowDown size={14} />}
+          </Button>
+
+          <Button
+            variant={sort.key === "nome" ? "default" : "outline"}
+            size="sm"
+            onClick={() => handleSort("nome")}
+          >
+            Nome {nomeSortIcon}
+          </Button>
+        </div>
       </div>
 
       {/* TABELA */}
@@ -141,7 +121,8 @@ export default function Clients() {
         <Table className="table-fixed w-full min-w-[800px]">
           <TableHeader>
             <TableRow>
-              <TableHead className="w-[30%]">Nome</TableHead>
+              <TableHead className="w-[5%]">ID</TableHead>
+              <TableHead className="w-[25%]">Nome</TableHead>
               <TableHead className="w-[18%]">CPF / CNPJ</TableHead>
               <TableHead className="w-[12%]">Inscrição</TableHead>
               <TableHead className="w-[22%]">E-mail</TableHead>
@@ -154,6 +135,9 @@ export default function Clients() {
             {loading ? (
               Array.from({ length: perPage > 8 ? 8 : perPage }).map((_, i) => (
                 <TableRow key={`skeleton-${i}`}>
+                  <TableCell>
+                    <Skeleton className="h-4 w-6" />
+                  </TableCell>
                   <TableCell>
                     <Skeleton className="h-4 w-40" />
                   </TableCell>
@@ -173,18 +157,13 @@ export default function Clients() {
                 </TableRow>
               ))
             ) : pageData.length > 0 ? (
-              pageData.map((client) => (
+              pageData.map((client, index) => (
                 <TableRow key={client.id}>
+                  <TableCell className="text-muted-foreground tabular-nums">
+                    {client.number || client.id}
+                  </TableCell>
                   <TableCell>
                     <div className="flex min-w-0 items-center gap-2">
-                      <Badge variant="outline" className="shrink-0 gap-1">
-                        {client.tipo === "PJ" ? (
-                          <Building2 className="size-3" />
-                        ) : (
-                          <User className="size-3" />
-                        )}
-                        {client.tipo}
-                      </Badge>
                       
                       <button
                         type="button"

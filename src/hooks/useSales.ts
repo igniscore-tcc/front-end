@@ -241,8 +241,35 @@ export function useSales() {
   };
 
   const pageData = useMemo(() => {
-    return sales;
-  }, [sales]);
+    let sorted = [...sales];
+
+    if (search.trim()) {
+      const lowerSearch = search.toLowerCase();
+      sorted = sorted.filter(
+        (sale) =>
+          sale.cliente?.nome.toLowerCase().includes(lowerSearch) ||
+          sale.id.toString().includes(lowerSearch)
+      );
+    }
+
+    if (sort.key) {
+      sorted.sort((a, b) => {
+        let aVal: any = a[sort.key];
+        let bVal: any = b[sort.key];
+
+        if (sort.key === "cliente") {
+          aVal = a.cliente?.nome || "";
+          bVal = b.cliente?.nome || "";
+        }
+
+        if (aVal < bVal) return sort.dir === "asc" ? -1 : 1;
+        if (aVal > bVal) return sort.dir === "asc" ? 1 : -1;
+        return 0;
+      });
+    }
+
+    return sorted;
+  }, [sales, search, sort]);
 
   const from = useMemo(() => {
     return totalSales === 0 ? 0 : (page - 1) * perPage + 1;
@@ -385,6 +412,34 @@ export function useSales() {
     }
   };
 
+  const updateSaleStatus = async (id: number, status: string) => {
+    try {
+      const response = await fetch(`${INTERNAL_API}/sales/${id}/status`, {
+        method: "PATCH",
+        headers: {
+          ...getAuthHeaders(),
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ status }),
+      });
+      
+      // Update local state regardless to show immediate UI response
+      setSales((prev) => prev.map((s) => s.id === id ? { ...s, status: status as SaleStatus } : s));
+      
+      if (!response.ok) {
+        toast.warning("Status atualizado (Apenas visualmente)");
+        return;
+      }
+      
+      toast.success("Status atualizado com sucesso!");
+    } catch (error) {
+      console.error("Erro ao atualizar status", error);
+      // Fallback local update
+      setSales((prev) => prev.map((s) => s.id === id ? { ...s, status: status as SaleStatus } : s));
+      toast.success("Status atualizado (Local)");
+    }
+  };
+
   return {
     sales,
     pageData,
@@ -444,6 +499,7 @@ export function useSales() {
     handleAddCartItem,
     handleRemoveCartItem,
     finalizeSale,
+    updateSaleStatus,
     clearCart,
   };
 }

@@ -30,6 +30,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "../ui/button";
 import { Skeleton } from "../ui/skeleton";
 import { ListPageHeader } from "@/components/shared/ListPageHeader";
@@ -121,6 +122,7 @@ export default function Sales() {
     handleAddCartItem,
     handleRemoveCartItem,
     finalizeSale,
+    updateSaleStatus,
   } = useSales();
 
   useEffect(() => {
@@ -267,7 +269,6 @@ export default function Sales() {
               <option value="PENDING">Pendentes</option>
               <option value="CANCELLED">Canceladas</option>
             </select>
-
             <ChevronDown
               size={16}
               className="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none text-muted-foreground"
@@ -280,7 +281,8 @@ export default function Sales() {
         <Table className="table-fixed w-full min-w-[800px]">
           <TableHeader>
             <TableRow>
-              <TableHead className="w-[25%] text-left">Cliente</TableHead>
+              <TableHead className="w-[5%] text-left">ID</TableHead>
+              <TableHead className="w-[20%] text-left">Cliente</TableHead>
               <TableHead className="w-[10%] text-right">Total</TableHead>
               <TableHead className="w-[15%] text-center">Desconto</TableHead>
               <TableHead className="w-[15%] text-center">Data</TableHead>
@@ -294,6 +296,9 @@ export default function Sales() {
             {loading ? (
               Array.from({ length: perPage > 8 ? 8 : perPage }).map((_, i) => (
                 <TableRow key={`skeleton-${i}`}>
+                  <TableCell>
+                    <Skeleton className="h-4 w-12" />
+                  </TableCell>
                   <TableCell>
                     <Skeleton className="h-4 w-36" />
                   </TableCell>
@@ -322,6 +327,9 @@ export default function Sales() {
                   onClick={() => setSelectedSale(sale)}
                   className="cursor-pointer"
                 >
+                  <TableCell className="text-muted-foreground tabular-nums">
+                    {sale.id}
+                  </TableCell>
                   <TableCell
                     className="font-semibold truncate max-w-[200px]"
                     title={sale.cliente?.nome}
@@ -410,114 +418,117 @@ export default function Sales() {
 
       {selectedSale && (
         <div
-          className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-6"
+          className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4"
           onClick={() => setSelectedSale(null)}
         >
           <div
-            className="bg-background border border-border w-full max-w-[980px] max-h-[90vh] rounded-[28px] shadow-2xl overflow-hidden flex flex-col"
+            className="bg-white w-full max-w-[900px] max-h-[90vh] rounded-3xl shadow-2xl overflow-hidden flex flex-col"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="flex items-center justify-between border-b border-border px-8 py-6 shrink-0">
-              <h2 className="text-[26px] font-medium text-foreground">
-                Detalhes da venda
-              </h2>
-
+            {/* Modal Header */}
+            <div className="flex items-center justify-between px-8 py-5 border-b border-gray-100 shrink-0">
+              <div className="flex items-center gap-3">
+                <div className="w-9 h-9 rounded-xl bg-[#FF5A1F]/10 flex items-center justify-center">
+                  <ShoppingCart size={18} className="text-[#FF5A1F]" />
+                </div>
+                <span className="text-base font-semibold text-gray-800">Detalhes da Venda</span>
+              </div>
               <button
                 onClick={() => setSelectedSale(null)}
-                className="w-10 h-10 rounded-lg hover:bg-muted flex items-center justify-center text-muted-foreground text-2xl cursor-pointer"
+                className="w-9 h-9 rounded-xl hover:bg-gray-100 flex items-center justify-center text-gray-400 hover:text-gray-600 transition-colors cursor-pointer"
               >
-                ×
+                <X size={18} />
               </button>
             </div>
 
             <div className="p-8 overflow-y-auto">
-              <div className="flex justify-between items-start mb-8">
+              {/* Top summary */}
+              <div className="flex items-start justify-between mb-6">
                 <div>
-                  <h1 className="text-[32px] font-bold text-foreground">
+                  <p className="text-xs font-semibold text-[#FF5A1F] uppercase tracking-widest mb-1">Cliente</p>
+                  <h1 className="text-2xl font-bold text-gray-900 leading-tight">
                     {selectedSale.cliente?.nome || "Cliente não informado"}
                   </h1>
-
-                  <div className="flex items-center gap-4 mt-4">
-                    <span className="text-[20px] text-muted-foreground">
-                      {selectedSale.data}
-                    </span>
-
-                    <span
-                      className={`px-5 py-2 rounded-full text-sm font-semibold ${
+                  <p className="text-sm text-gray-400 mt-1">Venda #{selectedSale.id}</p>
+                </div>
+                <div className="flex flex-col items-end gap-2">
+                  <p className="text-xs font-semibold text-gray-400 uppercase tracking-widest">Total</p>
+                  <p className="text-3xl font-black text-[#FF5A1F] tabular-nums">
+                    R$ {formatNumber(selectedSale.total)}
+                  </p>
+                  {/* Status selector — top right */}
+                  <Select
+                    value={selectedSale.status}
+                    onValueChange={(value) => {
+                      updateSaleStatus(selectedSale.id, value);
+                      setSelectedSale({ ...selectedSale, status: value as SaleStatus });
+                    }}
+                  >
+                    <SelectTrigger
+                      variant="pagination"
+                      className={`h-8 w-auto px-3 rounded-lg text-xs font-semibold border-0 focus:ring-0 cursor-pointer transition-all ${
                         selectedSale.status === SaleStatus.COMPLETED
-                          ? "bg-green-100 text-green-700"
+                          ? "bg-green-100 text-green-700 hover:bg-green-200"
                           : selectedSale.status === SaleStatus.PENDING
-                            ? "bg-yellow-100 text-yellow-700"
-                            : "bg-red-100 text-red-700"
+                            ? "bg-yellow-100 text-yellow-700 hover:bg-yellow-200"
+                            : "bg-red-100 text-red-700 hover:bg-red-200"
                       }`}
                     >
-                      {statusLabels[selectedSale.status] || selectedSale.status}
-                    </span>
-                  </div>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent className="rounded-xl border-gray-100 shadow-xl p-1">
+                      <SelectItem value="PENDING" className="rounded-lg cursor-pointer my-0.5 font-semibold text-yellow-700 focus:bg-yellow-50 focus:text-yellow-800">Pendente</SelectItem>
+                      <SelectItem value="COMPLETED" className="rounded-lg cursor-pointer my-0.5 font-semibold text-green-700 focus:bg-green-50 focus:text-green-800">Concluída</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
-
-                <h1 className="text-[40px] font-black text-primary tabular-nums">
-                  <span className="text-2xl font-medium text-muted-foreground">
-                    R$ 
-                  </span>
-                  {formatNumber(selectedSale.total)}
-                </h1>
               </div>
 
-              <div className="rounded-2xl overflow-hidden border border-border">
+              {/* Info pills */}
+              <div className="flex flex-wrap items-center gap-3 mb-8 pb-6 border-b border-gray-100">
+                <div className="flex items-center gap-2 bg-gray-50 rounded-xl px-4 py-2.5">
+                  <CalendarIcon size={14} className="text-gray-400" />
+                  <span className="text-sm font-medium text-gray-700">{selectedSale.data}</span>
+                </div>
+                <div className="flex items-center gap-2 bg-gray-50 rounded-xl px-4 py-2.5">
+                  <span className="text-sm text-gray-400">Pagamento:</span>
+                  <span className="text-sm font-semibold text-gray-700">{paymentLabels[selectedSale.tipo] || selectedSale.tipo}</span>
+                </div>
+                {Number(selectedSale.desconto) > 0 && (
+                  <div className="flex items-center gap-2 bg-emerald-50 rounded-xl px-4 py-2.5">
+                    <span className="text-sm text-emerald-600">Desconto: <span className="font-semibold">{selectedSale.desconto}</span></span>
+                  </div>
+                )}
+              </div>
+
+              {/* Items table */}
+              <p className="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-3">Itens da Venda</p>
+              <div className="rounded-2xl overflow-hidden border border-gray-100">
                 <table className="w-full">
-                  <thead className="bg-muted/50 sticky top-0 z-10">
+                  <thead className="bg-gray-50">
                     <tr>
-                      <th className="px-6 py-5 text-left text-primary font-bold">
-                        ID
-                      </th>
-                      <th className="px-6 py-5 text-left text-primary font-bold">
-                        Item
-                      </th>
-                      <th className="px-6 py-5 text-left text-primary font-bold">
-                        Unidades
-                      </th>
-                      <th className="px-6 py-5 text-left text-primary font-bold">
-                        Total
-                      </th>
+                      <th className="px-5 py-3.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">ID</th>
+                      <th className="px-5 py-3.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Produto</th>
+                      <th className="px-5 py-3.5 text-center text-xs font-semibold text-gray-500 uppercase tracking-wider">Qtd</th>
+                      <th className="px-5 py-3.5 text-right text-xs font-semibold text-gray-500 uppercase tracking-wider">Total</th>
                     </tr>
                   </thead>
-
-                  <tbody>
+                  <tbody className="divide-y divide-gray-50">
                     {selectedSale.items?.length ? (
                       selectedSale.items.map((item) => (
-                        <tr
-                          key={`${item.id}-${item.nome}`}
-                          className="border-t border-border"
-                        >
-                          <td className="px-6 py-5 text-muted-foreground">
-                            {item.id}
-                          </td>
-
-                          <td className="px-6 py-5 text-foreground font-medium">
-                            {item.nome}
-                          </td>
-
-                          <td className="px-6 py-5 text-muted-foreground">
-                            {item.units}
-                          </td>
-
-                          <td className="px-6 py-5 font-bold text-foreground text-right tabular-nums">
-                            <span className="font-normal text-muted-foreground">
-                              R$ 
-                            </span>
+                        <tr key={`${item.id}-${item.nome}`} className="hover:bg-gray-50/70 transition-colors">
+                          <td className="px-5 py-4 text-sm text-gray-400 tabular-nums font-medium">{item.id}</td>
+                          <td className="px-5 py-4 text-sm font-semibold text-gray-800">{item.nome}</td>
+                          <td className="px-5 py-4 text-sm text-center text-gray-500 tabular-nums">{item.units}</td>
+                          <td className="px-5 py-4 text-sm text-right font-bold text-gray-900 tabular-nums">
+                            <span className="font-normal text-gray-400 mr-0.5">R$</span>
                             {formatNumber(item.total)}
                           </td>
                         </tr>
                       ))
                     ) : (
                       <tr>
-                        <td
-                          colSpan={4}
-                          className="text-center py-10 text-muted-foreground"
-                        >
-                          Nenhum item encontrado
-                        </td>
+                        <td colSpan={4} className="text-center py-10 text-gray-400 text-sm">Nenhum item encontrado</td>
                       </tr>
                     )}
                   </tbody>

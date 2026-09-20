@@ -10,6 +10,7 @@ import {
   Mail,
   Pencil,
   Receipt,
+  MapPin,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -29,6 +30,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useClients } from "@/hooks/useClients";
 import { Cliente } from "@/types/cliente";
 import { AddClientModal } from "@/components/clients/AddClientModal";
+import { formatCpf, formatCnpj, formatPhone, formatCep } from "@/lib/validators";
 
 export default function ClientDetails() {
   const params = useParams();
@@ -149,11 +151,11 @@ export default function ClientDetails() {
                 ) : (
                   <>
                     <h2 className="text-xl font-semibold md:text-2xl">
-                      {client?.nome}
+                      {client?.tipo === "PJ" && client?.nomeFantasia ? client.nomeFantasia : client?.nome}
                     </h2>
 
                     <p className="text-sm text-muted-foreground">
-                      #{client?.number ?? id}
+                      {client?.tipo === "PJ" && client?.nomeFantasia ? `${client.nome} • #${client?.number ?? id}` : `#${client?.number ?? id}`}
                     </p>
                   </>
                 )}
@@ -173,7 +175,7 @@ export default function ClientDetails() {
               label={client?.tipo === "PF" ? "CPF" : "CNPJ"}
               loading={loading}
             >
-              {client?.tipo === "PF" ? client?.cpf : client?.cnpj}
+              {client?.tipo === "PF" ? formatCpf(client?.cpf || "") : formatCnpj(client?.cnpj || "")}
             </InfoItem>
 
             {/* Inscrição */}
@@ -202,7 +204,43 @@ export default function ClientDetails() {
               label="Telefone"
               loading={loading}
             >
-              {client?.telefone}
+              {client?.telefone ? formatPhone(client.telefone) : ""}
+            </InfoItem>
+
+            {/* Endereço */}
+            <InfoItem
+              icon={<MapPin className="size-4" />}
+              label="Endereço"
+              loading={loading}
+            >
+              {client?.endereco ? `${client.endereco}, ${client.numero || "S/N"}` : ""}
+            </InfoItem>
+
+            {/* Bairro */}
+            <InfoItem
+              icon={<MapPin className="size-4" />}
+              label="Bairro"
+              loading={loading}
+            >
+              {client?.bairro}
+            </InfoItem>
+
+            {/* Cidade/UF */}
+            <InfoItem
+              icon={<MapPin className="size-4" />}
+              label="Cidade / Estado"
+              loading={loading}
+            >
+              {client?.cidade || client?.uf ? `${client.cidade || ""} - ${client.uf || ""}`.replace(/^- | -$/, '') : ""}
+            </InfoItem>
+
+            {/* CEP */}
+            <InfoItem
+              icon={<MapPin className="size-4" />}
+              label="CEP"
+              loading={loading}
+            >
+              {client?.cep ? formatCep(client.cep) : ""}
             </InfoItem>
           </CardContent>
         </Card>
