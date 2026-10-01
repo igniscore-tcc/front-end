@@ -9,7 +9,6 @@ const protectedRoutes = [
 ];
 
 export async function middleware(req: NextRequest) {
-  console.log("🔥 MIDDLEWARE:", req.nextUrl.pathname);
   const isProtectedRoute = protectedRoutes.some((route) =>
     req.nextUrl.pathname.startsWith(route),
   );
