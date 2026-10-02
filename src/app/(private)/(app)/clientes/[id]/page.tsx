@@ -151,11 +151,11 @@ export default function ClientDetails() {
                 ) : (
                   <>
                     <h2 className="text-xl font-semibold md:text-2xl">
-                      {client?.tipo === "PJ" && client?.nomeFantasia ? client.nomeFantasia : client?.nome}
+                      {client?.tipo === "PJ" && client?.legal ? client.legal : client?.nome}
                     </h2>
 
                     <p className="text-sm text-muted-foreground">
-                      {client?.tipo === "PJ" && client?.nomeFantasia ? `${client.nome} • #${client?.number ?? id}` : `#${client?.number ?? id}`}
+                      {client?.tipo === "PJ" && client?.legal ? `${client.nome} • #${client?.number ?? id}` : `#${client?.number ?? id}`}
                     </p>
                   </>
                 )}
