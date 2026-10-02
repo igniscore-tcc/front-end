@@ -75,11 +75,12 @@ export function useClients() {
         uf: client.ufIe || "SP",
         legal: client.legal || "",
         observacao: client.obs || "",
-        endereco: "",
-        numero: "",
-        cep: "",
-        bairro: "",
-        cidade: "",
+
+        endereco: client.address?.street || "",
+        numero: client.address?.number || "",
+        cep: client.address?.cep || "",
+        bairro: client.address?.neighborhood || "",
+        cidade: client.address?.city || "",
       }));
 
       setClients(formattedClients);

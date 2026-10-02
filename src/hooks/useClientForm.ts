@@ -70,25 +70,35 @@ export function useClientForm({
 
       if (clientToEdit) {
         setTipo(clientToEdit.tipo);
-        setForm({
-          nome: clientToEdit.nome ?? "",
-          cnpj:
-            clientToEdit.tipo === "PJ" ? extractNumbers(clientToEdit.cnpj) : "",
-          cpf:
-            clientToEdit.tipo === "PF" ? extractNumbers(clientToEdit.cpf) : "",
-          inscricao:
-            (clientToEdit.tipo === "PJ" ? clientToEdit.inscricao : "") ?? "",
-          uf: clientToEdit.uf ?? "SP",
-          email: clientToEdit.email ?? "",
-          telefone: extractNumbers(clientToEdit.telefone ?? ""),
-          observacao: clientToEdit.observacao ?? "",
-          nomeFantasia: clientToEdit.legal ?? "",
-          endereco: clientToEdit.endereco ?? "",
-          numero: clientToEdit.numero ?? "",
-          cep: clientToEdit.cep ?? "",
-          bairro: clientToEdit.bairro ?? "",
-          cidade: clientToEdit.cidade ?? "",
-        });
+
+        if (clientToEdit) {
+          setTipo(clientToEdit.tipo);
+
+          setForm({
+            nome: clientToEdit.nome ?? "",
+            cnpj:
+              clientToEdit.tipo === "PJ"
+                ? extractNumbers(clientToEdit.cnpj)
+                : "",
+            cpf:
+              clientToEdit.tipo === "PF"
+                ? extractNumbers(clientToEdit.cpf)
+                : "",
+            inscricao:
+              (clientToEdit.tipo === "PJ" ? clientToEdit.inscricao : "") ?? "",
+            uf: clientToEdit.uf ?? "SP",
+            email: clientToEdit.email ?? "",
+            telefone: extractNumbers(clientToEdit.telefone ?? ""),
+            observacao: clientToEdit.observacao ?? "",
+            nomeFantasia: clientToEdit.legal ?? "",
+
+            endereco: clientToEdit.endereco ?? "",
+            numero: clientToEdit.numero ?? "",
+            cep: clientToEdit.cep ?? "",
+            bairro: clientToEdit.bairro ?? "",
+            cidade: clientToEdit.cidade ?? "",
+          });
+        }
       } else {
         setForm(EMPTY_FORM);
         setTipo("PJ");

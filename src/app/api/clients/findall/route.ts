@@ -31,6 +31,15 @@ export async function GET(req: NextRequest) {
           cnpj
           ie
           obs
+          address {
+            id
+            street
+            number
+            city
+            neighborhood
+            state
+            cep
+          }
         }
         totalPages
         totalClients
