@@ -200,6 +200,7 @@ export function useClients() {
         street: data.endereco || null,
         number: data.numero || null,
         city: data.cidade || null,
+        neighborhood: data.bairro || null,
         state: data.uf || null,
         cep: data.cep || null,
       };

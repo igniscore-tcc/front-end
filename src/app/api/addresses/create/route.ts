@@ -21,6 +21,7 @@ export async function POST(req: NextRequest) {
         street
         number
         city
+        neighborhood
         state
         cep
       }
