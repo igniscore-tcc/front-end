@@ -57,7 +57,8 @@ export function useClients() {
 
         const data = Array.isArray(result.clients) ? result.clients : [];
         all = all.concat(data);
-        totalPages = typeof result.totalPages === "number" ? result.totalPages : 1;
+        totalPages =
+          typeof result.totalPages === "number" ? result.totalPages : 1;
         currentPage++;
       } while (currentPage < totalPages);
 
@@ -66,19 +67,20 @@ export function useClients() {
         number: client.number,
         nome: client.name,
         tipo: client.cpf ? "PF" : "PJ",
-        email: client.email,
+        email: client.email || "",
         telefone: client.phone || "",
         cpf: client.cpf || "",
         cnpj: client.cnpj || "",
         inscricao: client.ie || "",
         uf: client.ufIe || "SP",
+        legal: client.legal || "",
         observacao: client.obs || "",
-        nomeFantasia: client.nomeFantasia || "",
-        endereco: client.endereco || "",
-        numero: client.numeroEndereco || client.numero || "",
-        cep: client.cep || "",
-        bairro: client.bairro || "",
-        cidade: client.cidade || "",
+
+        endereco: client.address?.street || "",
+        numero: client.address?.number || "",
+        cep: client.address?.cep || "",
+        bairro: client.address?.neighborhood || "",
+        cidade: client.address?.city || "",
       }));
 
       setClients(formattedClients);
@@ -123,7 +125,7 @@ export function useClients() {
 
       return (
         (c.nome || "").toLowerCase().includes(term) ||
-        (c.nomeFantasia || "").toLowerCase().includes(term) ||
+        (c.legal || "").toLowerCase().includes(term) ||
         (doc || "").toLowerCase().includes(term) ||
         String(c.id).toLowerCase().includes(term)
       );
@@ -132,8 +134,8 @@ export function useClients() {
 
   const sorted = useMemo(() => {
     return [...filtered].sort((a, b) => {
-      const va = sort.key === "id" ? (a.number || a.id) : a[sort.key];
-      const vb = sort.key === "id" ? (b.number || b.id) : b[sort.key];
+      const va = sort.key === "id" ? a.number || a.id : a[sort.key];
+      const vb = sort.key === "id" ? b.number || b.id : b[sort.key];
       if (va < vb) return sort.dir === "asc" ? -1 : 1;
       if (va > vb) return sort.dir === "asc" ? 1 : -1;
       return 0;
@@ -163,41 +165,68 @@ export function useClients() {
 
   const addClient = async (data: ClienteFormData) => {
     try {
-      const payload = {
+      const clientPayload = {
         name: data.nome,
-        cnpj: data.tipo === "PJ" ? data.cnpj : null,
-        cpf: data.tipo === "PF" ? data.cpf : null,
-        email: data.email,
+        legal: data.legal || null,
+        obs: data.observacao || null,
         phone: data.telefone,
+        cpf: data.tipo === "PF" ? data.cpf : null,
+        cnpj: data.tipo === "PJ" ? data.cnpj : null,
         ie: data.tipo === "PJ" ? data.inscricao : "",
         ufIe: data.uf ?? "SP",
-        obs: data.observacao || null,
-        nomeFantasia: data.nomeFantasia || null,
-        endereco: data.endereco || null,
-        numero: data.numero || null,
-        numeroEndereco: data.numero || null,
-        cep: data.cep || null,
-        bairro: data.bairro || null,
-        cidade: data.cidade || null,
+        email: data.email,
       };
 
-      const response = await fetch(`${INTERNAL_API}/clients/create`, {
+      const clientResponse = await fetch(`${INTERNAL_API}/clients/create`, {
         method: "POST",
         headers: getAuthHeaders(),
-        body: JSON.stringify(payload),
+        body: JSON.stringify(clientPayload),
       });
 
-      const result = await safeJson(response);
+      const clientResult = await safeJson(clientResponse);
 
-      if (!response.ok) {
-        throw new Error(result.error || "Erro ao cadastrar cliente");
+      if (!clientResponse.ok) {
+        throw new Error(clientResult.error || "Erro ao cadastrar cliente");
+      }
+
+      const clientId = clientResult.id;
+
+      if (!clientId) {
+        throw new Error("Cliente criado, mas o ID não foi retornado");
+      }
+
+      const addressPayload = {
+        clientId: clientId,
+        street: data.endereco || null,
+        number: data.numero || null,
+        city: data.cidade || null,
+        neighborhood: data.bairro || null,
+        state: data.uf || null,
+        cep: data.cep || null,
+      };
+
+      const addressResponse = await fetch(`${INTERNAL_API}/addresses/create`, {
+        method: "POST",
+        headers: getAuthHeaders(),
+        body: JSON.stringify(addressPayload),
+      });
+
+      const addressResult = await safeJson(addressResponse);
+
+      if (!addressResponse.ok) {
+        throw new Error(
+          addressResult.error ||
+            "Cliente criado, mas ocorreu um erro ao cadastrar o endereço",
+        );
       }
 
       await fetchClients();
       setShowModal(false);
+
       toast.success("Cliente cadastrado com sucesso!");
     } catch (error) {
       console.error("Erro ao criar cliente:", error);
+
       toast.error(
         isOfflineError(error)
           ? "Servidor indisponível. Tente novamente em instantes."
@@ -205,6 +234,7 @@ export function useClients() {
             ? error.message
             : "Erro ao cadastrar cliente",
       );
+
       throw error;
     }
   };
@@ -213,7 +243,7 @@ export function useClients() {
     if (!data.id) return;
 
     try {
-      const payload = {
+      const clientPayload = {
         id: data.id,
         name: data.nome,
         cnpj: data.tipo === "PJ" ? data.cnpj : null,
@@ -223,45 +253,67 @@ export function useClients() {
         ie: data.tipo === "PJ" ? data.inscricao : "",
         ufIe: data.uf ?? "SP",
         obs: data.observacao || null,
-        nomeFantasia: data.nomeFantasia || null,
-        endereco: data.endereco || null,
-        numero: data.numero || null,
-        numeroEndereco: data.numero || null,
-        cep: data.cep || null,
-        bairro: data.bairro || null,
-        cidade: data.cidade || null,
+        legal: data.legal || null,
       };
 
-      const response = await fetch(`${INTERNAL_API}/clients/update`, {
+      // 1. Atualiza cliente
+      const clientResponse = await fetch(`${INTERNAL_API}/clients/update`, {
         method: "POST",
         headers: getAuthHeaders(),
-        body: JSON.stringify(payload),
+        body: JSON.stringify(clientPayload),
       });
 
-      const result = await safeJson(response);
+      const clientResult = await safeJson(clientResponse);
 
-      if (!response.ok) {
-        throw new Error(result.error || "Erro ao atualizar cliente");
+      if (!clientResponse.ok) {
+        throw new Error(clientResult.error || "Erro ao atualizar cliente");
+      }
+
+      // 2. Atualiza endereço
+      const addressPayload = {
+        clientId: data.id,
+        street: data.endereco || null,
+        number: data.numero || null,
+        neighborhood: data.bairro || null,
+        city: data.cidade || null,
+        state: data.uf || null,
+        cep: data.cep || null,
+      };
+
+      const addressResponse = await fetch(`${INTERNAL_API}/addresses/update`, {
+        method: "PUT",
+        headers: getAuthHeaders(),
+        body: JSON.stringify(addressPayload),
+      });
+
+      const addressResult = await safeJson(addressResponse);
+
+      if (!addressResponse.ok) {
+        throw new Error(
+          addressResult.error ||
+            "Cliente atualizado, mas ocorreu um erro ao atualizar o endereço",
+        );
       }
 
       const updatedClient: Cliente = {
-        id: Number(result.id),
-        number: result.number,
-        nome: result.name,
-        tipo: result.cpf ? "PF" : "PJ",
-        email: result.email,
-        telefone: result.phone,
-        cpf: result.cpf || "",
-        cnpj: result.cnpj || "",
-        inscricao: result.ie || "",
-        uf: result.ufIe || "SP",
-        observacao: result.obs || "",
-        nomeFantasia: result.nomeFantasia || "",
-        endereco: result.endereco || "",
-        numero: result.numeroEndereco || result.numero || "",
-        cep: result.cep || "",
-        bairro: result.bairro || "",
-        cidade: result.cidade || "",
+        id: Number(clientResult.id),
+        number: clientResult.number,
+        nome: clientResult.name,
+        tipo: clientResult.cpf ? "PF" : "PJ",
+        email: clientResult.email || "",
+        telefone: clientResult.phone || "",
+        cpf: clientResult.cpf || "",
+        cnpj: clientResult.cnpj || "",
+        inscricao: clientResult.ie || "",
+        uf: clientResult.ufIe || "SP",
+        observacao: clientResult.obs || "",
+        legal: clientResult.legal || "",
+
+        endereco: addressResult.street || "",
+        numero: addressResult.number || "",
+        cep: addressResult.cep || "",
+        bairro: addressResult.neighborhood || "",
+        cidade: addressResult.city || "",
       };
 
       setClients((prev) =>
@@ -269,9 +321,11 @@ export function useClients() {
       );
 
       setEditing(null);
+
       toast.success("Cliente atualizado com sucesso!");
     } catch (error) {
       console.error("Erro ao atualizar cliente:", error);
+
       toast.error(
         isOfflineError(error)
           ? "Servidor indisponível. Tente novamente em instantes."
@@ -279,6 +333,7 @@ export function useClients() {
             ? error.message
             : "Erro ao atualizar cliente",
       );
+
       throw error;
     }
   };
@@ -295,6 +350,8 @@ export function useClients() {
       throw new Error(result.error || "Erro ao buscar cliente");
     }
 
+    const address = result.address;
+
     return result.cpf
       ? {
           id: Number(result.id),
@@ -306,12 +363,13 @@ export function useClients() {
           telefone: result.phone || "",
           observacao: result.obs || "",
           uf: result.ufIe || "SP",
-          nomeFantasia: result.nomeFantasia || "",
-          endereco: result.endereco || "",
-          numero: result.numeroEndereco || result.numero || "",
-          cep: result.cep || "",
-          bairro: result.bairro || "",
-          cidade: result.cidade || "",
+          legal: result.legal || "",
+
+          endereco: address?.street || "",
+          numero: address?.number || "",
+          cep: address?.cep || "",
+          bairro: address?.neighborhood || "",
+          cidade: address?.city || "",
         }
       : {
           id: Number(result.id),
@@ -324,12 +382,13 @@ export function useClients() {
           telefone: result.phone || "",
           observacao: result.obs || "",
           uf: result.ufIe || "SP",
-          nomeFantasia: result.nomeFantasia || "",
-          endereco: result.endereco || "",
-          numero: result.numeroEndereco || result.numero || "",
-          cep: result.cep || "",
-          bairro: result.bairro || "",
-          cidade: result.cidade || "",
+          legal: result.legal || "",
+
+          endereco: address?.street || "",
+          numero: address?.number || "",
+          cep: address?.cep || "",
+          bairro: address?.neighborhood || "",
+          cidade: address?.city || "",
         };
   }, []);
 

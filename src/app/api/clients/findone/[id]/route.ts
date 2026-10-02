@@ -33,6 +33,7 @@ export async function GET(req: NextRequest, { params }: Params) {
         id
         number
         name
+        legal
         cnpj
         cpf
         email
@@ -40,6 +41,15 @@ export async function GET(req: NextRequest, { params }: Params) {
         ie
         ufIe
         obs
+        address {
+            id
+            street
+            number
+            city
+            neighborhood
+            state
+            cep
+        }
         company {
           id
           name

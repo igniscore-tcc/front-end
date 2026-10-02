@@ -70,22 +70,35 @@ export function useClientForm({
 
       if (clientToEdit) {
         setTipo(clientToEdit.tipo);
-        setForm({
-          nome: clientToEdit.nome ?? "",
-          cnpj: clientToEdit.tipo === "PJ" ? extractNumbers(clientToEdit.cnpj) : "",
-          cpf: clientToEdit.tipo === "PF" ? extractNumbers(clientToEdit.cpf) : "",
-          inscricao: (clientToEdit.tipo === "PJ" ? clientToEdit.inscricao : "") ?? "",
-          uf: clientToEdit.uf ?? "SP",
-          email: clientToEdit.email ?? "",
-          telefone: extractNumbers(clientToEdit.telefone ?? ""),
-          observacao: clientToEdit.observacao ?? "",
-          nomeFantasia: clientToEdit.nomeFantasia ?? "",
-          endereco: clientToEdit.endereco ?? "",
-          numero: clientToEdit.numero ?? "",
-          cep: clientToEdit.cep ?? "",
-          bairro: clientToEdit.bairro ?? "",
-          cidade: clientToEdit.cidade ?? "",
-        });
+
+        if (clientToEdit) {
+          setTipo(clientToEdit.tipo);
+
+          setForm({
+            nome: clientToEdit.nome ?? "",
+            cnpj:
+              clientToEdit.tipo === "PJ"
+                ? extractNumbers(clientToEdit.cnpj)
+                : "",
+            cpf:
+              clientToEdit.tipo === "PF"
+                ? extractNumbers(clientToEdit.cpf)
+                : "",
+            inscricao:
+              (clientToEdit.tipo === "PJ" ? clientToEdit.inscricao : "") ?? "",
+            uf: clientToEdit.uf ?? "SP",
+            email: clientToEdit.email ?? "",
+            telefone: extractNumbers(clientToEdit.telefone ?? ""),
+            observacao: clientToEdit.observacao ?? "",
+            nomeFantasia: clientToEdit.legal ?? "",
+
+            endereco: clientToEdit.endereco ?? "",
+            numero: clientToEdit.numero ?? "",
+            cep: clientToEdit.cep ?? "",
+            bairro: clientToEdit.bairro ?? "",
+            cidade: clientToEdit.cidade ?? "",
+          });
+        }
       } else {
         setForm(EMPTY_FORM);
         setTipo("PJ");
@@ -104,25 +117,45 @@ export function useClientForm({
     const email = normalizeEmail(form.email);
 
     const nome = form.nome.trim();
-    if (nome && nome.length < 2) next.nome = "Nome deve ter pelo menos 2 caracteres";
-    else if (nome && nome.length > 120) next.nome = "Nome deve ter no máximo 120 caracteres";
+
+    if (!nome) {
+      next.nome = "Nome é obrigatório";
+    } else if (nome.length < 2) {
+      next.nome = "Nome deve ter pelo menos 2 caracteres";
+    } else if (nome.length > 120) {
+      next.nome = "Nome deve ter no máximo 120 caracteres";
+    }
 
     const uf = (form.uf ?? "").trim().toUpperCase();
-    if (uf && !/^[A-Z]{2}$/.test(uf)) next.uf = "UF inválida";
+
+    if (uf && !/^[A-Z]{2}$/.test(uf)) {
+      next.uf = "UF inválida";
+    }
 
     if (tipo === "PJ") {
       const d = extractNumbers(form.cnpj);
-      if (d && d.length !== 14) next.cnpj = "CNPJ deve ter 14 dígitos";
-      else if (d && !validateCnpj(form.cnpj)) next.cnpj = "CNPJ inválido";
+
+      if (d && d.length !== 14) {
+        next.cnpj = "CNPJ deve ter 14 dígitos";
+      } else if (d && !validateCnpj(form.cnpj)) {
+        next.cnpj = "CNPJ inválido";
+      }
     } else {
       const d = extractNumbers(form.cpf);
-      if (d && d.length !== 11) next.cpf = "CPF deve ter 11 dígitos";
-      else if (d && !validateCpf(form.cpf)) next.cpf = "CPF inválido";
+
+      if (d && d.length !== 11) {
+        next.cpf = "CPF deve ter 11 dígitos";
+      } else if (d && !validateCpf(form.cpf)) {
+        next.cpf = "CPF inválido";
+      }
     }
 
-    if (email && !validateEmail(email)) next.email = "Email inválido";
+    if (email && !validateEmail(email)) {
+      next.email = "Email inválido";
+    }
 
     const phoneDigits = extractNumbers(form.telefone);
+
     if (phoneDigits) {
       if (phoneDigits.length !== 10 && phoneDigits.length !== 11) {
         next.telefone = "Telefone incompleto";
@@ -143,9 +176,13 @@ export function useClientForm({
     }
 
     const obs = (form.observacao ?? "").trim();
-    if (obs.length > 500) next.observacao = "Observação deve ter no máximo 500 caracteres";
+
+    if (obs.length > 500) {
+      next.observacao = "Observação deve ter no máximo 500 caracteres";
+    }
 
     setErrors(next);
+
     return Object.keys(next).length === 0;
   };
 
@@ -164,7 +201,7 @@ export function useClientForm({
         telefone: form.telefone,
         observacao: form.observacao,
         uf: form.uf,
-        nomeFantasia: form.nomeFantasia,
+        legal: form.nomeFantasia,
         endereco: form.endereco,
         numero: form.numero,
         cep: form.cep,
@@ -181,7 +218,7 @@ export function useClientForm({
         telefone: form.telefone,
         observacao: form.observacao,
         uf: form.uf,
-        nomeFantasia: form.nomeFantasia,
+        legal: form.nomeFantasia,
         endereco: form.endereco,
         numero: form.numero,
         cep: form.cep,

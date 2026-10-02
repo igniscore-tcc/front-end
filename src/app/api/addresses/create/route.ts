@@ -15,9 +15,15 @@ export async function POST(req: NextRequest) {
   }
 
   const query = `
-    mutation StoreClient($input: ClientRegisterInput!) {
-      storeClient(input: $input) {
+    mutation StoreAddress($input: AddressRegisterInput!) {
+      storeAddress(input: $input) {
         id
+        street
+        number
+        city
+        neighborhood
+        state
+        cep
       }
     }
   `;
@@ -42,11 +48,11 @@ export async function POST(req: NextRequest) {
   if (!response.ok || result.errors) {
     return NextResponse.json(
       {
-        error: result.errors?.[0]?.message || "Erro ao cadastrar cliente",
+        error: result.errors?.[0]?.message || "Erro ao cadastrar endereço",
       },
       { status: response.status || 400 },
     );
   }
 
-  return NextResponse.json(result.data.storeClient);
+  return NextResponse.json(result.data.storeAddress);
 }

@@ -11,7 +11,7 @@ export type Cliente =
       telefone: string;
       observacao?: string;
       uf?: string;
-      nomeFantasia?: string;
+      legal?: string;
       endereco?: string;
       numero?: string;
       cep?: string;
@@ -29,7 +29,7 @@ export type Cliente =
       telefone: string;
       observacao?: string;
       uf?: string;
-      nomeFantasia?: string;
+      legal?: string;
       endereco?: string;
       numero?: string;
       cep?: string;
@@ -46,7 +46,7 @@ export type ClienteFormData =
       telefone: string;
       observacao?: string;
       uf?: string;
-      nomeFantasia?: string;
+      legal?: string;
       endereco?: string;
       numero?: string;
       cep?: string;
@@ -62,7 +62,7 @@ export type ClienteFormData =
       telefone: string;
       observacao?: string;
       uf?: string;
-      nomeFantasia?: string;
+      legal?: string;
       endereco?: string;
       numero?: string;
       cep?: string;

@@ -24,11 +24,22 @@ export async function GET(req: NextRequest) {
           id
           number
           name
-          cnpj
+          legal
           email
           phone
-          ie
           cpf
+          cnpj
+          ie
+          obs
+          address {
+            id
+            street
+            number
+            city
+            neighborhood
+            state
+            cep
+          }
         }
         totalPages
         totalClients
