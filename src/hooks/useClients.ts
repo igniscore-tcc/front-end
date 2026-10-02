@@ -243,7 +243,7 @@ export function useClients() {
     if (!data.id) return;
 
     try {
-      const payload = {
+      const clientPayload = {
         id: data.id,
         name: data.nome,
         cnpj: data.tipo === "PJ" ? data.cnpj : null,
@@ -254,44 +254,66 @@ export function useClients() {
         ufIe: data.uf ?? "SP",
         obs: data.observacao || null,
         legal: data.legal || null,
-        endereco: data.endereco || null,
-        numero: data.numero || null,
-        numeroEndereco: data.numero || null,
-        cep: data.cep || null,
-        bairro: data.bairro || null,
-        cidade: data.cidade || null,
       };
 
-      const response = await fetch(`${INTERNAL_API}/clients/update`, {
+      // 1. Atualiza cliente
+      const clientResponse = await fetch(`${INTERNAL_API}/clients/update`, {
         method: "POST",
         headers: getAuthHeaders(),
-        body: JSON.stringify(payload),
+        body: JSON.stringify(clientPayload),
       });
 
-      const result = await safeJson(response);
+      const clientResult = await safeJson(clientResponse);
 
-      if (!response.ok) {
-        throw new Error(result.error || "Erro ao atualizar cliente");
+      if (!clientResponse.ok) {
+        throw new Error(clientResult.error || "Erro ao atualizar cliente");
+      }
+
+      // 2. Atualiza endereço
+      const addressPayload = {
+        clientId: data.id,
+        street: data.endereco || null,
+        number: data.numero || null,
+        neighborhood: data.bairro || null,
+        city: data.cidade || null,
+        state: data.uf || null,
+        cep: data.cep || null,
+      };
+
+      const addressResponse = await fetch(`${INTERNAL_API}/addresses/update`, {
+        method: "PUT",
+        headers: getAuthHeaders(),
+        body: JSON.stringify(addressPayload),
+      });
+
+      const addressResult = await safeJson(addressResponse);
+
+      if (!addressResponse.ok) {
+        throw new Error(
+          addressResult.error ||
+            "Cliente atualizado, mas ocorreu um erro ao atualizar o endereço",
+        );
       }
 
       const updatedClient: Cliente = {
-        id: Number(result.id),
-        number: result.number,
-        nome: result.name,
-        tipo: result.cpf ? "PF" : "PJ",
-        email: result.email,
-        telefone: result.phone,
-        cpf: result.cpf || "",
-        cnpj: result.cnpj || "",
-        inscricao: result.ie || "",
-        uf: result.ufIe || "SP",
-        observacao: result.obs || "",
-        legal: result.nomeFantasia || "",
-        endereco: result.endereco || "",
-        numero: result.numeroEndereco || result.numero || "",
-        cep: result.cep || "",
-        bairro: result.bairro || "",
-        cidade: result.cidade || "",
+        id: Number(clientResult.id),
+        number: clientResult.number,
+        nome: clientResult.name,
+        tipo: clientResult.cpf ? "PF" : "PJ",
+        email: clientResult.email || "",
+        telefone: clientResult.phone || "",
+        cpf: clientResult.cpf || "",
+        cnpj: clientResult.cnpj || "",
+        inscricao: clientResult.ie || "",
+        uf: clientResult.ufIe || "SP",
+        observacao: clientResult.obs || "",
+        legal: clientResult.legal || "",
+
+        endereco: addressResult.street || "",
+        numero: addressResult.number || "",
+        cep: addressResult.cep || "",
+        bairro: addressResult.neighborhood || "",
+        cidade: addressResult.city || "",
       };
 
       setClients((prev) =>
@@ -299,9 +321,11 @@ export function useClients() {
       );
 
       setEditing(null);
+
       toast.success("Cliente atualizado com sucesso!");
     } catch (error) {
       console.error("Erro ao atualizar cliente:", error);
+
       toast.error(
         isOfflineError(error)
           ? "Servidor indisponível. Tente novamente em instantes."
@@ -309,6 +333,7 @@ export function useClients() {
             ? error.message
             : "Erro ao atualizar cliente",
       );
+
       throw error;
     }
   };
