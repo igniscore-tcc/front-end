@@ -18,20 +18,6 @@ export async function POST(req: NextRequest) {
     mutation StoreClient($input: ClientRegisterInput!) {
       storeClient(input: $input) {
         id
-        number
-        name
-        cnpj
-        cpf
-        email
-        phone
-        ie
-        ufIe
-        obs
-        company {
-          id
-          name
-          email
-        }
       }
     }
   `;

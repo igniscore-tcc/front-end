@@ -33,6 +33,7 @@ export async function GET(req: NextRequest, { params }: Params) {
         id
         number
         name
+        legal
         cnpj
         cpf
         email

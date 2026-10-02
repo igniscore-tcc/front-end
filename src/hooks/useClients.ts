@@ -57,7 +57,8 @@ export function useClients() {
 
         const data = Array.isArray(result.clients) ? result.clients : [];
         all = all.concat(data);
-        totalPages = typeof result.totalPages === "number" ? result.totalPages : 1;
+        totalPages =
+          typeof result.totalPages === "number" ? result.totalPages : 1;
         currentPage++;
       } while (currentPage < totalPages);
 
@@ -66,19 +67,19 @@ export function useClients() {
         number: client.number,
         nome: client.name,
         tipo: client.cpf ? "PF" : "PJ",
-        email: client.email,
+        email: client.email || "",
         telefone: client.phone || "",
         cpf: client.cpf || "",
         cnpj: client.cnpj || "",
         inscricao: client.ie || "",
         uf: client.ufIe || "SP",
+        legal: client.legal || "",
         observacao: client.obs || "",
-        nomeFantasia: client.nomeFantasia || "",
-        endereco: client.endereco || "",
-        numero: client.numeroEndereco || client.numero || "",
-        cep: client.cep || "",
-        bairro: client.bairro || "",
-        cidade: client.cidade || "",
+        endereco: "",
+        numero: "",
+        cep: "",
+        bairro: "",
+        cidade: "",
       }));
 
       setClients(formattedClients);
@@ -123,7 +124,7 @@ export function useClients() {
 
       return (
         (c.nome || "").toLowerCase().includes(term) ||
-        (c.nomeFantasia || "").toLowerCase().includes(term) ||
+        (c.legal || "").toLowerCase().includes(term) ||
         (doc || "").toLowerCase().includes(term) ||
         String(c.id).toLowerCase().includes(term)
       );
@@ -132,8 +133,8 @@ export function useClients() {
 
   const sorted = useMemo(() => {
     return [...filtered].sort((a, b) => {
-      const va = sort.key === "id" ? (a.number || a.id) : a[sort.key];
-      const vb = sort.key === "id" ? (b.number || b.id) : b[sort.key];
+      const va = sort.key === "id" ? a.number || a.id : a[sort.key];
+      const vb = sort.key === "id" ? b.number || b.id : b[sort.key];
       if (va < vb) return sort.dir === "asc" ? -1 : 1;
       if (va > vb) return sort.dir === "asc" ? 1 : -1;
       return 0;
@@ -163,41 +164,66 @@ export function useClients() {
 
   const addClient = async (data: ClienteFormData) => {
     try {
-      const payload = {
+      const clientPayload = {
         name: data.nome,
-        cnpj: data.tipo === "PJ" ? data.cnpj : null,
-        cpf: data.tipo === "PF" ? data.cpf : null,
-        email: data.email,
+        legal: data.legal || null,
+        obs: data.observacao || null,
         phone: data.telefone,
+        cpf: data.tipo === "PF" ? data.cpf : null,
+        cnpj: data.tipo === "PJ" ? data.cnpj : null,
         ie: data.tipo === "PJ" ? data.inscricao : "",
         ufIe: data.uf ?? "SP",
-        obs: data.observacao || null,
-        nomeFantasia: data.nomeFantasia || null,
+        email: data.email,
+      };
+
+      const clientResponse = await fetch(`${INTERNAL_API}/clients/create`, {
+        method: "POST",
+        headers: getAuthHeaders(),
+        body: JSON.stringify(clientPayload),
+      });
+
+      const clientResult = await safeJson(clientResponse);
+
+      if (!clientResponse.ok) {
+        throw new Error(clientResult.error || "Erro ao cadastrar cliente");
+      }
+
+      const clientId = clientResult.id;
+
+      if (!clientId) {
+        throw new Error("Cliente criado, mas o ID não foi retornado");
+      }
+
+      const addressPayload = {
         endereco: data.endereco || null,
-        numero: data.numero || null,
-        numeroEndereco: data.numero || null,
         cep: data.cep || null,
         bairro: data.bairro || null,
         cidade: data.cidade || null,
+        clientId: clientId,
       };
 
-      const response = await fetch(`${INTERNAL_API}/clients/create`, {
+      const addressResponse = await fetch(`${INTERNAL_API}/addresses/create`, {
         method: "POST",
         headers: getAuthHeaders(),
-        body: JSON.stringify(payload),
+        body: JSON.stringify(addressPayload),
       });
 
-      const result = await safeJson(response);
+      const addressResult = await safeJson(addressResponse);
 
-      if (!response.ok) {
-        throw new Error(result.error || "Erro ao cadastrar cliente");
+      if (!addressResponse.ok) {
+        throw new Error(
+          addressResult.error ||
+            "Cliente criado, mas ocorreu um erro ao cadastrar o endereço",
+        );
       }
 
       await fetchClients();
       setShowModal(false);
+
       toast.success("Cliente cadastrado com sucesso!");
     } catch (error) {
       console.error("Erro ao criar cliente:", error);
+
       toast.error(
         isOfflineError(error)
           ? "Servidor indisponível. Tente novamente em instantes."
@@ -205,6 +231,7 @@ export function useClients() {
             ? error.message
             : "Erro ao cadastrar cliente",
       );
+
       throw error;
     }
   };
@@ -223,7 +250,7 @@ export function useClients() {
         ie: data.tipo === "PJ" ? data.inscricao : "",
         ufIe: data.uf ?? "SP",
         obs: data.observacao || null,
-        nomeFantasia: data.nomeFantasia || null,
+        legal: data.legal || null,
         endereco: data.endereco || null,
         numero: data.numero || null,
         numeroEndereco: data.numero || null,
@@ -256,7 +283,7 @@ export function useClients() {
         inscricao: result.ie || "",
         uf: result.ufIe || "SP",
         observacao: result.obs || "",
-        nomeFantasia: result.nomeFantasia || "",
+        legal: result.nomeFantasia || "",
         endereco: result.endereco || "",
         numero: result.numeroEndereco || result.numero || "",
         cep: result.cep || "",
@@ -306,7 +333,7 @@ export function useClients() {
           telefone: result.phone || "",
           observacao: result.obs || "",
           uf: result.ufIe || "SP",
-          nomeFantasia: result.nomeFantasia || "",
+          legal: result.legal || "",
           endereco: result.endereco || "",
           numero: result.numeroEndereco || result.numero || "",
           cep: result.cep || "",
@@ -324,7 +351,7 @@ export function useClients() {
           telefone: result.phone || "",
           observacao: result.obs || "",
           uf: result.ufIe || "SP",
-          nomeFantasia: result.nomeFantasia || "",
+          legal: result.legal || "",
           endereco: result.endereco || "",
           numero: result.numeroEndereco || result.numero || "",
           cep: result.cep || "",
