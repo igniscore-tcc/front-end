@@ -350,6 +350,8 @@ export function useClients() {
       throw new Error(result.error || "Erro ao buscar cliente");
     }
 
+    const address = result.address;
+
     return result.cpf
       ? {
           id: Number(result.id),
@@ -362,11 +364,12 @@ export function useClients() {
           observacao: result.obs || "",
           uf: result.ufIe || "SP",
           legal: result.legal || "",
-          endereco: result.endereco || "",
-          numero: result.numeroEndereco || result.numero || "",
-          cep: result.cep || "",
-          bairro: result.bairro || "",
-          cidade: result.cidade || "",
+
+          endereco: address?.street || "",
+          numero: address?.number || "",
+          cep: address?.cep || "",
+          bairro: address?.neighborhood || "",
+          cidade: address?.city || "",
         }
       : {
           id: Number(result.id),
@@ -380,11 +383,12 @@ export function useClients() {
           observacao: result.obs || "",
           uf: result.ufIe || "SP",
           legal: result.legal || "",
-          endereco: result.endereco || "",
-          numero: result.numeroEndereco || result.numero || "",
-          cep: result.cep || "",
-          bairro: result.bairro || "",
-          cidade: result.cidade || "",
+
+          endereco: address?.street || "",
+          numero: address?.number || "",
+          cep: address?.cep || "",
+          bairro: address?.neighborhood || "",
+          cidade: address?.city || "",
         };
   }, []);
 
