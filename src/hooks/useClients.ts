@@ -195,11 +195,12 @@ export function useClients() {
       }
 
       const addressPayload = {
-        endereco: data.endereco || null,
-        cep: data.cep || null,
-        bairro: data.bairro || null,
-        cidade: data.cidade || null,
         clientId: clientId,
+        street: data.endereco || null,
+        number: data.numero || null,
+        city: data.cidade || null,
+        state: data.uf || null,
+        cep: data.cep || null,
       };
 
       const addressResponse = await fetch(`${INTERNAL_API}/addresses/create`, {

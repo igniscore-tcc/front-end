@@ -140,7 +140,7 @@ export function AddClientModal({
                     <Input
                       id="client-name"
                       placeholder={
-                        tipo === "PJ" ? "Razão social" : "Nome completo"
+                        tipo === "PJ" ? "Nome fantasia" : "Nome completo"
                       }
                       data-testid="inputName"
                       value={form.nome}
@@ -148,14 +148,14 @@ export function AddClientModal({
                     />
                   </div>
 
-                  {/* Nome Fantasia */}
+                  {/* Razão Socila */}
                   {tipo === "PJ" && (
                     <div className="space-y-2 flex flex-col mt-4">
                       <label
-                        htmlFor="client-nomeFantasia"
+                        htmlFor="client-razaoSocial"
                         className="text-sm font-medium"
                       >
-                        Nome fantasia
+                        Razão Social
                       </label>
 
                       <Input
