@@ -17,17 +17,6 @@ export async function POST(req: NextRequest) {
   mutation StoreProduct($input: ProductStoreInput!) {
     storeProduct(input: $input) {
       id
-      numberProduct
-      name
-      type
-      lot
-      validity
-      price
-      status
-      company {
-        id
-        name
-      }
     }
   }
 `;

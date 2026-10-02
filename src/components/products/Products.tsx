@@ -1,22 +1,31 @@
 "use client";
 
+import { useAuth } from "@/contexts/AuthContext";
+import { useProducts } from "@/hooks/useProducts";
+import { PRODUCT_TYPE_OPTIONS } from "@/lib/constants";
+import { UserRole } from "@/types/me";
+import { Product, ProductFormData } from "@/types/product";
 import {
-  ArrowUp,
   ArrowDown,
+  ArrowUp,
   ArrowUpDown,
-  Pencil,
-  Trash2,
   MoreVertical,
   Package,
+  Pencil,
+  Trash2,
 } from "lucide-react";
+import { DataPagination } from "../layout/pagination/pagination";
+import { ConfirmDialog } from "../shared/DeleteConfirmModal";
 import { ListPageHeader } from "../shared/ListPageHeader";
-import { Product, ProductFormData } from "@/types/product";
-import { PRODUCT_TYPE_OPTIONS } from "@/lib/constants";
-import { ProductModal } from "./ProductModal";
-import { useProducts } from "@/hooks/useProducts";
-import { useAuth } from "@/contexts/AuthContext";
-import { UserRole } from "@/types/me";
+import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "../ui/dropdown-menu";
+import { Skeleton } from "../ui/skeleton";
 import {
   Table,
   TableBody,
@@ -25,16 +34,7 @@ import {
   TableHeader,
   TableRow,
 } from "../ui/table";
-import { Badge } from "../ui/badge";
-import { Skeleton } from "../ui/skeleton";
-import { DataPagination } from "../layout/pagination/pagination";
-import { ConfirmDialog } from "../shared/DeleteConfirmModal";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "../ui/dropdown-menu";
+import { ProductModal } from "./ProductModal";
 
 export default function Products() {
   const {
@@ -133,11 +133,12 @@ export default function Products() {
         <Table className="table-fixed w-full min-w-[800px]">
           <TableHeader>
             <TableRow>
+            <TableHead className="w-[5%]">ID</TableHead>
               <TableHead className="w-[30%]">Nome</TableHead>
               <TableHead className="w-[15%]">Tipo</TableHead>
               <TableHead className="w-[15%]">Validade</TableHead>
               <TableHead className="w-[15%]">Lote</TableHead>
-              <TableHead className="w-[10%] text-right">Preço</TableHead>
+              <TableHead className="w-[10%]">Preço</TableHead>
               <TableHead className="w-[5%] text-right">Ações</TableHead>
             </TableRow>
           </TableHeader>
@@ -146,6 +147,9 @@ export default function Products() {
             {loading ? (
               Array.from({ length: perPage > 8 ? 8 : perPage }).map((_, i) => (
                 <TableRow key={`skeleton-${i}`}>
+                  <TableCell>
+                    <Skeleton className="h-4 w-10" />
+                  </TableCell>
                   <TableCell>
                     <Skeleton className="h-4 w-40" />
                   </TableCell>
@@ -167,6 +171,14 @@ export default function Products() {
             ) : pageData.length > 0 ? (
               pageData.map((product) => (
                 <TableRow key={product.id}>
+                  <TableCell>
+                    <span
+                        className="block truncate font-semibold"
+                        title={product.nome}
+                      >
+                        {product.numberProduct}
+                      </span>
+                  </TableCell>
                   <TableCell>
                     <div className="min-w-0">
                       <span
@@ -196,7 +208,7 @@ export default function Products() {
                     {product.lote || "-"}
                   </TableCell>
 
-                  <TableCell className="text-right font-semibold tabular-nums whitespace-nowrap">
+                  <TableCell className="font-semibold tabular-nums whitespace-nowrap">
                     {formatCurrency(product.preco)}
                   </TableCell>
 
