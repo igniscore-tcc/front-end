@@ -86,7 +86,7 @@ export default function Home() {
           </div>
 
           <div className="mt-8">
-            <Button className="w-full p-6">Escolher Plano</Button>
+            <Button className="w-full p-6 rounded-none">Escolher Plano</Button>
           </div>
         </article>
 
@@ -97,8 +97,8 @@ export default function Home() {
           </div>
 
           <div className="flex flex-col gap-2 mt-4">
-            <h2 className="text-4xl">Grátis</h2>
-            <p className="text-muted-foreground leading-relaxed">14 dias</p>
+            <h2 className="text-4xl">R$49,90</h2>
+            <p className="text-muted-foreground leading-relaxed">Mensal</p>
           </div>
 
           <div className="mt-8 text-muted-foreground leading-relaxed">
@@ -122,8 +122,8 @@ export default function Home() {
           </div>
 
           <div className="flex flex-col gap-2 mt-4">
-            <h2 className="text-4xl">Grátis</h2>
-            <p className="text-muted-foreground leading-relaxed">14 dias</p>
+            <h2 className="text-4xl">R$99,90</h2>
+            <p className="text-muted-foreground leading-relaxed">Mensal</p>
           </div>
 
           <div className="mt-8 text-muted-foreground leading-relaxed">
@@ -136,7 +136,7 @@ export default function Home() {
           </div>
 
           <div className="mt-8">
-            <Button className="w-full p-6">Escolher Plano</Button>
+            <Button className="w-full p-6 rounded-none">Escolher Plano</Button>
           </div>
         </article>
       </div>
