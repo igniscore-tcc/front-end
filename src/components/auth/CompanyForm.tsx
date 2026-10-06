@@ -144,7 +144,7 @@ export default function CompanyForm() {
         telefone: "",
       });
 
-      window.location.href = "/dashboard";
+      window.location.href = "/planos";
     } catch (error) {
       alert(
         error instanceof Error ? error.message : "Erro ao cadastrar empresa.",
