@@ -29,8 +29,6 @@ export default function RegisterPage() {
 
                 <div className="relative flex w-full flex-col justify-between p-12 xl:p-16">
                     <div>
-                        <p className="text-sm font-medium uppercase tracking-[0.15em] text-primary">Comece agora</p>
-
                         <h2 className="mt-6 max-w-xl text-4xl font-medium leading-[1.15] tracking-tight xl:text-5xl">
                             Mais controle.
                             <br />
