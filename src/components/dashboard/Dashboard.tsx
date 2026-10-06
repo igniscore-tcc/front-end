@@ -14,6 +14,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 
 import { ChartContainer, ChartTooltip, ChartTooltipContent, type ChartConfig } from "@/components/ui/chart";
 import { useSearchParams } from "next/navigation";
+import AppTour from "../onboarding/AppTour";
 import { WelcomeModal } from "../shared/WelcomeModal";
 
 const chartConfig = {
@@ -274,6 +275,8 @@ export default function Dashboard() {
             </div>
 
             {/* Indicadores secundários */}
+
+            <AppTour />
 
             <WelcomeModal open={showWelcome} onContinue={() => setShowWelcome(false)} />
         </div>
