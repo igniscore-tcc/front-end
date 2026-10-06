@@ -3,34 +3,36 @@ import Contact from "@/components/home/contact";
 import Footer from "@/components/home/footer";
 import Header from "@/components/home/header";
 import Hero from "@/components/home/hero";
-import InteractionDashboard from "@/components/home/interaction-dashboard";
 import Market from "@/components/home/market";
+import { Pricing } from "@/components/home/Pricing";
 import Result from "@/components/home/results";
 import Solutions from "@/components/home/solutions";
 import Timeline from "@/components/home/timeline";
 
 export default function Home() {
-  return (
-    <div>
-      <Header />
+    return (
+        <div>
+            <Header />
 
-      <Hero />
+            <Hero />
 
-      <Challenges />
+            <Challenges />
 
-      <Solutions />
+            <Solutions />
 
-      <InteractionDashboard />
+            {/* <InteractionDashboard /> */}
 
-      <Result />
+            <Result />
 
-      <Timeline />
+            <Timeline />
 
-      <Market />
+            <Market />
 
-      <Contact />
+            <Pricing />
 
-      <Footer />
-    </div>
-  );
+            <Contact />
+
+            <Footer />
+        </div>
+    );
 }

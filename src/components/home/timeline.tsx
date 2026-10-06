@@ -74,17 +74,6 @@ export default function Timeline() {
     >
       {/* Header */}
       <div className="flex flex-col items-center gap-6 text-center">
-        <p
-          className="
-            text-sm
-            font-semibold
-            uppercase
-            tracking-[0.15em]
-            text-primary
-          "
-        >
-          Processo simples
-        </p>
 
         <h2
           id="timeline-title"

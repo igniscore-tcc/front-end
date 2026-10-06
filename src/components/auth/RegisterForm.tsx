@@ -187,9 +187,9 @@ export default function RegisterForm() {
           <h2 className="mb-3 text-2xl font-semibold text-primary">Registro</h2>
 
           {/* Progresso */}
-          <div className="h-1.5 w-full overflow-hidden rounded-full bg-muted">
+          <div className="h-1.5 w-full overflow-hidden bg-muted">
             <div
-              className="h-full rounded-full bg-primary transition-all duration-500 ease-out"
+              className="h-full bg-primary transition-all duration-500 ease-out"
               style={{
                 width: `${progressPercentage}%`,
               }}
@@ -267,7 +267,7 @@ export default function RegisterForm() {
               <div className="relative flex items-center justify-center">
                 <input
                   type="checkbox"
-                  className="peer h-[18px] w-[18px] cursor-pointer appearance-none rounded-[4px] border-2 border-input outline-none transition-all checked:border-primary checked:bg-primary focus:ring-2 focus:ring-primary/30"
+                  className="peer h-[18px] w-[18px] cursor-pointer appearance-none border-2 border-input outline-none transition-all checked:border-primary checked:bg-primary focus:ring-2 focus:ring-primary/30"
                   checked={aceitouTermos}
                   onChange={(e) => {
                     setAceitouTermos(e.target.checked);
@@ -312,7 +312,7 @@ export default function RegisterForm() {
           <Button
             type="submit"
             disabled={isLoading}
-            className="mt-2 h-12 w-full cursor-pointer gap-2 rounded-lg transition-all disabled:cursor-not-allowed disabled:opacity-70"
+            className="mt-2 h-12 w-full cursor-pointer gap-2 transition-all disabled:cursor-not-allowed disabled:opacity-70"
           >
             {isLoading ? (
               <>

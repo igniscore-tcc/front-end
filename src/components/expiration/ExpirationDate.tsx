@@ -62,13 +62,13 @@ export default function MaturityDate() {
   const getStatusClasses = (status: string) => {
     switch (status) {
       case "EXPIRED":
-        return "bg-red-100 text-red-700";
+        return "text-red-700";
       case "NEXT":
-        return "bg-yellow-100 text-yellow-700";
+        return "text-yellow-700";
       case "NORMAL":
-        return "bg-green-100 text-green-700";
+        return "text-green-700";
       default:
-        return "bg-gray-100 text-gray-700";
+        return "text-gray-700";
     }
   };
 
@@ -119,7 +119,7 @@ export default function MaturityDate() {
                     <Skeleton className="h-4 w-24" />
                   </TableCell>
                   <TableCell>
-                    <Skeleton className="h-5 w-16 rounded-full mx-auto" />
+                    <Skeleton className="h-5 w-16 mx-auto" />
                   </TableCell>
                   <TableCell />
                 </TableRow>
@@ -148,7 +148,7 @@ export default function MaturityDate() {
 
                   <TableCell className="text-center">
                     <span
-                      className={`inline-flex px-2.5 py-1 text-xs font-bold rounded-full ${getStatusClasses(item.status)}`}
+                      className={`inline-flex px-2.5 py-1 text-xs font-bold ${getStatusClasses(item.status)}`}
                     >
                       {getStatusLabel(item.status)}
                     </span>

@@ -22,6 +22,8 @@ export interface Sale {
   data: string;
   rawDate?: string;
   tipo: string;
+  tipoDocumento: string
+  documento: string
   status: SaleStatus;
 
   cliente?: Cliente;

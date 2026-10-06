@@ -5,32 +5,29 @@ import Image from "next/image";
 import { motion } from "framer-motion";
 
 const markets = [
-  {
-    title: "Revendas de Extintores",
-    description:
-      "Controle estoque, vencimentos, movimentações e histórico completo dos equipamentos.",
-    image: "/payments.svg",
-  },
-  {
-    title: "Empresas de Manutenção",
-    description:
-      "Gerencie ordens de serviço, equipes técnicas e inspeções de forma centralizada.",
-    image: "/contract.svg",
-  },
-  {
-    title: "Prestadores de Serviços",
-    description:
-      "Acompanhe atendimentos, contratos e produtividade operacional em tempo real.",
-    image: "/brief.svg",
-  },
+    {
+        title: "Revendas de Extintores",
+        description: "Controle estoque, vencimentos, movimentações e histórico completo dos equipamentos.",
+        image: "/payments.svg",
+    },
+    {
+        title: "Empresas de Manutenção",
+        description: "Gerencie ordens de serviço, equipes técnicas e inspeções de forma centralizada.",
+        image: "/contract.svg",
+    },
+    {
+        title: "Prestadores de Serviços",
+        description: "Acompanhe atendimentos, contratos e produtividade operacional em tempo real.",
+        image: "/brief.svg",
+    },
 ];
 
 export default function Market() {
-  return (
-    <section
-      id="mercado"
-      aria-labelledby="market-title"
-      className="
+    return (
+        <section
+            id="mercado"
+            aria-labelledby="market-title"
+            className="
         relative
         overflow-hidden
         px-6
@@ -38,23 +35,11 @@ export default function Market() {
         md:px-10
         lg:px-16
       "
-    >
-      <div className="flex flex-col items-center gap-6 text-center">
-        <p
-          className="
-            text-sm
-            font-semibold
-            uppercase
-            tracking-[0.15em]
-            text-primary
-          "
         >
-          Público-alvo
-        </p>
-
-        <h2
-          id="market-title"
-          className="
+            <div className="flex flex-col items-center gap-6 text-center">
+                <h2
+                    id="market-title"
+                    className="
             max-w-4xl
             text-4xl
             font-medium
@@ -62,27 +47,26 @@ export default function Market() {
             text-foreground
             md:text-5xl
           "
-        >
-          <span className="text-primary">Desenvolvido</span> para quem vive esse
-          mercado
-        </h2>
+                >
+                    <span className="text-primary">Desenvolvido</span> para quem vive esse mercado
+                </h2>
 
-        <p
-          className="
+                <p
+                    className="
             max-w-3xl
             text-base
             leading-relaxed
             text-muted-foreground
             md:text-xl
           "
-        >
-          O IgnisCore foi projetado para empresas que precisam de controle
-          operacional, produtividade e gestão centralizada.
-        </p>
-      </div>
+                >
+                    O IgnisCore foi projetado para empresas que precisam de controle operacional, produtividade e gestão
+                    centralizada.
+                </p>
+            </div>
 
-      <div
-        className="
+            <div
+                className="
           relative
           mt-16
           grid
@@ -91,27 +75,27 @@ export default function Market() {
           md:grid-cols-2
           xl:grid-cols-3
         "
-      >
-        {markets.map((item, index) => (
-          <motion.article
-            key={item.title}
-            initial={{
-              opacity: 0,
-              y: 50,
-            }}
-            whileInView={{
-              opacity: 1,
-              y: 0,
-            }}
-            transition={{
-              duration: 0.6,
-              delay: index * 0.15,
-            }}
-            viewport={{
-              once: true,
-              amount: 0.3,
-            }}
-            className="
+            >
+                {markets.map((item, index) => (
+                    <motion.article
+                        key={item.title}
+                        initial={{
+                            opacity: 0,
+                            y: 50,
+                        }}
+                        whileInView={{
+                            opacity: 1,
+                            y: 0,
+                        }}
+                        transition={{
+                            duration: 0.6,
+                            delay: index * 0.15,
+                        }}
+                        viewport={{
+                            once: true,
+                            amount: 0.3,
+                        }}
+                        className="
               group
               relative
               overflow-hidden
@@ -125,9 +109,9 @@ export default function Market() {
               hover:border-primary/40
               md:p-8
             "
-          >
-            <div
-              className="
+                    >
+                        <div
+                            className="
                 pointer-events-none
                 absolute
                 inset-0
@@ -137,33 +121,33 @@ export default function Market() {
                 duration-500
                 group-hover:opacity-100
               "
-            />
+                        />
 
-            <div
-              className="
+                        <div
+                            className="
                 relative
                 z-10
                 flex
                 flex-col
                 gap-10
               "
-            >
-              <div
-                className="
+                        >
+                            <div
+                                className="
                   overflow-hidden
                   rounded-2xl
                   border
                   border-border
                   bg-muted
                 "
-              >
-                <Image
-                  src={item.image}
-                  alt={item.title}
-                  width={800}
-                  height={600}
-                  priority={index === 0}
-                  className="
+                            >
+                                <Image
+                                    src={item.image}
+                                    alt={item.title}
+                                    width={800}
+                                    height={600}
+                                    priority={index === 0}
+                                    className="
                     h-64
                     w-full
                     object-contain
@@ -172,12 +156,12 @@ export default function Market() {
                     group-hover:scale-105
                     md:h-72
                   "
-                />
-              </div>
+                                />
+                            </div>
 
-              <div className="flex flex-col gap-4">
-                <h3
-                  className="
+                            <div className="flex flex-col gap-4">
+                                <h3
+                                    className="
                     text-2xl
                     font-medium
                     text-foreground
@@ -185,25 +169,25 @@ export default function Market() {
                     duration-500
                     group-hover:text-primary
                   "
-                >
-                  {item.title}
-                </h3>
+                                >
+                                    {item.title}
+                                </h3>
 
-                <p
-                  className="
+                                <p
+                                    className="
                     text-sm
                     leading-relaxed
                     text-muted-foreground
                     md:text-base
                   "
-                >
-                  {item.description}
-                </p>
-              </div>
+                                >
+                                    {item.description}
+                                </p>
+                            </div>
+                        </div>
+                    </motion.article>
+                ))}
             </div>
-          </motion.article>
-        ))}
-      </div>
-    </section>
-  );
+        </section>
+    );
 }

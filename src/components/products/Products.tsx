@@ -154,7 +154,7 @@ export default function Products() {
                     <Skeleton className="h-4 w-40" />
                   </TableCell>
                   <TableCell>
-                    <Skeleton className="h-5 w-20 rounded-full" />
+                    <Skeleton className="h-5 w-20" />
                   </TableCell>
                   <TableCell>
                     <Skeleton className="h-4 w-24" />

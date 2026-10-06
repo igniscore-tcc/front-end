@@ -55,7 +55,7 @@ export function ConfirmDialog({
               <div className="text-muted-foreground">{description}</div>
 
               {warning && (
-                <div className="rounded-md border border-destructive/20 bg-destructive/5 p-3 text-sm text-destructive">
+                <div className="border border-destructive/20 bg-destructive/5 p-3 text-sm text-destructive">
                   {warning}
                 </div>
               )}
