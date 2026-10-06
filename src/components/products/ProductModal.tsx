@@ -57,7 +57,7 @@ export function ProductModal({ isOpen, onClose, onSave, productToEdit }: Product
 
                 <form onSubmit={handleSubmit}>
                     <div className="space-y-6 px-6 py-6 sm:px-8 sm:py-8">
-                        <div className="space-y-2">
+                        <div className="space-y-2 flex flex-col">
                             <label htmlFor="product-name" className="text-sm font-medium">
                                 Nome
                             </label>
@@ -73,7 +73,7 @@ export function ProductModal({ isOpen, onClose, onSave, productToEdit }: Product
                         </div>
 
                         {/* Tipo */}
-                        <div className="space-y-2">
+                        <div className="space-y-2 flex flex-col">
                             <label htmlFor="product-type" className="text-sm font-medium">
                                 Tipo
                             </label>
@@ -103,7 +103,7 @@ export function ProductModal({ isOpen, onClose, onSave, productToEdit }: Product
                         </div>
 
                         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                            <div className="space-y-2">
+                            <div className="space-y-2 flex flex-col">
                                 <label htmlFor="product-validity" className="text-sm font-medium">
                                     Validade
                                 </label>
@@ -117,7 +117,7 @@ export function ProductModal({ isOpen, onClose, onSave, productToEdit }: Product
                                 />
                             </div>
 
-                            <div className="space-y-2">
+                            <div className="space-y-2 flex flex-col">
                                 <label htmlFor="product-lot" className="text-sm font-medium">
                                     Lote
                                 </label>
@@ -133,7 +133,7 @@ export function ProductModal({ isOpen, onClose, onSave, productToEdit }: Product
                             </div>
                         </div>
 
-                        <div className="space-y-2">
+                        <div className="space-y-2 flex flex-col">
                             <label htmlFor="product-price" className="text-sm font-medium">
                                 Preço
                             </label>
