@@ -82,7 +82,7 @@ export default function Users() {
                   </TableCell>
 
                   <TableCell>
-                    <Skeleton className="h-6 w-20 rounded-full" />
+                    <Skeleton className="h-6 w-20" />
                   </TableCell>
 
                   <TableCell />

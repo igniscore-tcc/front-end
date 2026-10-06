@@ -74,7 +74,7 @@ export function AddClientModal({
         }
       }}
     >
-      <DialogContent className="max-h-[90vh] p-0 gap-0 rounded-xl overflow-hidden flex flex-col">
+      <DialogContent className="max-h-[90vh] p-0 gap-0 overflow-hidden flex flex-col">
         {/* Header */}
         <DialogHeader className="border-b px-6 py-5 sm:px-8">
           <DialogTitle className="text-xl font-semibold">
@@ -105,7 +105,7 @@ export function AddClientModal({
                       </p>
                     </div>
                   </div>
-                  <div className="grid grid-cols-2 gap-2 rounded-lg bg-muted p-1 mt-4">
+                  <div className="grid grid-cols-2 gap-2 bg-muted p-1 mt-4">
                     {(["PJ", "PF"] as TipoCliente[]).map((t) => {
                       const active = tipo === t;
 

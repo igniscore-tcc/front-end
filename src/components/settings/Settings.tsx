@@ -43,7 +43,7 @@ function SettingsSkeleton() {
       {/* Header */}
       <header className="border-b bg-background">
         <div className="flex w-full items-center gap-4 px-4 py-6 sm:px-6 sm:py-8 lg:px-10">
-          <Skeleton className="h-16 w-16 shrink-0 rounded-xl sm:h-20 sm:w-20" />
+          <Skeleton className="h-16 w-16 shrink-0 sm:h-20 sm:w-20" />
 
           <div className="min-w-0 space-y-2">
             <Skeleton className="h-6 w-40 sm:h-7 sm:w-56" />
@@ -64,7 +64,7 @@ function SettingsSkeleton() {
         <Card className="w-full">
           <CardHeader>
             <div className="flex items-start gap-3">
-              <Skeleton className="h-5 w-5 shrink-0 rounded" />
+              <Skeleton className="h-5 w-5 shrink-0" />
 
               <div className="space-y-2">
                 <Skeleton className="h-5 w-48" />
@@ -94,7 +94,7 @@ function SettingsSkeleton() {
         <Card className="w-full">
           <CardHeader>
             <div className="flex items-start gap-3">
-              <Skeleton className="h-5 w-5 shrink-0 rounded" />
+              <Skeleton className="h-5 w-5 shrink-0" />
 
               <div className="space-y-2">
                 <Skeleton className="h-5 w-40" />
@@ -108,11 +108,11 @@ function SettingsSkeleton() {
           <CardContent className="pt-6">
             <div className="flex flex-col gap-8 xl:flex-row xl:items-center">
               <div className="flex shrink-0 flex-col items-center gap-3 xl:w-40">
-                <Skeleton className="h-28 w-28 rounded-xl sm:h-32 sm:w-32" />
+                <Skeleton className="h-28 w-28 sm:h-32 sm:w-32" />
                 <Skeleton className="h-8 w-28" />
               </div>
 
-              <Skeleton className="min-h-48 w-full rounded-xl" />
+              <Skeleton className="min-h-48 w-full" />
             </div>
           </CardContent>
         </Card>
@@ -375,7 +375,6 @@ export default function Settings() {
                     flex-col
                     items-center
                     justify-center
-                    rounded-xl
                     border
                     border-dashed
                     bg-background
@@ -404,7 +403,7 @@ export default function Settings() {
                   </p>
 
                   {fileName && (
-                    <div className="mt-4 max-w-full truncate rounded-md border bg-muted/40 px-3 py-2 text-xs font-medium">
+                    <div className="mt-4 max-w-full truncate border bg-muted/40 px-3 py-2 text-xs font-medium">
                       {fileName}
                     </div>
                   )}

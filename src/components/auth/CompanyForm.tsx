@@ -188,9 +188,9 @@ export default function CompanyForm() {
         </h2>
 
         {/* Progresso */}
-        <div className="h-1.5 w-full overflow-hidden rounded-full bg-muted">
+        <div className="h-1.5 w-full overflow-hidden bg-muted">
           <div
-            className="h-full rounded-full bg-primary transition-all duration-500 ease-out"
+            className="h-full bg-primary transition-all duration-500 ease-out"
             style={{
               width: `${progressPercentage}%`,
             }}
@@ -274,7 +274,7 @@ export default function CompanyForm() {
         <Button
           type="submit"
           disabled={loading}
-          className="mt-2 h-12 w-full cursor-pointer gap-2 rounded-lg transition-all disabled:cursor-not-allowed disabled:opacity-70"
+          className="mt-2 h-12 w-full cursor-pointer gap-2 transition-all disabled:cursor-not-allowed disabled:opacity-70"
         >
           {loading ? (
             <>

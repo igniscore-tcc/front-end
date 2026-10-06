@@ -35,7 +35,7 @@ function Input({
           data-slot="input"
           aria-invalid={hasError ? "true" : undefined}
           className={cn(
-            "h-10 w-full min-w-0 rounded-xl border border-transparent bg-input/50 px-3 text-base transition-[color,box-shadow] duration-200 outline-none file:inline-flex file:h-6 file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:ring-3 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm",
+            "h-10 w-full min-w-0 border border-transparent bg-input/50 px-3 text-base transition-[color,box-shadow] duration-200 outline-none file:inline-flex file:h-6 file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:ring-3 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm",
             prefixIcon && "pl-9",
             (suffixIcon || isPassword) && "pr-10",
             hasError

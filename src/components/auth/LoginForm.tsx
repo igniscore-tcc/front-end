@@ -183,7 +183,7 @@ export default function LoginForm() {
         <Button
           type="submit"
           disabled={isLoading}
-          className="mt-2 h-12 w-full cursor-pointer gap-2 rounded-lg transition-all disabled:cursor-not-allowed disabled:opacity-70"
+          className="mt-2 h-12 w-full cursor-pointer gap-2 transition-all disabled:cursor-not-allowed disabled:opacity-70"
         >
           {isLoading ? (
             <>
