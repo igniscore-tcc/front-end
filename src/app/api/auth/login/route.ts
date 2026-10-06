@@ -28,8 +28,6 @@ export async function POST(req: NextRequest) {
     });
   }
 
-  console.log(data);
-
   const nextResponse = NextResponse.json(data);
 
   nextResponse.cookies.set("token", data.token, {
