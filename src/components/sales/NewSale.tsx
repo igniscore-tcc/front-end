@@ -28,6 +28,10 @@ interface NewSaleProps {
     setSelectedClient: (client: Cliente | null) => void;
     clientSearch: string;
     setClientSearch: (v: string) => void;
+    tipoDocumento: string;
+    setTipoDocumento: (value: string) => void;
+    documento: string;
+    setDocumento: (value: string) => void;
     showClientSuggestions: boolean;
     setShowClientSuggestions: (v: boolean) => void;
     selectedProduct: Product | null;
@@ -59,6 +63,10 @@ export default function NewSale({
     setSelectedClient,
     clientSearch,
     setClientSearch,
+    tipoDocumento,
+    setTipoDocumento,
+    documento,
+    setDocumento,
     showClientSuggestions,
     setShowClientSuggestions,
     selectedProduct,
@@ -168,17 +176,15 @@ export default function NewSale({
                                     <div className="space-y-2 flex flex-col">
                                         <label className="text-sm font-medium">Documento</label>
 
-                                        <Select defaultValue="nf">
+                                        <Select value={tipoDocumento} onValueChange={value => setTipoDocumento(value)}>
                                             <SelectTrigger className="h-10 w-full">
                                                 <SelectValue placeholder="Tipo" />
                                             </SelectTrigger>
 
                                             <SelectContent>
-                                                <SelectItem value="nf">Nota Fiscal</SelectItem>
-
-                                                <SelectItem value="os">Ordem de Serviço</SelectItem>
-
-                                                <SelectItem value="none">Nenhum</SelectItem>
+                                                <SelectItem value="TAX_INVOICE">Nota Fiscal</SelectItem>
+                                                <SelectItem value="SERVICE_ORDER">Ordem de Serviço</SelectItem>
+                                                <SelectItem value="NONE">Nenhum</SelectItem>
                                             </SelectContent>
                                         </Select>
                                     </div>
@@ -187,7 +193,11 @@ export default function NewSale({
                                     <div className="space-y-2 flex flex-col">
                                         <label className="text-sm font-medium">Número do documento</label>
 
-                                        <Input placeholder="Número do documento (opcional)" />
+                                        <Input
+                                            placeholder="Número do documento (opcional)"
+                                            value={documento}
+                                            onChange={e => setDocumento(e.target.value)}
+                                        />
                                     </div>
                                 </div>
 

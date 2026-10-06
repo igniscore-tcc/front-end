@@ -36,9 +36,10 @@ export async function POST(req: NextRequest) {
           id
           quantityItems
           discount
-          total
           date
           paymentMethod
+          type
+          document
           status
           dueDate
         }
@@ -59,6 +60,8 @@ export async function POST(req: NextRequest) {
             clientId: Number(body.clientId),
             paymentMethod: body.paymentMethod,
             discount: body.discount,
+            type: body.type,
+            document: body.document,
             items: body.items.map((item: any) => ({
               productId: Number(item.productId),
               quantity: Number(item.quantity),
