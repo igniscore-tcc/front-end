@@ -120,7 +120,7 @@ export default function Dashboard() {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <span className="text-gray-500">Carregando clientes...</span>
+        <span className="text-gray-500">Carregando dados...</span>
       </div>
     );
   }
