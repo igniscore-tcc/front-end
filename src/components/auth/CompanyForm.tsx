@@ -17,6 +17,7 @@ import {
   validateEmail,
 } from "@/lib/validators";
 import { useCreateCompany } from "@/hooks/useCompany";
+import { toast } from "sonner";
 
 export default function CompanyForm() {
   const { createCompany, loading } = useCreateCompany();
@@ -134,7 +135,7 @@ export default function CompanyForm() {
         phone: formData.telefone,
       });
 
-      alert(`Empresa ${company.name} cadastrada com sucesso.`);
+      toast.success("Empresa cadastrada com sucesso")
 
       setFormData({
         nome: "",
