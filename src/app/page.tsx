@@ -3,7 +3,6 @@ import Contact from "@/components/home/contact";
 import Footer from "@/components/home/footer";
 import Header from "@/components/home/header";
 import Hero from "@/components/home/hero";
-import InteractionDashboard from "@/components/home/interaction-dashboard";
 import Market from "@/components/home/market";
 import { Pricing } from "@/components/home/Pricing";
 import Result from "@/components/home/results";
@@ -21,7 +20,7 @@ export default function Home() {
 
             <Solutions />
 
-            <InteractionDashboard />
+            {/* <InteractionDashboard /> */}
 
             <Result />
 

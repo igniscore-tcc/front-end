@@ -5,9 +5,9 @@ import Image from "next/image";
 import Link from "next/link";
 
 export default function Hero() {
-  return (
-    <section
-      className="
+    return (
+        <section
+            className="
         relative
         flex
         min-h-screen
@@ -25,24 +25,11 @@ export default function Hero() {
         lg:mx-16
         lg:flex-row
       "
-    >
-      <div className="relative z-10 flex max-w-3xl flex-col gap-8">
-        <div className="flex flex-col gap-4">
-          <p
-            className="
-              text-sm
-              font-semibold
-              uppercase
-              tracking-[0.02em]
-              text-muted-foreground
-              md:text-base
-            "
-          >
-            Plataforma SaaS para empresas de extintores
-          </p>
-
-          <h1
-            className="
+        >
+            <div className="relative z-10 flex max-w-3xl flex-col gap-8">
+                <div className="flex flex-col gap-4">
+                    <h1
+                        className="
               text-4xl
               font-medium
               leading-[1.2]
@@ -51,31 +38,29 @@ export default function Hero() {
               md:text-5xl
               lg:text-6xl
             "
-          >
-            <span className="text-primary">Gestão inteligente</span> para
-            empresas de extintores
-          </h1>
+                    >
+                        <span className="text-primary">Gestão inteligente</span> para empresas de extintores
+                    </h1>
 
-          <p
-            className="
+                    <p
+                        className="
               max-w-2xl
               text-lg
               leading-relaxed
               text-foreground
               md:text-xl
             "
-          >
-            Controle vendas, vencimentos, clientes e ordens de serviço em uma
-            única plataforma moderna para empresas de manutenção e revenda de
-            extintores.
-          </p>
-        </div>
+                    >
+                        Controle vendas, vencimentos, clientes e ordens de serviço em uma única plataforma moderna para
+                        empresas de manutenção e revenda de extintores.
+                    </p>
+                </div>
 
-        <div className="flex flex-col gap-4 sm:flex-row sm:gap-6">
-          <Link
-            href="https://wa.me/5519996779283?text=Olá,%20quero%20agendar%20uma%20demonstração%20do%20IgnisCore"
-            target="_blank"
-            className="
+                <div className="flex flex-col gap-4 sm:flex-row sm:gap-6">
+                    <Link
+                        href="https://wa.me/5519996779283?text=Olá,%20quero%20agendar%20uma%20demonstração%20do%20IgnisCore"
+                        target="_blank"
+                        className="
               group
               flex
               items-center
@@ -94,23 +79,22 @@ export default function Hero() {
               hover:bg-primary/90
               hover:shadow-[0_0_30px_rgba(255,90,31,0.25)]
             "
-          >
-            Solicitar demonstração
-
-            <ArrowRight
-              width={18}
-              height={18}
-              className="
+                    >
+                        Solicitar demonstração
+                        <ArrowRight
+                            width={18}
+                            height={18}
+                            className="
                 transition-transform
                 duration-300
                 group-hover:translate-x-1
               "
-            />
-          </Link>
+                        />
+                    </Link>
 
-          <Link
-            href="/#dashboard"
-            className="
+                    <Link
+                        href="/#dashboard"
+                        className="
               group
               flex
               items-center
@@ -128,51 +112,24 @@ export default function Hero() {
               hover:bg-primary
               hover:text-primary-foreground
             "
-          >
-            Ver plataforma
-
-            <ArrowRight
-              width={18}
-              height={18}
-              className="
+                    >
+                        Ver plataforma
+                        <ArrowRight
+                            width={18}
+                            height={18}
+                            className="
                 transition-transform
                 duration-300
                 group-hover:translate-x-1
               "
-            />
-          </Link>
-        </div>
+                        />
+                    </Link>
+                </div>
+            </div>
 
-        <div className="flex flex-wrap gap-6 pt-2">
-          <div className="flex items-center gap-2">
-            <div className="size-2.5 rounded-full bg-primary" />
-
-            <p className="text-sm text-muted-foreground">
-              Gestão centralizada
-            </p>
-          </div>
-
-          <div className="flex items-center gap-2">
-            <div className="size-2.5 rounded-full bg-primary" />
-
-            <p className="text-sm text-muted-foreground">
-              Controle de vencimentos
-            </p>
-          </div>
-
-          <div className="flex items-center gap-2">
-            <div className="size-2.5 rounded-full bg-primary" />
-
-            <p className="text-sm text-muted-foreground">
-              Dashboard em tempo real
-            </p>
-          </div>
-        </div>
-      </div>
-
-      <div className="relative flex w-full max-w-4xl justify-center">
-        <div
-          className="
+            <div className="relative flex w-full max-w-4xl justify-center">
+                <div
+                    className="
             absolute
             h-[80%]
             w-[80%]
@@ -180,15 +137,15 @@ export default function Hero() {
             bg-primary/10
             blur-3xl
           "
-        />
+                />
 
-        <Image
-          src="/dashboard.svg"
-          alt="Dashboard da plataforma IgnisCore para gestão de empresas de extintores"
-          width={1400}
-          height={1000}
-          priority
-          className="
+                <Image
+                    src="/heroImage.png"
+                    alt="Dashboard da plataforma IgnisCore para gestão de empresas de extintores"
+                    width={1400}
+                    height={1000}
+                    priority
+                    className="
             relative
             w-full
             max-w-225
@@ -199,8 +156,8 @@ export default function Hero() {
             lg:max-w-275
             xl:max-w-312.5
           "
-        />
-      </div>
-    </section>
-  );
+                />
+            </div>
+        </section>
+    );
 }
