@@ -2,7 +2,7 @@
 
 import { AlertTriangle, ArrowDown, ArrowUp, Clock } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
-import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from "recharts";
+import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
 
 import { useDashboard } from "@/hooks/useDashboard";
 
@@ -241,7 +241,7 @@ export default function Dashboard() {
 
                     <CardContent className="min-h-0 flex-1 pb-6">
                         <ChartContainer config={chartConfig} className="h-full w-full">
-                            <AreaChart
+                            <BarChart
                                 data={dadosGraficoFiltrados}
                                 margin={{
                                     top: 10,
@@ -258,17 +258,8 @@ export default function Dashboard() {
 
                                 <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
 
-                                <Area
-                                    type="monotone"
-                                    dataKey="vendas"
-                                    stroke="var(--color-vendas)"
-                                    fill="var(--color-vendas)"
-                                    fillOpacity={0.15}
-                                    strokeWidth={2}
-                                    animationDuration={1000}
-                                    animationEasing="ease-out"
-                                />
-                            </AreaChart>
+                                <Bar dataKey="vendas" fill="var(--color-vendas)" radius={4} maxBarSize={48} />
+                            </BarChart>
                         </ChartContainer>
                     </CardContent>
                 </Card>
