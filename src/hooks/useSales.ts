@@ -66,10 +66,10 @@ export function useSales() {
     const [priceInput, setPriceInput] = useState<number>(0);
     const [unitsInput, setUnitsInput] = useState<number>(1);
 
-    const [tipoDocumento, setTipoDocumento] = useState("TAX_INVOICE");
-    const [documento, setDocumento] = useState("teste");
+    const [tipoDocumento, setTipoDocumento] = useState("NONE");
+    const [documento, setDocumento] = useState("");
 
-    const [paymentMethod, setPaymentMethod] = useState("Dinheiro");
+    const [paymentMethod, setPaymentMethod] = useState("CASH");
     const [discountInput, setDiscountInput] = useState<number>(0);
 
     // Listas de Clientes e Produtos do Banco de Dados via API
@@ -352,7 +352,7 @@ export function useSales() {
         setCart(cart.filter(item => item.id !== id));
     };
 
-    const finalizeSale = async () => {
+    const finalizeSale = async (): Promise<boolean> => {
         try {
             if (!selectedClient) {
                 throw new Error("Selecione um cliente antes de finalizar a venda.");
@@ -394,8 +394,10 @@ export function useSales() {
             clearCart();
             toast.success("Venda realizada com sucesso!");
             fetchSales(); // Atualiza o grid de vendas na interface automaticamente
+            return true;
         } catch (error: any) {
             toast.error(error.message);
+            return false;
         }
     };
 
