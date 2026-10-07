@@ -405,7 +405,9 @@ export default function Sales() {
                                     onClick={() => setSelectedSale(sale)}
                                     className="cursor-pointer"
                                 >
-                                    <TableCell className="text-muted-foreground tabular-nums">{sale.id}</TableCell>
+                                    <TableCell className="text-muted-foreground tabular-nums">
+                                        {sale.numberSale}
+                                    </TableCell>
                                     <TableCell
                                         className="font-semibold truncate max-w-[200px]"
                                         title={sale.cliente?.nome}
