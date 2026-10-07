@@ -415,7 +415,7 @@ export default function Sales() {
                                                 </Button>
                                             </DropdownMenuTrigger>
                                             <DropdownMenuContent align="end">
-                                                <DropdownMenuItem>
+                                                <DropdownMenuItem onClick={() => setSelectedSale(sale)}>
                                                     <Pencil className="mr-2 h-4 w-4" />
                                                     Editar
                                                 </DropdownMenuItem>
