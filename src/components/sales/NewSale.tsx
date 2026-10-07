@@ -53,7 +53,7 @@ interface NewSaleProps {
     clearProductSelection: () => void;
     handleAddCartItem: (e: React.FormEvent) => void;
     handleRemoveCartItem: (id: string) => void;
-    finalizeSale: () => Promise<void>;
+    finalizeSale: () => Promise<boolean>;
 }
 
 export default function NewSale({
@@ -124,19 +124,8 @@ export default function NewSale({
             return;
         }
 
-        const toastId = toast.loading("Finalizando venda...");
-
-        try {
-            await finalizeSale();
-
-            toast.success("Venda finalizada com sucesso");
-            onBack();
-        } catch (error) {
-            console.error(error);
-            toast.error("Erro ao finalizar a venda");
-        } finally {
-            toast.dismiss(toastId);
-        }
+        const ok = await finalizeSale();
+        if (ok) onBack();
     };
 
     return (

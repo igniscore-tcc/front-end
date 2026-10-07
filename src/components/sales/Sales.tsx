@@ -82,6 +82,10 @@ export default function Sales() {
         setSelectedClient,
         clientSearch,
         setClientSearch,
+        tipoDocumento,
+        setTipoDocumento,
+        documento,
+        setDocumento,
         showClientSuggestions,
         setShowClientSuggestions,
         selectedProduct,
@@ -113,10 +117,6 @@ export default function Sales() {
 
     const [selectedSale, setSelectedSale] = useState<Sale | null>(null);
 
-    const [tipoDocumento, setTipoDocumento] = useState("NONE");
-
-    const [documento, setDocumento] = useState("");
-
     const sortIcon = (key: keyof Sale) => {
         if (sort.key !== key) return <ArrowUpDown size={14} />;
         return sort.dir === "asc" ? <ArrowUp size={14} /> : <ArrowDown size={14} />;
@@ -131,11 +131,11 @@ export default function Sales() {
                 setSelectedClient={setSelectedClient}
                 clientSearch={clientSearch}
                 setClientSearch={setClientSearch}
+                showClientSuggestions={showClientSuggestions}
                 tipoDocumento={tipoDocumento}
                 setTipoDocumento={setTipoDocumento}
                 documento={documento}
                 setDocumento={setDocumento}
-                showClientSuggestions={showClientSuggestions}
                 setShowClientSuggestions={setShowClientSuggestions}
                 selectedProduct={selectedProduct}
                 productSearch={productSearch}
