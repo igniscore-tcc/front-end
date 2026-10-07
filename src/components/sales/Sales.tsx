@@ -14,7 +14,9 @@ import {
     ArrowUp,
     ArrowUpDown,
     Calendar as CalendarIcon,
+    CheckCircle2,
     ChevronDown,
+    Clock3,
     MoreVertical,
     Pencil,
     ShoppingCart,
@@ -22,8 +24,12 @@ import {
     X,
 } from "lucide-react";
 import { useEffect, useState } from "react";
+import { toast } from "sonner";
 import { DataPagination } from "../layout/pagination/pagination";
+import { ConfirmDialog } from "../shared/DeleteConfirmModal";
+import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "../ui/dialog";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../ui/dropdown-menu";
 import { Skeleton } from "../ui/skeleton";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../ui/table";
@@ -37,9 +43,8 @@ const paymentLabels: Record<string, string> = {
 };
 
 const statusLabels: Record<SaleStatus, string> = {
-    COMPLETED: "Concluída",
+    PAID: "Concluída",
     PENDING: "Pendente",
-    CANCELLED: "Cancelada",
 };
 
 const formatNumber = (value: number | string) => {
@@ -53,6 +58,7 @@ const formatNumber = (value: number | string) => {
 
 export default function Sales() {
     const [view, setView] = useState<"list" | "create">("list");
+    const [tableSales, setTableSales] = useState<Sale[]>([]);
 
     const {
         pageData,
@@ -109,13 +115,23 @@ export default function Sales() {
         handleRemoveCartItem,
         finalizeSale,
         updateSaleStatus,
+        deleteSale,
     } = useSales();
+
+    useEffect(() => {
+        setTableSales(pageData);
+    }, [pageData]);
 
     useEffect(() => {
         if (view === "create") loadSuggestions();
     }, [view, loadSuggestions]);
 
     const [selectedSale, setSelectedSale] = useState<Sale | null>(null);
+    const [saleToDelete, setSaleToDelete] = useState<Sale | null>(null);
+    const [pendingStatus, setPendingStatus] = useState<SaleStatus | null>(null);
+    const [updatingStatus, setUpdatingStatus] = useState(false);
+    const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+    const [deletingSale, setDeletingSale] = useState(false);
 
     const sortIcon = (key: keyof Sale) => {
         if (sort.key !== key) return <ArrowUpDown size={14} />;
@@ -160,6 +176,84 @@ export default function Sales() {
             />
         );
     }
+
+    const handleStatusChange = (status: SaleStatus) => {
+        if (!selectedSale || status === selectedSale.status) return;
+
+        setPendingStatus(status);
+    };
+
+    const handleConfirmStatusChange = async () => {
+        if (!selectedSale || !pendingStatus) return;
+
+        const saleId = selectedSale.id;
+        const newStatus = pendingStatus;
+
+        try {
+            setUpdatingStatus(true);
+
+            await updateSaleStatus(saleId, newStatus);
+
+            // Atualiza o status imediatamente na tabela
+            setTableSales(prev =>
+                prev.map(sale =>
+                    sale.id === saleId
+                        ? {
+                              ...sale,
+                              status: newStatus,
+                          }
+                        : sale,
+                ),
+            );
+
+            // Atualiza também a venda selecionada
+            setSelectedSale(prev =>
+                prev
+                    ? {
+                          ...prev,
+                          status: newStatus,
+                      }
+                    : null,
+            );
+
+            // Fecha o modal de confirmação
+            setPendingStatus(null);
+
+            // Fecha o modal de detalhes
+            setSelectedSale(null);
+
+            toast.success(
+                newStatus === SaleStatus.PAID ? "Venda concluída com sucesso" : "Venda marcada como pendente",
+            );
+        } catch (error) {
+            console.error("Erro ao atualizar status da venda:", error);
+
+            toast.error("Não foi possível atualizar o status da venda");
+        } finally {
+            setUpdatingStatus(false);
+        }
+    };
+
+    const handleDeleteSale = async () => {
+        if (!saleToDelete) return;
+
+        try {
+            setDeletingSale(true);
+
+            await deleteSale(saleToDelete.id);
+
+            setDeleteDialogOpen(false);
+            setSaleToDelete(null);
+
+            toast.success("Venda excluída com sucesso");
+        } catch (error) {
+            console.error("Erro ao excluir venda:", error);
+
+            toast.error(error instanceof Error ? error.message : "Não foi possível excluir a venda");
+        } finally {
+            setDeletingSale(false);
+        }
+    };
 
     return (
         <div className="p-6 flex flex-col text-base">
@@ -250,9 +344,8 @@ export default function Sales() {
                             className="px-4 py-2 pr-8 text-sm border border-input bg-background hover:bg-accent hover:text-accent-foreground transition-colors appearance-none outline-none cursor-pointer"
                         >
                             <option value="ALL">Todos os status</option>
-                            <option value="CONCLUDED">Concluídas</option>
+                            <option value="PAID">Concluídas</option>
                             <option value="PENDING">Pendentes</option>
-                            <option value="CANCELLED">Canceladas</option>
                         </select>
                         <ChevronDown
                             size={16}
@@ -306,7 +399,7 @@ export default function Sales() {
                                 </TableRow>
                             ))
                         ) : pageData.length > 0 ? (
-                            pageData.map(sale => (
+                            tableSales.map(sale => (
                                 <TableRow
                                     key={sale.id}
                                     onClick={() => setSelectedSale(sale)}
@@ -323,7 +416,9 @@ export default function Sales() {
                                         <span className="font-normal text-muted-foreground">R$ </span>
                                         {formatNumber(sale.total)}
                                     </TableCell>
-                                    <TableCell className="text-center text-muted-foreground">{sale.desconto}</TableCell>
+                                    <TableCell className="text-center text-muted-foreground">
+                                        R$ {sale.desconto}
+                                    </TableCell>
                                     <TableCell className="text-center text-muted-foreground whitespace-nowrap">
                                         {sale.data}
                                     </TableCell>
@@ -331,17 +426,12 @@ export default function Sales() {
                                         {paymentLabels[sale.tipo] || sale.tipo}
                                     </TableCell>
                                     <TableCell className="text-center">
-                                        <span
-                                            className={`px-2.5 py-1 text-xs font-semibold ${
-                                                sale.status === SaleStatus.COMPLETED
-                                                    ? "text-green-600"
-                                                    : sale.status === SaleStatus.PENDING
-                                                      ? "text-yellow-600"
-                                                      : "text-red-600"
-                                            }`}
+                                        <Badge
+                                            variant={sale.status === SaleStatus.PAID ? "default" : "secondary"}
+                                            className="px-2.5 py-1 text-xs font-semibold"
                                         >
                                             {statusLabels[sale.status] || sale.status}
-                                        </span>
+                                        </Badge>
                                     </TableCell>
                                     <TableCell className="text-right" onClick={e => e.stopPropagation()}>
                                         <DropdownMenu>
@@ -351,11 +441,17 @@ export default function Sales() {
                                                 </Button>
                                             </DropdownMenuTrigger>
                                             <DropdownMenuContent align="end">
-                                                <DropdownMenuItem>
+                                                <DropdownMenuItem onClick={() => setSelectedSale(sale)}>
                                                     <Pencil className="mr-2 h-4 w-4" />
                                                     Editar
                                                 </DropdownMenuItem>
-                                                <DropdownMenuItem className="text-red-600">
+                                                <DropdownMenuItem
+                                                    className="text-red-600 focus:text-red-600"
+                                                    onClick={() => {
+                                                        setSaleToDelete(sale);
+                                                        setDeleteDialogOpen(true);
+                                                    }}
+                                                >
                                                     <Trash2 className="mr-2 h-4 w-4" />
                                                     Excluir
                                                 </DropdownMenuItem>
@@ -446,37 +542,33 @@ export default function Sales() {
                                     {/* Status */}
                                     <Select
                                         value={selectedSale.status}
-                                        onValueChange={value => {
-                                            updateSaleStatus(selectedSale.id, value);
-                                            setSelectedSale({
-                                                ...selectedSale,
-                                                status: value as SaleStatus,
-                                            });
-                                        }}
+                                        onValueChange={value => handleStatusChange(value as SaleStatus)}
                                     >
                                         <SelectTrigger
                                             variant="pagination"
                                             className={`h-8 w-auto cursor-pointer border-0 px-3 text-xs font-semibold focus:ring-0 ${
-                                                selectedSale.status === SaleStatus.COMPLETED
+                                                selectedSale.status === SaleStatus.PAID
                                                     ? "text-green-600"
-                                                    : selectedSale.status === SaleStatus.PENDING
-                                                      ? "text-yellow-600"
-                                                      : "text-red-600"
+                                                    : "text-yellow-600"
                                             }`}
                                         >
                                             <SelectValue />
                                         </SelectTrigger>
 
-                                        <SelectContent className="border-border bg-background shadow-xl">
+                                        <SelectContent
+                                            position="popper"
+                                            sideOffset={4}
+                                            className="z-[100] border-border bg-background shadow-xl"
+                                        >
                                             <SelectItem
-                                                value="PENDING"
+                                                value={SaleStatus.PENDING}
                                                 className="my-0.5 cursor-pointer font-semibold text-yellow-600 focus:bg-muted focus:text-yellow-600"
                                             >
                                                 Pendente
                                             </SelectItem>
 
                                             <SelectItem
-                                                value="COMPLETED"
+                                                value={SaleStatus.PAID}
                                                 className="my-0.5 cursor-pointer font-semibold text-green-600 focus:bg-muted focus:text-green-600"
                                             >
                                                 Concluída
@@ -583,6 +675,73 @@ export default function Sales() {
                     </div>
                 </div>
             )}
+
+            <Dialog
+                open={pendingStatus !== null}
+                onOpenChange={open => {
+                    if (!open && !updatingStatus) {
+                        setPendingStatus(null);
+                    }
+                }}
+            >
+                <DialogContent className="sm:max-w-[420px]">
+                    <DialogHeader>
+                        <div className="mb-2 flex h-11 w-11 items-center justify-center bg-primary/10">
+                            {pendingStatus === SaleStatus.PAID ? (
+                                <CheckCircle2 className="h-5 w-5 text-primary" />
+                            ) : (
+                                <Clock3 className="h-5 w-5 text-yellow-600" />
+                            )}
+                        </div>
+
+                        <DialogTitle>
+                            {pendingStatus === SaleStatus.PAID ? "Concluir venda?" : "Marcar venda como pendente?"}
+                        </DialogTitle>
+
+                        <DialogDescription>
+                            {pendingStatus === SaleStatus.PAID
+                                ? "A venda será marcada como concluída. Deseja continuar?"
+                                : "A venda será marcada como pendente. Deseja continuar?"}
+                        </DialogDescription>
+
+                        <DialogDescription>
+                            {pendingStatus === SaleStatus.PAID
+                                ? "Deseja marcar esta venda como concluída?"
+                                : "Deseja marcar esta venda como pendente?"}
+                        </DialogDescription>
+                    </DialogHeader>
+
+                    <DialogFooter>
+                        <Button variant="outline" onClick={() => setPendingStatus(null)} disabled={updatingStatus}>
+                            Cancelar
+                        </Button>
+
+                        <Button onClick={handleConfirmStatusChange} disabled={updatingStatus}>
+                            {updatingStatus ? "Salvando..." : "Confirmar"}
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
+
+            <ConfirmDialog
+                open={deleteDialogOpen}
+                onOpenChange={open => {
+                    if (!deletingSale) {
+                        setDeleteDialogOpen(open);
+                    }
+                }}
+                onConfirm={handleDeleteSale}
+                title="Excluir venda?"
+                description={
+                    <>
+                        A venda <strong>#{saleToDelete?.id}</strong> será excluída da listagem.
+                    </>
+                }
+                warning="Esta ação não poderá ser desfeita e todos os dados associados serão removidos."
+                cancelText="Cancelar"
+                confirmText={deletingSale ? "Excluindo..." : "Excluir"}
+                destructive
+            />
         </div>
     );
 }
