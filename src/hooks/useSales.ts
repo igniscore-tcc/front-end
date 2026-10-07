@@ -401,32 +401,25 @@ export function useSales() {
         }
     };
 
-    const updateSaleStatus = async (id: number, status: string) => {
-        try {
-            const response = await fetch(`${INTERNAL_API}/sales/${id}/status`, {
-                method: "PATCH",
-                headers: {
-                    ...getAuthHeaders(),
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ status }),
-            });
+    const updateSaleStatus = async (saleId: number, status: SaleStatus) => {
+        const response = await fetch("/api/sales/check", {
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                saleId,
+                status,
+            }),
+        });
 
-            // Update local state regardless to show immediate UI response
-            setSales(prev => prev.map(s => (s.id === id ? { ...s, status: status as SaleStatus } : s)));
+        const result = await response.json();
 
-            if (!response.ok) {
-                toast.warning("Status atualizado (Apenas visualmente)");
-                return;
-            }
-
-            toast.success("Status atualizado com sucesso!");
-        } catch (error) {
-            console.error("Erro ao atualizar status", error);
-            // Fallback local update
-            setSales(prev => prev.map(s => (s.id === id ? { ...s, status: status as SaleStatus } : s)));
-            toast.success("Status atualizado (Local)");
+        if (!response.ok) {
+            throw new Error(result.error || "Erro ao atualizar status da venda");
         }
+
+        return result;
     };
 
     return {

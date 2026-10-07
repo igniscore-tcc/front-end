@@ -14,7 +14,9 @@ import {
     ArrowUp,
     ArrowUpDown,
     Calendar as CalendarIcon,
+    CheckCircle2,
     ChevronDown,
+    Clock3,
     MoreVertical,
     Pencil,
     ShoppingCart,
@@ -22,9 +24,11 @@ import {
     X,
 } from "lucide-react";
 import { useEffect, useState } from "react";
+import { toast } from "sonner";
 import { DataPagination } from "../layout/pagination/pagination";
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "../ui/dialog";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../ui/dropdown-menu";
 import { Skeleton } from "../ui/skeleton";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../ui/table";
@@ -53,6 +57,7 @@ const formatNumber = (value: number | string) => {
 
 export default function Sales() {
     const [view, setView] = useState<"list" | "create">("list");
+    const [tableSales, setTableSales] = useState<Sale[]>([]);
 
     const {
         pageData,
@@ -112,10 +117,16 @@ export default function Sales() {
     } = useSales();
 
     useEffect(() => {
+        setTableSales(pageData);
+    }, [pageData]);
+
+    useEffect(() => {
         if (view === "create") loadSuggestions();
     }, [view, loadSuggestions]);
 
     const [selectedSale, setSelectedSale] = useState<Sale | null>(null);
+    const [pendingStatus, setPendingStatus] = useState<SaleStatus | null>(null);
+    const [updatingStatus, setUpdatingStatus] = useState(false);
 
     const sortIcon = (key: keyof Sale) => {
         if (sort.key !== key) return <ArrowUpDown size={14} />;
@@ -160,6 +171,63 @@ export default function Sales() {
             />
         );
     }
+
+    const handleStatusChange = (status: SaleStatus) => {
+        if (!selectedSale || status === selectedSale.status) return;
+
+        setPendingStatus(status);
+    };
+
+    const handleConfirmStatusChange = async () => {
+        if (!selectedSale || !pendingStatus) return;
+
+        const saleId = selectedSale.id;
+        const newStatus = pendingStatus;
+
+        try {
+            setUpdatingStatus(true);
+
+            await updateSaleStatus(saleId, newStatus);
+
+            // Atualiza o status imediatamente na tabela
+            setTableSales(prev =>
+                prev.map(sale =>
+                    sale.id === saleId
+                        ? {
+                              ...sale,
+                              status: newStatus,
+                          }
+                        : sale,
+                ),
+            );
+
+            // Atualiza também a venda selecionada
+            setSelectedSale(prev =>
+                prev
+                    ? {
+                          ...prev,
+                          status: newStatus,
+                      }
+                    : null,
+            );
+
+            // Fecha o modal de confirmação
+            setPendingStatus(null);
+
+            // Fecha o modal de detalhes
+            setSelectedSale(null);
+
+            toast.success(
+                newStatus === SaleStatus.PAID ? "Venda concluída com sucesso" : "Venda marcada como pendente",
+            );
+        } catch (error) {
+            console.error("Erro ao atualizar status da venda:", error);
+
+            toast.error("Não foi possível atualizar o status da venda");
+        } finally {
+            setUpdatingStatus(false);
+        }
+    };
 
     return (
         <div className="p-6 flex flex-col text-base">
@@ -305,7 +373,7 @@ export default function Sales() {
                                 </TableRow>
                             ))
                         ) : pageData.length > 0 ? (
-                            pageData.map(sale => (
+                            tableSales.map(sale => (
                                 <TableRow
                                     key={sale.id}
                                     onClick={() => setSelectedSale(sale)}
@@ -442,33 +510,14 @@ export default function Sales() {
                                     {/* Status */}
                                     <Select
                                         value={selectedSale.status}
-                                        onValueChange={async value => {
-                                            const status = value as SaleStatus;
-
-                                            try {
-                                                await updateSaleStatus(selectedSale.id, status);
-
-                                                setSelectedSale(prev =>
-                                                    prev
-                                                        ? {
-                                                              ...prev,
-                                                              status,
-                                                          }
-                                                        : prev,
-                                                );
-                                            } catch (error) {
-                                                console.error("Erro ao atualizar status da venda:", error);
-                                            }
-                                        }}
+                                        onValueChange={value => handleStatusChange(value as SaleStatus)}
                                     >
                                         <SelectTrigger
                                             variant="pagination"
                                             className={`h-8 w-auto cursor-pointer border-0 px-3 text-xs font-semibold focus:ring-0 ${
                                                 selectedSale.status === SaleStatus.PAID
                                                     ? "text-green-600"
-                                                    : selectedSale.status === SaleStatus.PENDING
-                                                      ? "text-yellow-600"
-                                                      : "text-red-600"
+                                                    : "text-yellow-600"
                                             }`}
                                         >
                                             <SelectValue />
@@ -594,6 +643,53 @@ export default function Sales() {
                     </div>
                 </div>
             )}
+
+            <Dialog
+                open={pendingStatus !== null}
+                onOpenChange={open => {
+                    if (!open && !updatingStatus) {
+                        setPendingStatus(null);
+                    }
+                }}
+            >
+                <DialogContent className="sm:max-w-[420px]">
+                    <DialogHeader>
+                        <div className="mb-2 flex h-11 w-11 items-center justify-center bg-primary/10">
+                            {pendingStatus === SaleStatus.PAID ? (
+                                <CheckCircle2 className="h-5 w-5 text-primary" />
+                            ) : (
+                                <Clock3 className="h-5 w-5 text-yellow-600" />
+                            )}
+                        </div>
+
+                        <DialogTitle>
+                            {pendingStatus === SaleStatus.PAID ? "Concluir venda?" : "Marcar venda como pendente?"}
+                        </DialogTitle>
+
+                        <DialogDescription>
+                            {pendingStatus === SaleStatus.PAID
+                                ? "A venda será marcada como concluída. Deseja continuar?"
+                                : "A venda será marcada como pendente. Deseja continuar?"}
+                        </DialogDescription>
+
+                        <DialogDescription>
+                            {pendingStatus === SaleStatus.PAID
+                                ? "Deseja marcar esta venda como concluída?"
+                                : "Deseja marcar esta venda como pendente?"}
+                        </DialogDescription>
+                    </DialogHeader>
+
+                    <DialogFooter>
+                        <Button variant="outline" onClick={() => setPendingStatus(null)} disabled={updatingStatus}>
+                            Cancelar
+                        </Button>
+
+                        <Button onClick={handleConfirmStatusChange} disabled={updatingStatus}>
+                            {updatingStatus ? "Salvando..." : "Confirmar"}
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
         </div>
     );
 }
