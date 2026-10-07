@@ -26,6 +26,7 @@ import {
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { DataPagination } from "../layout/pagination/pagination";
+import { ConfirmDialog } from "../shared/DeleteConfirmModal";
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "../ui/dialog";
@@ -114,6 +115,7 @@ export default function Sales() {
         handleRemoveCartItem,
         finalizeSale,
         updateSaleStatus,
+        deleteSale,
     } = useSales();
 
     useEffect(() => {
@@ -125,8 +127,11 @@ export default function Sales() {
     }, [view, loadSuggestions]);
 
     const [selectedSale, setSelectedSale] = useState<Sale | null>(null);
+    const [saleToDelete, setSaleToDelete] = useState<Sale | null>(null);
     const [pendingStatus, setPendingStatus] = useState<SaleStatus | null>(null);
     const [updatingStatus, setUpdatingStatus] = useState(false);
+    const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+    const [deletingSale, setDeletingSale] = useState(false);
 
     const sortIcon = (key: keyof Sale) => {
         if (sort.key !== key) return <ArrowUpDown size={14} />;
@@ -226,6 +231,27 @@ export default function Sales() {
             toast.error("Não foi possível atualizar o status da venda");
         } finally {
             setUpdatingStatus(false);
+        }
+    };
+
+    const handleDeleteSale = async () => {
+        if (!saleToDelete) return;
+
+        try {
+            setDeletingSale(true);
+
+            await deleteSale(saleToDelete.id);
+
+            setDeleteDialogOpen(false);
+            setSaleToDelete(null);
+
+            toast.success("Venda excluída com sucesso");
+        } catch (error) {
+            console.error("Erro ao excluir venda:", error);
+
+            toast.error(error instanceof Error ? error.message : "Não foi possível excluir a venda");
+        } finally {
+            setDeletingSale(false);
         }
     };
 
@@ -419,7 +445,13 @@ export default function Sales() {
                                                     <Pencil className="mr-2 h-4 w-4" />
                                                     Editar
                                                 </DropdownMenuItem>
-                                                <DropdownMenuItem className="text-red-600">
+                                                <DropdownMenuItem
+                                                    className="text-red-600 focus:text-red-600"
+                                                    onClick={() => {
+                                                        setSaleToDelete(sale);
+                                                        setDeleteDialogOpen(true);
+                                                    }}
+                                                >
                                                     <Trash2 className="mr-2 h-4 w-4" />
                                                     Excluir
                                                 </DropdownMenuItem>
@@ -690,6 +722,26 @@ export default function Sales() {
                     </DialogFooter>
                 </DialogContent>
             </Dialog>
+
+            <ConfirmDialog
+                open={deleteDialogOpen}
+                onOpenChange={open => {
+                    if (!deletingSale) {
+                        setDeleteDialogOpen(open);
+                    }
+                }}
+                onConfirm={handleDeleteSale}
+                title="Excluir venda?"
+                description={
+                    <>
+                        A venda <strong>#{saleToDelete?.id}</strong> será excluída da listagem.
+                    </>
+                }
+                warning="Esta ação não poderá ser desfeita e todos os dados associados serão removidos."
+                cancelText="Cancelar"
+                confirmText={deletingSale ? "Excluindo..." : "Excluir"}
+                destructive
+            />
         </div>
     );
 }

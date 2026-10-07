@@ -422,6 +422,31 @@ export function useSales() {
         return result;
     };
 
+    const deleteSale = useCallback(
+        async (saleId: number) => {
+            const response = await fetch("/api/sales/delete", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    saleId,
+                }),
+            });
+
+            const result = await response.json();
+
+            if (!response.ok) {
+                throw new Error(result.error || "Erro ao excluir venda");
+            }
+
+            await fetchSales();
+
+            return result;
+        },
+        [fetchSales],
+    );
+
     return {
         sales,
         pageData,
@@ -486,6 +511,7 @@ export function useSales() {
         handleRemoveCartItem,
         finalizeSale,
         updateSaleStatus,
+        deleteSale,
         clearCart,
     };
 }
