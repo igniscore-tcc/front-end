@@ -23,6 +23,7 @@ import {
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { DataPagination } from "../layout/pagination/pagination";
+import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../ui/dropdown-menu";
 import { Skeleton } from "../ui/skeleton";
@@ -37,9 +38,8 @@ const paymentLabels: Record<string, string> = {
 };
 
 const statusLabels: Record<SaleStatus, string> = {
-    COMPLETED: "Concluída",
+    PAID: "Concluída",
     PENDING: "Pendente",
-    CANCELLED: "Cancelada",
 };
 
 const formatNumber = (value: number | string) => {
@@ -250,9 +250,8 @@ export default function Sales() {
                             className="px-4 py-2 pr-8 text-sm border border-input bg-background hover:bg-accent hover:text-accent-foreground transition-colors appearance-none outline-none cursor-pointer"
                         >
                             <option value="ALL">Todos os status</option>
-                            <option value="CONCLUDED">Concluídas</option>
+                            <option value="PAID">Concluídas</option>
                             <option value="PENDING">Pendentes</option>
-                            <option value="CANCELLED">Canceladas</option>
                         </select>
                         <ChevronDown
                             size={16}
@@ -323,7 +322,9 @@ export default function Sales() {
                                         <span className="font-normal text-muted-foreground">R$ </span>
                                         {formatNumber(sale.total)}
                                     </TableCell>
-                                    <TableCell className="text-center text-muted-foreground">{sale.desconto}</TableCell>
+                                    <TableCell className="text-center text-muted-foreground">
+                                        R$ {sale.desconto}
+                                    </TableCell>
                                     <TableCell className="text-center text-muted-foreground whitespace-nowrap">
                                         {sale.data}
                                     </TableCell>
@@ -331,17 +332,12 @@ export default function Sales() {
                                         {paymentLabels[sale.tipo] || sale.tipo}
                                     </TableCell>
                                     <TableCell className="text-center">
-                                        <span
-                                            className={`px-2.5 py-1 text-xs font-semibold ${
-                                                sale.status === SaleStatus.COMPLETED
-                                                    ? "text-green-600"
-                                                    : sale.status === SaleStatus.PENDING
-                                                      ? "text-yellow-600"
-                                                      : "text-red-600"
-                                            }`}
+                                        <Badge
+                                            variant={sale.status === SaleStatus.PAID ? "default" : "secondary"}
+                                            className="px-2.5 py-1 text-xs font-semibold"
                                         >
                                             {statusLabels[sale.status] || sale.status}
-                                        </span>
+                                        </Badge>
                                     </TableCell>
                                     <TableCell className="text-right" onClick={e => e.stopPropagation()}>
                                         <DropdownMenu>
@@ -446,18 +442,29 @@ export default function Sales() {
                                     {/* Status */}
                                     <Select
                                         value={selectedSale.status}
-                                        onValueChange={value => {
-                                            updateSaleStatus(selectedSale.id, value);
-                                            setSelectedSale({
-                                                ...selectedSale,
-                                                status: value as SaleStatus,
-                                            });
+                                        onValueChange={async value => {
+                                            const status = value as SaleStatus;
+
+                                            try {
+                                                await updateSaleStatus(selectedSale.id, status);
+
+                                                setSelectedSale(prev =>
+                                                    prev
+                                                        ? {
+                                                              ...prev,
+                                                              status,
+                                                          }
+                                                        : prev,
+                                                );
+                                            } catch (error) {
+                                                console.error("Erro ao atualizar status da venda:", error);
+                                            }
                                         }}
                                     >
                                         <SelectTrigger
                                             variant="pagination"
                                             className={`h-8 w-auto cursor-pointer border-0 px-3 text-xs font-semibold focus:ring-0 ${
-                                                selectedSale.status === SaleStatus.COMPLETED
+                                                selectedSale.status === SaleStatus.PAID
                                                     ? "text-green-600"
                                                     : selectedSale.status === SaleStatus.PENDING
                                                       ? "text-yellow-600"
@@ -467,16 +474,20 @@ export default function Sales() {
                                             <SelectValue />
                                         </SelectTrigger>
 
-                                        <SelectContent className="border-border bg-background shadow-xl">
+                                        <SelectContent
+                                            position="popper"
+                                            sideOffset={4}
+                                            className="z-[100] border-border bg-background shadow-xl"
+                                        >
                                             <SelectItem
-                                                value="PENDING"
+                                                value={SaleStatus.PENDING}
                                                 className="my-0.5 cursor-pointer font-semibold text-yellow-600 focus:bg-muted focus:text-yellow-600"
                                             >
                                                 Pendente
                                             </SelectItem>
 
                                             <SelectItem
-                                                value="COMPLETED"
+                                                value={SaleStatus.PAID}
                                                 className="my-0.5 cursor-pointer font-semibold text-green-600 focus:bg-muted focus:text-green-600"
                                             >
                                                 Concluída
