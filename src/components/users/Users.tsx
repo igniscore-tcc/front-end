@@ -30,6 +30,7 @@ import { DataPagination } from "../layout/pagination/pagination";
 import { useState } from "react";
 import type { User } from "@/types/user";
 import { AddUserModal } from "./AddUserModal";
+import { ConfirmDialog } from "../shared/DeleteConfirmModal";
 
 export default function Users() {
   const {
@@ -48,10 +49,13 @@ export default function Users() {
     hasNextPage,
     hasPreviousPage,
     refresh,
+    deleteUser,
   } = useUsers();
 
   const [isUserModalOpen, setIsUserModalOpen] = useState(false);
   const [userToEdit, setUserToEdit] = useState<User | null>(null);
+
+  const [userToDelete, setUserToDelete] = useState<User | null>(null);
 
   const handleAddUser = () => {
     setUserToEdit(null);
@@ -61,6 +65,10 @@ export default function Users() {
   const handleEditUser = (user: User) => {
     setUserToEdit(user);
     setIsUserModalOpen(true);
+  };
+
+  const handleDeleteUser = (user: User) => {
+    setUserToDelete(user);
   };
 
   return (
@@ -155,9 +163,7 @@ export default function Users() {
 
                           <DropdownMenuItem
                             variant="destructive"
-                            onClick={() => {
-                              // Futuramente: excluir usuário
-                            }}
+                            onClick={() => handleDeleteUser(user)}
                           >
                             <Trash2 />
                             Excluir
@@ -207,6 +213,32 @@ export default function Users() {
         }}
         onSave={refresh}
         userToEdit={userToEdit}
+      />
+
+      <ConfirmDialog
+        open={!!userToDelete}
+        onOpenChange={(open) => {
+          if (!open) {
+            setUserToDelete(null);
+          }
+        }}
+        onConfirm={async () => {
+          if (!userToDelete) return;
+
+          await deleteUser(userToDelete.id);
+          setUserToDelete(null);
+        }}
+        title="Excluir funcionário"
+        description={
+          <>
+            Tem certeza que deseja excluir o funcionário{" "}
+            <strong>{userToDelete?.name}</strong>?
+          </>
+        }
+        warning="O funcionário não aparecerá mais na lista de usuários."
+        cancelText="Cancelar"
+        confirmText="Excluir"
+        destructive
       />
     </div>
   );

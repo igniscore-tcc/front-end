@@ -109,7 +109,7 @@ export function useUserForm({
       const endpoint = isEditing ? "/api/auth/update" : "/api/auth/users";
 
       const response = await fetch(endpoint, {
-        method: "POST",
+        method: isEditing ? "PUT" : "POST",
         headers: {
           "Content-Type": "application/json",
         },

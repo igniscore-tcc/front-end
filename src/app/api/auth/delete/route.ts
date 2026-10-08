@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 const API_URL = process.env.API_URL!;
 
-export async function PUT(req: NextRequest) {
+export async function DELETE(req: NextRequest) {
   const token = req.cookies.get("token")?.value;
 
   if (!token) {
@@ -12,11 +12,11 @@ export async function PUT(req: NextRequest) {
   try {
     const body = await req.json();
 
-    const { id, name, email } = body;
+    const { id } = body;
 
-    if (!id || !name || !email) {
+    if (!id) {
       return NextResponse.json(
-        { error: "ID, nome e e-mail são obrigatórios." },
+        { error: "ID do funcionário é obrigatório." },
         { status: 400 },
       );
     }
@@ -29,16 +29,12 @@ export async function PUT(req: NextRequest) {
       },
       body: JSON.stringify({
         query: `
-          mutation UpdateEmployee($data: UserUpdateDTO!) {
-            updateEmployee(data: $data)
+          mutation DeleteEmployee($id: Int!) {
+            deleteEmployee(id: $id)
           }
         `,
         variables: {
-          data: {
-            id,
-            name,
-            email,
-          },
+          id,
         },
       }),
     });
@@ -48,14 +44,16 @@ export async function PUT(req: NextRequest) {
     if (!response.ok || result.errors) {
       return NextResponse.json(
         {
-          error: result.errors?.[0]?.message || "Erro ao atualizar funcionário",
+          error:
+            result.errors?.[0]?.message ||
+            "Não foi possível excluir o funcionário",
         },
         { status: response.status || 400 },
       );
     }
 
     return NextResponse.json({
-      message: result.data.updateEmployee,
+      message: result.data.deleteEmployee,
     });
   } catch {
     return NextResponse.json({ error: "Erro interno" }, { status: 500 });
