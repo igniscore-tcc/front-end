@@ -133,34 +133,38 @@ export default function Users() {
                   </TableCell>
 
                   <TableCell className="text-right">
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          aria-label={`Ações de ${user.name}`}
-                        >
-                          <MoreVertical />
-                        </Button>
-                      </DropdownMenuTrigger>
+                    {user.role !== "OWNER" && (
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            aria-label={`Ações de ${user.name}`}
+                          >
+                            <MoreVertical />
+                          </Button>
+                        </DropdownMenuTrigger>
 
-                      <DropdownMenuContent align="end">
-                        <DropdownMenuItem onClick={() => handleEditUser(user)}>
-                          <Pencil />
-                          Editar
-                        </DropdownMenuItem>
+                        <DropdownMenuContent align="end">
+                          <DropdownMenuItem
+                            onClick={() => handleEditUser(user)}
+                          >
+                            <Pencil />
+                            Editar
+                          </DropdownMenuItem>
 
-                        <DropdownMenuItem
-                          variant="destructive"
-                          onClick={() => {
-                            // Futuramente: excluir usuário
-                          }}
-                        >
-                          <Trash2 />
-                          Excluir
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
+                          <DropdownMenuItem
+                            variant="destructive"
+                            onClick={() => {
+                              // Futuramente: excluir usuário
+                            }}
+                          >
+                            <Trash2 />
+                            Excluir
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    )}
                   </TableCell>
                 </TableRow>
               ))
