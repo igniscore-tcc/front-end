@@ -1,17 +1,14 @@
 "use client";
 
-import Link from "next/link";
-import { useState, Suspense } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
-function ResetPasswordForm() {
+export default function FirstAccessPage() {
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const token = searchParams.get("token") || "";
 
   const [isLoading, setIsLoading] = useState(false);
 
@@ -33,16 +30,11 @@ function ResetPasswordForm() {
 
     let isValid = true;
 
-    if (!token) {
-      toast.error("Token de recuperação inválido ou expirado.");
-      isValid = false;
-    }
-
     if (!formData.senha) {
       newErrors.senha = "Senha obrigatória";
       isValid = false;
-    } else if (formData.senha.length < 6) {
-      newErrors.senha = "A senha deve ter pelo menos 6 caracteres";
+    } else if (formData.senha.length < 8) {
+      newErrors.senha = "A senha deve ter pelo menos 8 caracteres";
       isValid = false;
     }
 
@@ -74,29 +66,30 @@ function ResetPasswordForm() {
     setIsLoading(true);
 
     try {
-      const response = await fetch("/api/auth/reset-password", {
+      const response = await fetch("/api/auth/change-temporary-password", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          token,
           newPassword: formData.senha,
+          confirmPassword: formData.confirmarSenha,
         }),
       });
 
       const data = await response.json();
 
       if (!response.ok) {
-        toast.error(data.error || "Erro ao redefinir a senha");
+        toast.error(data.error || "Erro ao alterar a senha");
         return;
       }
 
       toast.success("Senha alterada com sucesso!");
 
       setTimeout(() => {
-        router.push("/login");
-      }, 1500);
+        router.push("/dashboard");
+        router.refresh();
+      }, 1000);
     } catch {
       toast.error("Erro ao conectar com o servidor");
     } finally {
@@ -106,7 +99,6 @@ function ResetPasswordForm() {
 
   return (
     <div className="mx-auto flex min-h-screen w-full max-w-sm flex-col justify-center px-4 sm:px-0">
-      {/* Logo */}
       <div className="mb-8 flex items-center justify-center gap-2">
         <div
           className="h-[52px] w-[38px] bg-primary"
@@ -134,9 +126,15 @@ function ResetPasswordForm() {
         </span>
       </div>
 
-      {/* Título */}
       <div className="mb-8">
-        <h2 className="mb-3 text-2xl font-semibold text-primary">Nova Senha</h2>
+        <h2 className="mb-3 text-2xl font-semibold text-primary">
+          Primeiro acesso
+        </h2>
+
+        <p className="text-sm leading-6 text-muted-foreground">
+          Por segurança, defina uma nova senha para continuar usando o
+          IgnisCore.
+        </p>
       </div>
 
       <form
@@ -187,36 +185,10 @@ function ResetPasswordForm() {
               <span>Salvando...</span>
             </>
           ) : (
-            "Alterar Senha"
+            "Definir nova senha"
           )}
         </Button>
-
-        <div className="mt-4 text-center">
-          <p className="text-xs font-medium text-muted-foreground">
-            Lembrou sua senha?{" "}
-            <Link
-              href="/login"
-              className="text-foreground transition-colors hover:text-primary hover:underline"
-            >
-              Voltar para o Login
-            </Link>
-          </p>
-        </div>
       </form>
     </div>
-  );
-}
-
-export default function ResetPassword() {
-  return (
-    <Suspense
-      fallback={
-        <div className="flex h-screen w-screen items-center justify-center">
-          <Loader2 className="h-8 w-8 animate-spin text-primary" />
-        </div>
-      }
-    >
-      <ResetPasswordForm />
-    </Suspense>
   );
 }

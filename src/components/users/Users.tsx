@@ -1,6 +1,12 @@
 "use client";
 
-import { MoreVertical, Pencil, Trash2, User } from "lucide-react";
+import {
+  MoreVertical,
+  Pencil,
+  Trash2,
+  User2,
+  User as UserIcon,
+} from "lucide-react";
 import { ListPageHeader } from "../shared/ListPageHeader";
 import { useUsers } from "@/hooks/useUsers";
 import { Button } from "../ui/button";
@@ -21,6 +27,9 @@ import {
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 import { DataPagination } from "../layout/pagination/pagination";
+import { useState } from "react";
+import type { User } from "@/types/user";
+import { AddUserModal } from "./AddUserModal";
 
 export default function Users() {
   const {
@@ -38,7 +47,21 @@ export default function Users() {
     to,
     hasNextPage,
     hasPreviousPage,
+    refresh,
   } = useUsers();
+
+  const [isUserModalOpen, setIsUserModalOpen] = useState(false);
+  const [userToEdit, setUserToEdit] = useState<User | null>(null);
+
+  const handleAddUser = () => {
+    setUserToEdit(null);
+    setIsUserModalOpen(true);
+  };
+
+  const handleEditUser = (user: User) => {
+    setUserToEdit(user);
+    setIsUserModalOpen(true);
+  };
 
   return (
     <div className="p-6 flex flex-col text-base">
@@ -49,9 +72,7 @@ export default function Users() {
           setSearch(value);
           setPage(1);
         }}
-        onAddClick={() => {
-          // Futuramente: abrir modal de novo funcionário
-        }}
+        onAddClick={handleAddUser}
         addLabel="Novo funcionário"
       />
 
@@ -124,11 +145,7 @@ export default function Users() {
                       </DropdownMenuTrigger>
 
                       <DropdownMenuContent align="end">
-                        <DropdownMenuItem
-                          onClick={() => {
-                            // Futuramente: editar usuário
-                          }}
-                        >
+                        <DropdownMenuItem onClick={() => handleEditUser(user)}>
                           <Pencil />
                           Editar
                         </DropdownMenuItem>
@@ -151,7 +168,7 @@ export default function Users() {
               <TableRow>
                 <TableCell colSpan={4} className="h-48">
                   <div className="flex flex-col items-center justify-center gap-2 text-center">
-                    <User className="size-8 text-muted-foreground" />
+                    <User2 className="size-8 text-muted-foreground" />
 
                     <p className="font-medium">Nenhum funcionário encontrado</p>
 
@@ -176,6 +193,16 @@ export default function Users() {
         pageSize={perPage}
         onPageChange={setPage}
         onPageSizeChange={setPerPage}
+      />
+
+      <AddUserModal
+        isOpen={isUserModalOpen}
+        onClose={() => {
+          setIsUserModalOpen(false);
+          setUserToEdit(null);
+        }}
+        onSave={refresh}
+        userToEdit={userToEdit}
       />
     </div>
   );

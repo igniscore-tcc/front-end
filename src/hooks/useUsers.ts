@@ -2,12 +2,7 @@ import { useState, useEffect, useCallback, useMemo } from "react";
 import { INTERNAL_API, getAuthHeaders } from "@/lib/api";
 import { toast } from "sonner";
 
-export type User = {
-  id: number;
-  name: string;
-  email: string;
-  role: string;
-};
+import type { User } from "@/types/user";
 
 type UsersResponse = {
   content: User[];
