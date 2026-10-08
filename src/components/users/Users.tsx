@@ -30,6 +30,7 @@ import { DataPagination } from "../layout/pagination/pagination";
 import { useState } from "react";
 import type { User } from "@/types/user";
 import { AddUserModal } from "./AddUserModal";
+import { ConfirmDialog } from "../shared/DeleteConfirmModal";
 
 export default function Users() {
   const {
@@ -48,10 +49,13 @@ export default function Users() {
     hasNextPage,
     hasPreviousPage,
     refresh,
+    deleteUser,
   } = useUsers();
 
   const [isUserModalOpen, setIsUserModalOpen] = useState(false);
   const [userToEdit, setUserToEdit] = useState<User | null>(null);
+
+  const [userToDelete, setUserToDelete] = useState<User | null>(null);
 
   const handleAddUser = () => {
     setUserToEdit(null);
@@ -61,6 +65,10 @@ export default function Users() {
   const handleEditUser = (user: User) => {
     setUserToEdit(user);
     setIsUserModalOpen(true);
+  };
+
+  const handleDeleteUser = (user: User) => {
+    setUserToDelete(user);
   };
 
   return (
@@ -133,34 +141,36 @@ export default function Users() {
                   </TableCell>
 
                   <TableCell className="text-right">
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          aria-label={`Ações de ${user.name}`}
-                        >
-                          <MoreVertical />
-                        </Button>
-                      </DropdownMenuTrigger>
+                    {user.role !== "OWNER" && (
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            aria-label={`Ações de ${user.name}`}
+                          >
+                            <MoreVertical />
+                          </Button>
+                        </DropdownMenuTrigger>
 
-                      <DropdownMenuContent align="end">
-                        <DropdownMenuItem onClick={() => handleEditUser(user)}>
-                          <Pencil />
-                          Editar
-                        </DropdownMenuItem>
+                        <DropdownMenuContent align="end">
+                          <DropdownMenuItem
+                            onClick={() => handleEditUser(user)}
+                          >
+                            <Pencil />
+                            Editar
+                          </DropdownMenuItem>
 
-                        <DropdownMenuItem
-                          variant="destructive"
-                          onClick={() => {
-                            // Futuramente: excluir usuário
-                          }}
-                        >
-                          <Trash2 />
-                          Excluir
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
+                          <DropdownMenuItem
+                            variant="destructive"
+                            onClick={() => handleDeleteUser(user)}
+                          >
+                            <Trash2 />
+                            Excluir
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    )}
                   </TableCell>
                 </TableRow>
               ))
@@ -203,6 +213,32 @@ export default function Users() {
         }}
         onSave={refresh}
         userToEdit={userToEdit}
+      />
+
+      <ConfirmDialog
+        open={!!userToDelete}
+        onOpenChange={(open) => {
+          if (!open) {
+            setUserToDelete(null);
+          }
+        }}
+        onConfirm={async () => {
+          if (!userToDelete) return;
+
+          await deleteUser(userToDelete.id);
+          setUserToDelete(null);
+        }}
+        title="Excluir funcionário"
+        description={
+          <>
+            Tem certeza que deseja excluir o funcionário{" "}
+            <strong>{userToDelete?.name}</strong>?
+          </>
+        }
+        warning="O funcionário não aparecerá mais na lista de usuários."
+        cancelText="Cancelar"
+        confirmText="Excluir"
+        destructive
       />
     </div>
   );

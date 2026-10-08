@@ -102,6 +102,49 @@ export function useUsers() {
     fetchUsers();
   }, [fetchUsers]);
 
+  const deleteUser = useCallback(
+    async (id: number) => {
+      try {
+        const response = await fetch("/api/auth/delete", {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            id,
+          }),
+        });
+
+        const result = await safeJson(response);
+
+        if (!response.ok) {
+          throw new Error(
+            result.error || "Não foi possível excluir o funcionário",
+          );
+        }
+
+        toast.success(result.message || "Funcionário excluído com sucesso");
+
+        await fetchUsers();
+
+        return true;
+      } catch (error) {
+        console.error("Erro ao excluir funcionário:", error);
+
+        toast.error(
+          isOfflineError(error)
+            ? "Servidor indisponível. Tente novamente em instantes."
+            : error instanceof Error
+              ? error.message
+              : "Erro ao excluir funcionário",
+        );
+
+        return false;
+      }
+    },
+    [fetchUsers],
+  );
+
   const filteredUsers = useMemo(() => {
     const term = search.trim().toLowerCase();
 
@@ -170,6 +213,8 @@ export function useUsers() {
 
     nextPage,
     previousPage,
+
+    deleteUser,
 
     refresh,
   };
