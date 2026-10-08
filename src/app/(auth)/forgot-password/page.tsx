@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
+import { toast } from "sonner";
 import { normalizeEmail, validateEmail } from "@/lib/validators";
 
 export default function ForgotPassword() {
@@ -20,8 +21,6 @@ export default function ForgotPassword() {
   const [errors, setErrors] = useState({
     email: "",
   });
-
-  const [successMessage, setSuccessMessage] = useState("");
 
   const validate = () => {
     const newErrors = {
@@ -58,7 +57,6 @@ export default function ForgotPassword() {
     if (!validate()) return;
 
     setIsLoading(true);
-    setSuccessMessage("");
 
     try {
       const response = await fetch("/api/auth/forgot-password", {
@@ -74,27 +72,22 @@ export default function ForgotPassword() {
       const data = await response.json();
 
       if (!response.ok) {
-        setErrors((prev) => ({
-          ...prev,
-          email: data.error || "Email não encontrado",
-        }));
-
+        toast.error(
+          data.error || "Não foi possível enviar o link de recuperação",
+        );
         return;
       }
 
-      setSuccessMessage(
+      toast.success(
         data.requestPasswordRecovery ||
           "Link de recuperação enviado com sucesso!",
       );
 
       setTimeout(() => {
         router.push("/login");
-      }, 3000);
+      }, 1500);
     } catch {
-      setErrors((prev) => ({
-        ...prev,
-        email: "Erro ao conectar com o servidor",
-      }));
+      toast.error("Erro ao conectar com o servidor");
     } finally {
       setIsLoading(false);
     }
@@ -155,19 +148,13 @@ export default function ForgotPassword() {
             removeError("email");
           }}
           error={errors.email}
-          disabled={isLoading || !!successMessage}
+          disabled={isLoading}
         />
-
-        {successMessage && (
-          <p className="px-1 text-xs font-semibold text-green-600">
-            {successMessage} Redirecionando...
-          </p>
-        )}
 
         <Button
           type="submit"
-          disabled={isLoading || !!successMessage}
-          className="mt-2 h-12 w-full cursor-pointer gap-2 rounded-lg transition-all disabled:cursor-not-allowed disabled:opacity-70"
+          disabled={isLoading}
+          className="mt-2 h-12 w-full cursor-pointer gap-2 transition-all disabled:cursor-not-allowed disabled:opacity-70"
         >
           {isLoading ? (
             <>

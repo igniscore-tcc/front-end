@@ -56,20 +56,20 @@ export default function Header() {
           className="flex items-center gap-4 transition-opacity hover:opacity-80"
         >
           <div
-          className="h-[48px] w-[36px] bg-primary"
-          role="img"
-          aria-label="IgnisCore Logo"
-          style={{
-            maskImage: "url('/igniscore.svg')",
-            WebkitMaskImage: "url('/igniscore.svg')",
-            maskRepeat: "no-repeat",
-            WebkitMaskRepeat: "no-repeat",
-            maskPosition: "center",
-            WebkitMaskPosition: "center",
-            maskSize: "contain",
-            WebkitMaskSize: "contain",
-          }}
-        />
+            className="h-[48px] w-[36px] bg-primary"
+            role="img"
+            aria-label="IgnisCore Logo"
+            style={{
+              maskImage: "url('/igniscore.svg')",
+              WebkitMaskImage: "url('/igniscore.svg')",
+              maskRepeat: "no-repeat",
+              WebkitMaskRepeat: "no-repeat",
+              maskPosition: "center",
+              WebkitMaskPosition: "center",
+              maskSize: "contain",
+              WebkitMaskSize: "contain",
+            }}
+          />
 
           <span className="text-2xl font-bold leading-[1.3] tracking-[0.01em] text-primary">
             IgnisCore
@@ -123,7 +123,6 @@ export default function Header() {
             {/* Modal */}
             <DialogContent
               className="
-                rounded-2xl
                 border
                 border-border
                 bg-background
@@ -267,7 +266,6 @@ export default function Header() {
                     <DialogContent
                       className="
                         w-[calc(100%-2rem)]
-                        rounded-2xl
                         border
                         border-border
                         bg-background

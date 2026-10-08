@@ -6,6 +6,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
+import { toast } from "sonner";
 
 function ResetPasswordForm() {
   const router = useRouter();
@@ -13,7 +14,6 @@ function ResetPasswordForm() {
   const token = searchParams.get("token") || "";
 
   const [isLoading, setIsLoading] = useState(false);
-  const [successMessage, setSuccessMessage] = useState("");
 
   const [formData, setFormData] = useState({
     senha: "",
@@ -23,20 +23,18 @@ function ResetPasswordForm() {
   const [errors, setErrors] = useState({
     senha: "",
     confirmarSenha: "",
-    geral: "",
   });
 
   const validate = () => {
     const newErrors = {
       senha: "",
       confirmarSenha: "",
-      geral: "",
     };
 
     let isValid = true;
 
     if (!token) {
-      newErrors.geral = "Token de recuperação inválido ou expirado.";
+      toast.error("Token de recuperação inválido ou expirado.");
       isValid = false;
     }
 
@@ -74,7 +72,6 @@ function ResetPasswordForm() {
     if (!validate()) return;
 
     setIsLoading(true);
-    setSuccessMessage("");
 
     try {
       const response = await fetch("/api/auth/reset-password", {
@@ -91,24 +88,17 @@ function ResetPasswordForm() {
       const data = await response.json();
 
       if (!response.ok) {
-        setErrors((prev) => ({
-          ...prev,
-          geral: data.error || "Erro ao redefinir a senha",
-        }));
-
+        toast.error(data.error || "Erro ao redefinir a senha");
         return;
       }
 
-      setSuccessMessage("Senha alterada com sucesso!");
+      toast.success("Senha alterada com sucesso!");
 
       setTimeout(() => {
         router.push("/login");
-      }, 3000);
+      }, 1500);
     } catch {
-      setErrors((prev) => ({
-        ...prev,
-        geral: "Erro ao conectar com o servidor",
-      }));
+      toast.error("Erro ao conectar com o servidor");
     } finally {
       setIsLoading(false);
     }
@@ -154,12 +144,6 @@ function ResetPasswordForm() {
         onSubmit={handleSubmit}
         noValidate
       >
-        {errors.geral && (
-          <p className="px-1 text-xs font-semibold text-red-500">
-            {errors.geral}
-          </p>
-        )}
-
         <Input
           type="password"
           placeholder="Nova senha"
@@ -173,7 +157,7 @@ function ResetPasswordForm() {
             removeError("senha");
           }}
           error={errors.senha}
-          disabled={isLoading || !!successMessage}
+          disabled={isLoading}
         />
 
         <Input
@@ -189,18 +173,12 @@ function ResetPasswordForm() {
             removeError("confirmarSenha");
           }}
           error={errors.confirmarSenha}
-          disabled={isLoading || !!successMessage}
+          disabled={isLoading}
         />
-
-        {successMessage && (
-          <p className="px-1 text-xs font-semibold text-green-600">
-            {successMessage} Redirecionando...
-          </p>
-        )}
 
         <Button
           type="submit"
-          disabled={isLoading || !!successMessage}
+          disabled={isLoading}
           className="mt-2 h-12 w-full cursor-pointer gap-2 transition-all disabled:cursor-not-allowed disabled:opacity-70"
         >
           {isLoading ? (
