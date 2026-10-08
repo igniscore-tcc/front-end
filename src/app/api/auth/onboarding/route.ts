@@ -17,6 +17,7 @@ export async function POST(req: NextRequest) {
         email
         role
         onboarding
+        firstLogin
       }
     }
   `;

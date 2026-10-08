@@ -26,6 +26,7 @@ export async function GET(req: NextRequest) {
               email
               role
               onboarding
+              firstLogin
             }
           }
         `,

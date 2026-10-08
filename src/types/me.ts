@@ -3,6 +3,8 @@ export type Me = {
   name: string;
   email: string;
   role: UserRole;
+  onboarding: boolean;
+  firstLogin: boolean;
   companyId: number;
 };
 

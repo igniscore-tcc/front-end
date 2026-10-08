@@ -1,11 +1,25 @@
 import { NextRequest, NextResponse } from "next/server";
 
-const protectedRoutes = ["/produtos", "/clientes", "/vendas", "/vencimentos", "/dashboard"];
+const protectedRoutes = [
+    "/produtos",
+    "/clientes",
+    "/vendas",
+    "/vencimentos",
+    "/dashboard",
+];
+
+const firstLoginRoute = "/primeiro-acesso";
 
 export async function proxy(req: NextRequest) {
-    const isProtectedRoute = protectedRoutes.some(route => req.nextUrl.pathname.startsWith(route));
+    const pathname = req.nextUrl.pathname;
 
-    if (!isProtectedRoute) {
+    const isProtectedRoute = protectedRoutes.some(route =>
+        pathname.startsWith(route)
+    );
+
+    const isFirstLoginRoute = pathname.startsWith(firstLoginRoute);
+
+    if (!isProtectedRoute && !isFirstLoginRoute) {
         return NextResponse.next();
     }
 
@@ -20,13 +34,32 @@ export async function proxy(req: NextRequest) {
             headers: {
                 Cookie: req.headers.get("cookie") ?? "",
             },
+            cache: "no-store",
         });
 
         if (!response.ok) {
             return NextResponse.redirect(new URL("/login", req.url));
         }
 
+        const user = await response.json();
+        if (user.firstLogin) {
+            if (!isFirstLoginRoute) {
+                return NextResponse.redirect(
+                    new URL(firstLoginRoute, req.url)
+                );
+            }
+
+            return NextResponse.next();
+        }
+
+        if (isFirstLoginRoute) {
+            return NextResponse.redirect(
+                new URL("/dashboard", req.url)
+            );
+        }
+
         return NextResponse.next();
+
     } catch {
         return NextResponse.redirect(new URL("/login", req.url));
     }
