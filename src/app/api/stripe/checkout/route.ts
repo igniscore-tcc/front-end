@@ -61,7 +61,7 @@ export async function POST(req: NextRequest) {
             body: JSON.stringify({
                 query,
                 variables: {
-                    planCode: "TEST_API",
+                    planCode,
                     currency: "BRL",
                 },
             }),
