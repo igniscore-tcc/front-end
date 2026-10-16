@@ -27,6 +27,7 @@ export async function GET(req: NextRequest) {
               role
               onboarding
               firstLogin
+              plan
             }
           }
         `,

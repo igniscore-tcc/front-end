@@ -5,6 +5,7 @@ export type Me = {
   role: UserRole;
   onboarding: boolean;
   firstLogin: boolean;
+  plan: string;
   companyId: number;
 };
 

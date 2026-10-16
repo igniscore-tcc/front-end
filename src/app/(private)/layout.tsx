@@ -68,6 +68,8 @@ export default async function PrivateLayout({
             name
             email
             role
+            firstLogin
+            plan
             companyId
           }
         }
