@@ -89,6 +89,11 @@ const data = {
                     url: "/configuracoes",
                     id: "configuracoes",
                 },
+                {
+                    title: "Minha assinatura",
+                    url: "/configuracoes/assinatura",
+                    id: "configuracoes",
+                },
             ],
         },
     ],
