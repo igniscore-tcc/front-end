@@ -18,6 +18,7 @@ export async function POST(req: NextRequest) {
         role
         onboarding
         firstLogin
+        plan
       }
     }
   `;

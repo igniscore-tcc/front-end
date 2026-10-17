@@ -15,8 +15,8 @@ export async function POST(req: NextRequest) {
   const body = await req.json();
 
   const query = `
-    mutation UserRegister($data: RegisterInput!) {
-      userRegister(data: $data)
+    mutation CreateEmployee($data: RegisterInput!) {
+      createEmployee(data: $data)
     }
   `;
 

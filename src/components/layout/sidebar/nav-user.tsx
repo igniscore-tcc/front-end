@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar } from "@/components/ui/sidebar";
 import { BadgeCheckIcon, BellIcon, ChevronsUpDownIcon, CreditCardIcon, LogOutIcon, SparklesIcon } from "lucide-react";
+import Link from "next/link";
 import { useState } from "react";
 
 export function NavUser({
@@ -91,10 +92,12 @@ export function NavUser({
                                 <BadgeCheckIcon />
                                 Account
                             </DropdownMenuItem>
-                            <DropdownMenuItem>
-                                <CreditCardIcon />
-                                Billing
-                            </DropdownMenuItem>
+                            <Link href={"configuracoes/assinatura"}>
+                                <DropdownMenuItem>
+                                    <CreditCardIcon />
+                                    Billing
+                                </DropdownMenuItem>
+                            </Link>
                             <DropdownMenuItem>
                                 <BellIcon />
                                 Notifications
