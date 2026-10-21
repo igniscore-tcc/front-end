@@ -61,5 +61,5 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  return NextResponse.json(result.data.userRegister);
+  return NextResponse.json(result.data.createEmployee);
 }
