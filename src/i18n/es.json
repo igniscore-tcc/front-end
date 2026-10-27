@@ -1,0 +1,32 @@
+{
+    "hero": {
+        "title": "Gestión inteligente",
+        "titleHighlight": "para empresas de extintores",
+        "description": "Controla ventas, vencimientos, clientes y órdenes de servicio en una única plataforma moderna para empresas de mantenimiento y venta de extintores.",
+        "requestDemo": "Solicitar demostración",
+        "viewPlatform": "Ver plataforma",
+        "overview": "Vista general",
+        "operationalData": "Datos operativos",
+        "online": "En línea",
+        "stats": {
+            "revenue": "Facturación",
+            "clients": "Clientes",
+            "expirations": "Vencimientos",
+            "upcoming": "próximos"
+        },
+        "performance": "Rendimiento",
+        "revenueHistory": "Facturación de los últimos meses",
+        "sales": "ventas",
+        "processedInPeriod": "Procesadas durante el período",
+        "products": "productos",
+        "operationalControl": "Bajo control operativo",
+        "months": {
+            "jan": "ENE",
+            "mar": "MAR",
+            "may": "MAY",
+            "jul": "JUL",
+            "sep": "SEP",
+            "oct": "OCT"
+        }
+    }
+}
