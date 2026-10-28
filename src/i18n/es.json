@@ -135,5 +135,29 @@
             "synced": "Datos sincronizados",
             "now": "Ahora"
         }
+    },
+
+    "timeline": {
+        "titleHighlight": "Comienza",
+        "title": "a gestionar tu operación en pocos pasos",
+        "description": "Organiza procesos, automatiza tareas y supervisa toda la operación de tu empresa desde una única plataforma.",
+        "steps": {
+            "company": {
+                "title": "Registra tu empresa",
+                "description": "Configura tu operación, equipo técnico e información inicial en pocos minutos."
+            },
+            "products": {
+                "title": "Gestiona productos",
+                "description": "Registra extintores y equipos, y controla los movimientos con precisión."
+            },
+            "expirations": {
+                "title": "Automatiza los vencimientos",
+                "description": "Recibe alertas automáticas para inspecciones, recargas y servicios pendientes."
+            },
+            "indicators": {
+                "title": "Supervisa los indicadores",
+                "description": "Consulta las métricas operativas y el crecimiento de tu empresa en tiempo real."
+            }
+        }
     }
 }

@@ -135,5 +135,29 @@
             "synced": "Dados sincronizados",
             "now": "Agora"
         }
+    },
+
+    "timeline": {
+        "titleHighlight": "Comece",
+        "title": "sua operação em poucos passos",
+        "description": "Estruture processos, automatize tarefas e acompanhe toda operação da sua empresa em uma única plataforma.",
+        "steps": {
+            "company": {
+                "title": "Cadastre sua empresa",
+                "description": "Configure sua operação, equipe técnica e informações iniciais em poucos minutos."
+            },
+            "products": {
+                "title": "Gerencie produtos",
+                "description": "Cadastre extintores, equipamentos e controle movimentações com precisão."
+            },
+            "expirations": {
+                "title": "Automatize vencimentos",
+                "description": "Receba alertas automáticos para inspeções, recargas e serviços pendentes."
+            },
+            "indicators": {
+                "title": "Acompanhe indicadores",
+                "description": "Visualize métricas operacionais e crescimento da empresa em tempo real."
+            }
+        }
     }
 }

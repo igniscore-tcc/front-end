@@ -94,7 +94,7 @@ export default function Header() {
             border-border
             bg-background
             px-3
-            w-44.5
+            w-[148px]
             text-sm
             font-medium
             shadow-none
@@ -121,7 +121,6 @@ export default function Header() {
                                 className="cursor-pointer rounded-none py-2.5 pl-3 pr-8 focus:bg-primary/10 focus:text-foreground"
                             >
                                 <span className="flex items-center gap-2.5">
-                                    <span className="text-base">🇧🇷</span>
                                     <span>Português</span>
                                 </span>
                             </SelectItem>
@@ -131,7 +130,6 @@ export default function Header() {
                                 className="cursor-pointer rounded-none py-2.5 pl-3 pr-8 focus:bg-primary/10 focus:text-foreground"
                             >
                                 <span className="flex items-center gap-2.5">
-                                    <span className="text-base">🇪🇸</span>
                                     <span>Español</span>
                                 </span>
                             </SelectItem>
