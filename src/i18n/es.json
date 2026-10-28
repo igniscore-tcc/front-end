@@ -52,5 +52,37 @@
                 "description": "Las decisiones estratégicas se ven limitadas sin datos centralizados."
             }
         }
+    },
+
+    "solutions": {
+        "titleHighlight": "Gestiona toda",
+        "title": "la operación de tu empresa en una única plataforma",
+        "description": "IgnisCore conecta ventas, clientes, servicios e indicadores en una experiencia moderna, organizada y centralizada.",
+        "items": {
+            "clients": {
+                "title": "Gestión de Clientes",
+                "description": "Centraliza historiales, contactos y contratos, y realiza un seguimiento de los clientes recurrentes."
+            },
+            "products": {
+                "title": "Control de Productos",
+                "description": "Gestiona extintores, equipos, inventario y movimientos en tiempo real."
+            },
+            "sales": {
+                "title": "Gestión de Ventas",
+                "description": "Organiza propuestas, negociaciones y supervisa todo el proceso comercial."
+            },
+            "serviceOrders": {
+                "title": "Órdenes de Servicio",
+                "description": "Controla la asistencia técnica, el mantenimiento y la ejecución de los servicios."
+            },
+            "expirations": {
+                "title": "Control de Vencimientos",
+                "description": "Automatiza las notificaciones y supervisa los vencimientos sin depender de hojas de cálculo."
+            },
+            "dashboard": {
+                "title": "Panel de Gestión",
+                "description": "Consulta los indicadores estratégicos de la empresa en tiempo real."
+            }
+        }
     }
 }

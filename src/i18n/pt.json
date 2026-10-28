@@ -29,7 +29,7 @@
             "oct": "OUT"
         }
     },
-    
+
     "challenges": {
         "titleHighlight": "Sua operação",
         "title": "ainda depende de planilhas e processos manuais?",
@@ -50,6 +50,38 @@
             "lackOfIndicators": {
                 "title": "Falta de indicadores em tempo real",
                 "description": "Decisões estratégicas ficam limitadas sem dados centralizados."
+            }
+        }
+    },
+
+    "solutions": {
+        "titleHighlight": "Gerencie toda",
+        "title": "a operação da sua empresa em uma única plataforma",
+        "description": "O IgnisCore conecta vendas, clientes, serviços e indicadores em uma experiência moderna, organizada e centralizada.",
+        "items": {
+            "clients": {
+                "title": "Gestão de Clientes",
+                "description": "Centralize históricos, contatos, contratos e acompanhe clientes recorrentes."
+            },
+            "products": {
+                "title": "Controle de Produtos",
+                "description": "Gerencie extintores, equipamentos, estoque e movimentações em tempo real."
+            },
+            "sales": {
+                "title": "Vendas Inteligentes",
+                "description": "Organize propostas, negociações e acompanhe todo o fluxo comercial."
+            },
+            "serviceOrders": {
+                "title": "Ordens de Serviço",
+                "description": "Controle atendimentos técnicos, manutenção e execução de serviços."
+            },
+            "expirations": {
+                "title": "Controle de Vencimentos",
+                "description": "Automatize notificações e acompanhe vencimentos sem depender de planilhas."
+            },
+            "dashboard": {
+                "title": "Dashboard Gerencial",
+                "description": "Visualize indicadores estratégicos da empresa em tempo real."
             }
         }
     }
