@@ -159,5 +159,25 @@
                 "description": "Consulta las métricas operativas y el crecimiento de tu empresa en tiempo real."
             }
         }
+    },
+
+    "market": {
+        "titleHighlight": "Diseñado",
+        "title": "para quienes conocen este mercado",
+        "description": "IgnisCore fue diseñado para empresas que necesitan control operativo, productividad y gestión centralizada.",
+        "items": {
+            "extinguisherResellers": {
+                "title": "Distribuidores de Extintores",
+                "description": "Controle el inventario, los vencimientos, los movimientos y el historial completo de los equipos."
+            },
+            "maintenanceCompanies": {
+                "title": "Empresas de Mantenimiento",
+                "description": "Gestione órdenes de servicio, equipos técnicos e inspecciones de forma centralizada."
+            },
+            "serviceProviders": {
+                "title": "Proveedores de Servicios",
+                "description": "Supervise las atenciones, los contratos y la productividad operativa en tiempo real."
+            }
+        }
     }
 }
