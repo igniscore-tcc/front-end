@@ -258,5 +258,26 @@
         "demoButton": "Agendar una demostración",
         "demoAriaLabel": "Agendar una demostración de la plataforma IgnisCore",
         "secondaryButton": "Ver cómo funciona"
+    },
+
+    "footer": {
+        "tagline": "Gestión operativa inteligente",
+        "description": "Plataforma diseñada para empresas de mantenimiento, distribuidores y proveedores de servicios que necesitan un control operativo moderno y centralizado.",
+        "navigation": {
+            "title": "Navegación",
+            "challenges": "Desafíos",
+            "solutions": "Soluciones",
+            "pricing": "Precios",
+            "contact": "Contacto"
+        },
+        "institutional": {
+            "title": "Institucional",
+            "terms": "Términos de uso",
+            "faq": "Preguntas frecuentes",
+            "privacy": "Política de privacidad"
+        },
+        "copyright": "Todos los derechos reservados.",
+        "privacy": "Privacidad",
+        "terms": "Términos"
     }
 }
