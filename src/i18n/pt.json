@@ -1,0 +1,283 @@
+{
+    "hero": {
+        "title": "Gestão inteligente",
+        "titleHighlight": "para empresas de extintores",
+        "description": "Controle vendas, vencimentos, clientes e ordens de serviço em uma única plataforma moderna para empresas de manutenção e revenda de extintores.",
+        "requestDemo": "Solicitar demonstração",
+        "viewPlatform": "Ver plataforma",
+        "overview": "Visão geral",
+        "operationalData": "Dados operacionais",
+        "online": "Online",
+        "stats": {
+            "revenue": "Faturamento",
+            "clients": "Clientes",
+            "expirations": "Vencimentos",
+            "upcoming": "próximos"
+        },
+        "performance": "Desempenho",
+        "revenueHistory": "Faturamento nos últimos meses",
+        "sales": "vendas",
+        "processedInPeriod": "Processadas no período",
+        "products": "produtos",
+        "operationalControl": "Em controle operacional",
+        "months": {
+            "jan": "JAN",
+            "mar": "MAR",
+            "may": "MAI",
+            "jul": "JUL",
+            "sep": "SET",
+            "oct": "OUT"
+        },
+        "whatsappMessage": "Olá, quero agendar uma demonstração do IgnisCore"
+    },
+
+    "challenges": {
+        "titleHighlight": "Sua operação",
+        "title": "ainda depende de planilhas e processos manuais?",
+        "description": "Processos descentralizados dificultam o controle da operação, aumentam falhas e impactam diretamente o crescimento da empresa.",
+        "items": {
+            "manualControl": {
+                "title": "Controle manual de vencimentos",
+                "description": "Risco de atrasos, multas e perda de contratos por falta de automação."
+            },
+            "lostClients": {
+                "title": "Perda de clientes recorrentes",
+                "description": "Falta de acompanhamento reduz a retenção de clientes e a recorrência de serviços."
+            },
+            "disorganizedOrders": {
+                "title": "Ordens de serviço desorganizadas",
+                "description": "Informações descentralizadas dificultam a execução e o acompanhamento dos serviços."
+            },
+            "lackOfIndicators": {
+                "title": "Falta de indicadores em tempo real",
+                "description": "Decisões estratégicas ficam limitadas sem dados centralizados."
+            }
+        }
+    },
+
+    "solutions": {
+        "titleHighlight": "Gerencie toda",
+        "title": "a operação da sua empresa em uma única plataforma",
+        "description": "O IgnisCore conecta vendas, clientes, serviços e indicadores em uma experiência moderna, organizada e centralizada.",
+        "items": {
+            "clients": {
+                "title": "Gestão de Clientes",
+                "description": "Centralize históricos, contatos, contratos e acompanhe clientes recorrentes."
+            },
+            "products": {
+                "title": "Controle de Produtos",
+                "description": "Gerencie extintores, equipamentos, estoque e movimentações em tempo real."
+            },
+            "sales": {
+                "title": "Vendas Inteligentes",
+                "description": "Organize propostas, negociações e acompanhe todo o fluxo comercial."
+            },
+            "serviceOrders": {
+                "title": "Ordens de Serviço",
+                "description": "Controle atendimentos técnicos, manutenção e execução de serviços."
+            },
+            "expirations": {
+                "title": "Controle de Vencimentos",
+                "description": "Automatize notificações e acompanhe vencimentos sem depender de planilhas."
+            },
+            "dashboard": {
+                "title": "Dashboard Gerencial",
+                "description": "Visualize indicadores estratégicos da empresa em tempo real."
+            }
+        }
+    },
+
+    "resultsSection": {
+        "titleHighlight": "Resultados",
+        "title": "que impactam sua operação",
+        "description": "O IgnisCore melhora produtividade, organização e controle operacional através de uma experiência moderna e centralizada.",
+        "items": {
+            "delays": {
+                "title": "Redução de atrasos",
+                "description": "Automatize notificações e acompanhe vencimentos em tempo real para evitar perdas operacionais.",
+                "metric": "94%",
+                "metricLabel": "vencimentos controlados",
+                "secondary": "12",
+                "secondaryLabel": "próximos vencimentos"
+            },
+            "productivity": {
+                "title": "Mais produtividade",
+                "description": "Centralize processos, ordens de serviço e informações da equipe em uma única plataforma.",
+                "metric": "+38%",
+                "metricLabel": "mais produtividade",
+                "secondary": "126",
+                "secondaryLabel": "serviços realizados"
+            },
+            "service": {
+                "title": "Melhor atendimento",
+                "description": "Tenha acesso rápido ao histórico completo dos clientes e agilize atendimentos técnicos.",
+                "metric": "2.480",
+                "metricLabel": "clientes cadastrados",
+                "secondary": "98%",
+                "secondaryLabel": "atendimentos concluídos"
+            },
+            "management": {
+                "title": "Gestão centralizada",
+                "description": "Visualize indicadores estratégicos, serviços e movimentações em tempo real.",
+                "metric": "R$ 84,6 mil",
+                "metricLabel": "faturamento no período",
+                "secondary": "342",
+                "secondaryLabel": "vendas realizadas"
+            }
+        },
+        "panel": {
+            "overview": "Visão operacional",
+            "updated": "Atualizado em tempo real",
+            "online": "Online",
+            "indicator": "Indicador",
+            "team": "Equipe",
+            "activeUsers": "usuários ativos",
+            "synced": "Dados sincronizados",
+            "now": "Agora"
+        }
+    },
+
+    "timeline": {
+        "titleHighlight": "Comece",
+        "title": "sua operação em poucos passos",
+        "description": "Estruture processos, automatize tarefas e acompanhe toda operação da sua empresa em uma única plataforma.",
+        "steps": {
+            "company": {
+                "title": "Cadastre sua empresa",
+                "description": "Configure sua operação, equipe técnica e informações iniciais em poucos minutos."
+            },
+            "products": {
+                "title": "Gerencie produtos",
+                "description": "Cadastre extintores, equipamentos e controle movimentações com precisão."
+            },
+            "expirations": {
+                "title": "Automatize vencimentos",
+                "description": "Receba alertas automáticos para inspeções, recargas e serviços pendentes."
+            },
+            "indicators": {
+                "title": "Acompanhe indicadores",
+                "description": "Visualize métricas operacionais e crescimento da empresa em tempo real."
+            }
+        }
+    },
+
+    "market": {
+        "titleHighlight": "Desenvolvido",
+        "title": "para quem vive esse mercado",
+        "description": "O IgnisCore foi projetado para empresas que precisam de controle operacional, produtividade e gestão centralizada.",
+        "items": {
+            "extinguisherResellers": {
+                "title": "Revendas de Extintores",
+                "description": "Controle estoque, vencimentos, movimentações e histórico completo dos equipamentos."
+            },
+            "maintenanceCompanies": {
+                "title": "Empresas de Manutenção",
+                "description": "Gerencie ordens de serviço, equipes técnicas e inspeções de forma centralizada."
+            },
+            "serviceProviders": {
+                "title": "Prestadores de Serviços",
+                "description": "Acompanhe atendimentos, contratos e produtividade operacional em tempo real."
+            }
+        }
+    },
+
+    "pricing": {
+        "currency": "R$",
+        "eyebrow": "Planos e preços",
+        "title": "Escolha o plano ideal para",
+        "titleHighlight": "sua operação",
+        "description": "Comece com 14 dias grátis e tenha tudo o que precisa para administrar sua empresa de forma simples e eficiente.",
+        "monthly": "Mensal",
+        "annual": "Anual",
+        "popular": "Mais escolhido",
+        "perMonth": "/mês",
+        "freeTrial": "14 dias grátis",
+        "includes": "Inclui:",
+        "includesMore": "Tudo do {plan}, mais:",
+        "cta": "Começar agora",
+        "footer": "Todos os planos incluem 14 dias grátis. Sem compromisso.",
+        "plans": {
+            "starter": {
+                "label": "Inicial",
+                "description": "Para pequenas operações que querem começar a se organizar.",
+                "price": "99",
+                "features": [
+                    "Até 500 clientes",
+                    "Até 500 produtos",
+                    "Até 2 usuários",
+                    "Gestão de vendas",
+                    "Controle de vencimentos",
+                    "Dashboard",
+                    "Relatórios básicos",
+                    "Gestão de funcionários",
+                    "Suporte padrão"
+                ]
+            },
+            "business": {
+                "label": "Crescimento",
+                "description": "Para empresas em crescimento que precisam de mais capacidade e recursos.",
+                "price": "199",
+                "features": [
+                    "Até 2.000 clientes",
+                    "Até 2.000 produtos",
+                    "Até 5 usuários",
+                    "Gestão de vendas",
+                    "Controle de vencimentos",
+                    "Dashboard",
+                    "Relatórios avançados",
+                    "Gestão de funcionários",
+                    "Suporte prioritário",
+                    "Recursos avançados"
+                ]
+            },
+            "professional": {
+                "label": "Completo",
+                "description": "Para operações maiores que precisam de máxima flexibilidade e controle.",
+                "price": "369",
+                "features": [
+                    "Clientes ilimitados",
+                    "Produtos ilimitados",
+                    "Usuários ilimitados",
+                    "Gestão de vendas",
+                    "Controle de vencimentos",
+                    "Dashboard",
+                    "Relatórios avançados",
+                    "Gestão de funcionários",
+                    "Suporte dedicado",
+                    "Recursos avançados",
+                    "Personalização"
+                ]
+            }
+        }
+    },
+
+    "contact": {
+        "eyebrow": "Plataforma operacional inteligente",
+        "title": "Modernize sua operação com o",
+        "description": "Centralize vendas, vencimentos, ordens de serviço e indicadores em uma única plataforma moderna, rápida e escalável.",
+        "demoButton": "Agendar demonstração",
+        "demoAriaLabel": "Agendar demonstração da plataforma IgnisCore",
+        "secondaryButton": "Ver funcionamento"
+    },
+
+    "footer": {
+        "tagline": "Gestão operacional inteligente",
+        "description": "Plataforma desenvolvida para empresas de manutenção, revendas e prestadores de serviços que precisam de controle operacional moderno e centralizado.",
+        "navigation": {
+            "title": "Navegação",
+            "challenges": "Desafios",
+            "solutions": "Soluções",
+            "pricing": "Preços",
+            "contact": "Contato"
+        },
+        "institutional": {
+            "title": "Institucional",
+            "terms": "Termos de uso",
+            "faq": "Dúvidas frequentes",
+            "privacy": "Política de privacidade"
+        },
+        "copyright": "Todos os direitos reservados.",
+        "privacy": "Privacidade",
+        "terms": "Termos"
+    }
+}
