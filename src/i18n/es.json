@@ -27,7 +27,8 @@
             "jul": "JUL",
             "sep": "SEP",
             "oct": "OCT"
-        }
+        },
+        "whatsappMessage": "Hola, quiero agendar una demostración de IgnisCore"
     },
 
     "challenges": {
@@ -83,6 +84,56 @@
                 "title": "Panel de Gestión",
                 "description": "Consulta los indicadores estratégicos de la empresa en tiempo real."
             }
+        }
+    },
+
+    "resultsSection": {
+        "titleHighlight": "Resultados",
+        "title": "que mejoran tu operación",
+        "description": "IgnisCore mejora la productividad, la organización y el control operativo mediante una experiencia moderna y centralizada.",
+        "items": {
+            "delays": {
+                "title": "Reducción de retrasos",
+                "description": "Automatiza las notificaciones y supervisa los vencimientos en tiempo real para evitar pérdidas operativas.",
+                "metric": "94%",
+                "metricLabel": "vencimientos controlados",
+                "secondary": "12",
+                "secondaryLabel": "próximos vencimientos"
+            },
+            "productivity": {
+                "title": "Mayor productividad",
+                "description": "Centraliza los procesos, las órdenes de servicio y la información del equipo en una única plataforma.",
+                "metric": "+38%",
+                "metricLabel": "más productividad",
+                "secondary": "126",
+                "secondaryLabel": "servicios realizados"
+            },
+            "service": {
+                "title": "Mejor atención",
+                "description": "Accede rápidamente al historial completo de los clientes y agiliza la atención técnica.",
+                "metric": "2.480",
+                "metricLabel": "clientes registrados",
+                "secondary": "98%",
+                "secondaryLabel": "servicios completados"
+            },
+            "management": {
+                "title": "Gestión centralizada",
+                "description": "Consulta indicadores estratégicos, servicios y movimientos en tiempo real.",
+                "metric": "R$ 84,6 mil",
+                "metricLabel": "facturación del período",
+                "secondary": "342",
+                "secondaryLabel": "ventas realizadas"
+            }
+        },
+        "panel": {
+            "overview": "Visión operativa",
+            "updated": "Actualizado en tiempo real",
+            "online": "En línea",
+            "indicator": "Indicador",
+            "team": "Equipo",
+            "activeUsers": "usuarios activos",
+            "synced": "Datos sincronizados",
+            "now": "Ahora"
         }
     }
 }

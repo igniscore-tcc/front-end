@@ -40,10 +40,7 @@ export default function Hero() {
         hero.months.oct,
     ];
 
-    const whatsappMessage =
-        locale === "es"
-            ? "Hola, quiero agendar una demostración de IgnisCore"
-            : "Olá, quero agendar uma demonstração do IgnisCore";
+    const whatsappMessage = hero.whatsappMessage
 
     const whatsappUrl = `https://wa.me/5519996779283?text=${encodeURIComponent(whatsappMessage)}`;
 
