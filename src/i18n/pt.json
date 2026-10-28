@@ -28,5 +28,29 @@
             "sep": "SET",
             "oct": "OUT"
         }
+    },
+    
+    "challenges": {
+        "titleHighlight": "Sua operação",
+        "title": "ainda depende de planilhas e processos manuais?",
+        "description": "Processos descentralizados dificultam o controle da operação, aumentam falhas e impactam diretamente o crescimento da empresa.",
+        "items": {
+            "manualControl": {
+                "title": "Controle manual de vencimentos",
+                "description": "Risco de atrasos, multas e perda de contratos por falta de automação."
+            },
+            "lostClients": {
+                "title": "Perda de clientes recorrentes",
+                "description": "Falta de acompanhamento reduz a retenção de clientes e a recorrência de serviços."
+            },
+            "disorganizedOrders": {
+                "title": "Ordens de serviço desorganizadas",
+                "description": "Informações descentralizadas dificultam a execução e o acompanhamento dos serviços."
+            },
+            "lackOfIndicators": {
+                "title": "Falta de indicadores em tempo real",
+                "description": "Decisões estratégicas ficam limitadas sem dados centralizados."
+            }
+        }
     }
 }
