@@ -4,7 +4,7 @@ import Footer from "@/components/home/footer";
 import Header from "@/components/home/header";
 import Hero from "@/components/home/hero";
 import Market from "@/components/home/market";
-import { Pricing } from "@/components/home/Pricing";
+import { Pricing } from "@/components/home/pricing";
 import Result from "@/components/home/results";
 import Solutions from "@/components/home/solutions";
 import Timeline from "@/components/home/timeline";

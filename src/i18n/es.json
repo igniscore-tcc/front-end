@@ -179,5 +179,75 @@
                 "description": "Supervise las atenciones, los contratos y la productividad operativa en tiempo real."
             }
         }
+    },
+
+    "pricing": {
+        "currency": "US$",
+        "eyebrow": "Planes y precios",
+        "title": "Elige el plan ideal para",
+        "titleHighlight": "tu operación",
+        "description": "Comienza con 14 días gratis y obtén todo lo que necesitas para administrar tu empresa de forma sencilla y eficiente.",
+        "monthly": "Mensual",
+        "annual": "Anual",
+        "popular": "Más elegido",
+        "perMonth": "/mes",
+        "freeTrial": "14 días gratis",
+        "includes": "Incluye:",
+        "includesMore": "Todo lo del plan {plan}, más:",
+        "cta": "Comenzar ahora",
+        "footer": "Todos los planes incluyen 14 días gratis. Sin compromiso.",
+        "plans": {
+            "starter": {
+                "label": "Inicial",
+                "description": "Para pequeñas operaciones que quieren empezar a organizarse.",
+                "price": "19",
+                "features": [
+                    "Hasta 500 clientes",
+                    "Hasta 500 productos",
+                    "Hasta 2 usuarios",
+                    "Gestión de ventas",
+                    "Control de vencimientos",
+                    "Panel de control",
+                    "Informes básicos",
+                    "Gestión de empleados",
+                    "Soporte estándar"
+                ]
+            },
+            "business": {
+                "label": "Crecimiento",
+                "description": "Para empresas en crecimiento que necesitan más capacidad y funcionalidades.",
+                "price": "39",
+                "features": [
+                    "Hasta 2.000 clientes",
+                    "Hasta 2.000 productos",
+                    "Hasta 5 usuarios",
+                    "Gestión de ventas",
+                    "Control de vencimientos",
+                    "Panel de control",
+                    "Informes avanzados",
+                    "Gestión de empleados",
+                    "Soporte prioritario",
+                    "Funciones avanzadas"
+                ]
+            },
+            "professional": {
+                "label": "Completo",
+                "description": "Para operaciones más grandes que necesitan máxima flexibilidad y control.",
+                "price": "69",
+                "features": [
+                    "Clientes ilimitados",
+                    "Productos ilimitados",
+                    "Usuarios ilimitados",
+                    "Gestión de ventas",
+                    "Control de vencimientos",
+                    "Panel de control",
+                    "Informes avanzados",
+                    "Gestión de empleados",
+                    "Soporte dedicado",
+                    "Funciones avanzadas",
+                    "Personalización"
+                ]
+            }
+        }
     }
 }
