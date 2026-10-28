@@ -249,5 +249,14 @@
                 ]
             }
         }
+    },
+
+    "contact": {
+        "eyebrow": "Plataforma operativa inteligente",
+        "title": "Moderniza tu operación con",
+        "description": "Centraliza las ventas, los vencimientos, las órdenes de servicio y los indicadores en una única plataforma moderna, rápida y escalable.",
+        "demoButton": "Agendar una demostración",
+        "demoAriaLabel": "Agendar una demostración de la plataforma IgnisCore",
+        "secondaryButton": "Ver cómo funciona"
     }
 }
